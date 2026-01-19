@@ -8,13 +8,12 @@ public class MonsterFlyingEye : Object
     {
         giveGold += Random.Range(8, 12);
         objectAnimator = GetComponent<Animator>();
-        objectAnimator.SetFloat("attackspeed", attackSpeed);
+        objectAnimator.SetFloat("attackSpeed", attackSpeed);
     }
 
     private void Update()
     {
         CheckState();
-        ChangeDefault();
     }
 
     public override void CheckState()
@@ -27,7 +26,7 @@ public class MonsterFlyingEye : Object
             if (objectAnimator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
                 AttackState();
         }
-        else Death();
+        else Death(() => PlayDeadSound(deadSound, 2));
     }
 
     private void EnemyDetect()
@@ -82,7 +81,7 @@ public class MonsterFlyingEye : Object
     public override float HpUp(float addHp)
     {
         hp += addHp;
-        maxHp += addHp;
+        defaultHp += addHp;
         return hp;
     }
 }

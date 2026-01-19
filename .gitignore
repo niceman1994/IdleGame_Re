@@ -75,33 +75,3 @@ sysinfo.txt
 
 # Crashlytics generated file
 crashlytics-build.properties
-.vs/Unity/v16/.suo
-Assembly-CSharp-Editor.csproj
-Assembly-CSharp.csproj
-CFXR.WelcomeScreen.csproj
-CFXRDemo.csproj
-CFXREditor.csproj
-CFXRRuntime.csproj
-KinoBloom.Runtime.csproj
-Logs/AssetImportWorker0-prev.log
-Logs/AssetImportWorker0.log
-Logs/Packages-Update.log
-Logs/shadercompiler-AssetImportWorker0.log
-Logs/shadercompiler-UnityShaderCompiler.exe0.log
-Logs/shadercompiler-UnityShaderCompiler.exe1.log
-Logs/shadercompiler-UnityShaderCompiler.exe2.log
-Logs/shadercompiler-UnityShaderCompiler.exe3.log
-obj/Debug/Assembly-CSharp-Editor.csproj.AssemblyReference.cache
-obj/Debug/Assembly-CSharp.csproj.AssemblyReference.cache
-obj/Debug/Assembly-CSharp.dll
-obj/Debug/Assembly-CSharp.pdb
-obj/Debug/CFXR.WelcomeScreen.csproj.AssemblyReference.cache
-obj/Debug/CFXRDemo.csproj.AssemblyReference.cache
-obj/Debug/CFXREditor.csproj.AssemblyReference.cache
-obj/Debug/CFXRRuntime.csproj.AssemblyReference.cache
-obj/Debug/DesignTimeResolveAssemblyReferencesInput.cache
-obj/Debug/KinoBloom.Runtime.csproj.AssemblyReference.cache
-Packages/manifest.json
-Packages/packages-lock.json
-ToonyColorsPro.Demo.Editor.csproj
-Unity.sln

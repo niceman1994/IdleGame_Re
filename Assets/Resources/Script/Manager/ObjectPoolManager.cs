@@ -89,13 +89,13 @@ public class ObjectPoolManager : Singleton<ObjectPoolManager>
             var itemObj = poolingItemQueue.Dequeue();
             itemObj.transform.SetParent(null);
             itemObj.gameObject.SetActive(true);
-            itemObj.ItemTypeName(itemName, num, target, color);
+            itemObj.ItemTypeName(itemName, num, target, color, fontsize);
         }
         else
         {
             var newItemObj = CreatePoolItem("Item Text", itemParent);
             newItemObj.transform.SetParent(null);
-            newItemObj.ItemTypeName(itemName, num, target, color);
+            newItemObj.ItemTypeName(itemName, num, target, color, fontsize);
             poolingItemQueue.Enqueue(newItemObj);
         }
     }

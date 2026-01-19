@@ -42,7 +42,6 @@ public class DamageText : MonoBehaviour
     // 회복이 아닌 아이템을 사용할 때는 다른 색으로 표시하는 ItemTypeName 메서드를 호출
     public void ItemTypeName(string itemName, float num, Vector3 target, Color color, int fontsize = 20)
     {
-        //dmgObj = Instantiate(dmgObj, target + new Vector3(0, 1, 0), Quaternion.identity);
         transform.position = target + Vector3.up;
         damageText = gameObject.GetComponent<TextMeshPro>();
 

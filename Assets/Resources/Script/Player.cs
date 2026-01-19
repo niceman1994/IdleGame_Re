@@ -25,10 +25,11 @@ public class Player : Object
 
     private void Start()
     {
-        ShowCurrentHp();
         GameManager.Instance.userSpeed = moveSpeed;
         currentState = PlayerState.Run;
         objectAnimator = GetComponent<Animator>();
+        objectAnimator.SetFloat("attackSpeed", attackSpeed);
+        ShowCurrentHp();
     }
 
     // Update에 이동 함수를 넣으면 캐릭터가 떨리면서 이동하기 때문에 FixedUpdate에 넣었음
@@ -41,7 +42,6 @@ public class Player : Object
     {
         CheckState();
         ChangeState(currentState);
-        ChangeDefault();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -64,8 +64,13 @@ public class Player : Object
             {
                 if (currentState != PlayerState.Death)
                     transform.localPosition = Vector2.MoveTowards(transform.localPosition, endPoint.localPosition, moveSpeed * Time.deltaTime);
+                else Invoke("ResetGame", 2.0f);
             }
-            else ChangeState(PlayerState.Idle);
+            else
+            {
+                ChangeState(PlayerState.Idle);
+                Invoke("StageUp", 2.0f);
+            }
         }
     }
 
@@ -79,7 +84,6 @@ public class Player : Object
                     objectAnimator.SetBool("attack", false);
                     objectAnimator.SetBool("idle", true);
                 }
-                Invoke("StageUp", 2.0f);
                 break;
             case PlayerState.Run:
                 if (previousState != currentState)
@@ -98,8 +102,6 @@ public class Player : Object
                 }
                 break;
             case PlayerState.Death:
-                Invoke("ResetGame", 2.0f);
-
                 if (previousState != currentState)
                 {
                     objectAnimator.SetBool("attack", false);
@@ -124,7 +126,7 @@ public class Player : Object
                 if (detectCollider.getTargetObject.CurrentHp() <= 0)
                 {
                     atkLoop = 0;
-                    detectCollider.DeleteCurrentCollider2D();
+                    detectCollider.DeleteCollider2D();
                     ChangeState(PlayerState.Run);
                     return;
                 }
@@ -141,7 +143,7 @@ public class Player : Object
         else
         {
             ChangeState(PlayerState.Death);
-            Death();
+            Death(() => PlayDeadSound(deadSound, 0));
         }
     }
 
@@ -170,15 +172,15 @@ public class Player : Object
         currentState = PlayerState.Run;
         objectAnimator.SetBool("death", false);
         moveSpeed = GameManager.Instance.userSpeed;
-        destroyOwnCollider.enabled = true;
-        detectCollider.DeleteCurrentCollider2D();
+        ownCollider.enabled = true;
+        detectCollider.DeleteCollider2D();
     }
 
     private void ShowCurrentHp()
     {
-        GameManager.Instance.hpBar.fillAmount = hp / maxHp;
+        GameManager.Instance.hpBar.fillAmount = hp / defaultHp;
         GameManager.Instance.currentHp.text = Math.Truncate(hp).ToString();
-        GameManager.Instance.fullHp.text = Math.Truncate(maxHp).ToString();
+        GameManager.Instance.maxHp.text = Math.Truncate(defaultHp).ToString();
     }
 
     private void UpdateCurrentHp(float currentHp)
@@ -198,7 +200,7 @@ public class Player : Object
     public float GetAttackSpeed(float atkSpeed)
     {
         attackSpeed += atkSpeed;
-        objectAnimator.SetFloat("attackspeed", attackSpeed);
+        objectAnimator.SetFloat("attackSpeed", attackSpeed);
         return attackSpeed;
     }
 
@@ -215,11 +217,11 @@ public class Player : Object
 
     public override void CurrentHp(float value)
     {
-        if (hp + value > maxHp)
-            value -= hp + value - maxHp;
+        if (hp + value > defaultHp)
+            value -= hp + value - defaultHp;
 
         hp += value;
-
+        
         ShowCurrentHp();
         ObjectPoolManager.Instance.ShowHealText(value, textPos, new Color(0.0f, 255.0f, 0.0f, 255.0f));
     }
@@ -227,7 +229,7 @@ public class Player : Object
     public override float HpUp(float addHp)
     {
         hp += addHp;
-        maxHp += addHp;
+        defaultHp += addHp;
         ShowCurrentHp();
 
         return hp;

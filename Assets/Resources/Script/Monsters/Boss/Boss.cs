@@ -21,7 +21,6 @@ public class Boss : Object
     private void Update()
     {
         CheckState();
-        ChangeDefault();
     }
 
     public override void CheckState()
@@ -40,7 +39,7 @@ public class Boss : Object
         else
         {
             objectAnimator.SetBool("death", true);
-            Death();
+            Death(() => PlayDeadSound(deadSound, 1));
         }
     }
 
@@ -145,7 +144,7 @@ public class Boss : Object
     public override float HpUp(float addHp)
     {
         hp += addHp;
-        maxHp += addHp;
+        defaultHp += addHp;
         return hp;
     }
 }

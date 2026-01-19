@@ -47,7 +47,7 @@ public class DetectCollider : MonoBehaviour
         }
     }
 
-    public void DeleteCurrentCollider2D()
+    public void DeleteCollider2D()
     {
         if (currentTarget != null)
         {

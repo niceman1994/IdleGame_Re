@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -13,36 +14,27 @@ public abstract class Object : MonoBehaviour, IObject
     [SerializeField] protected AudioSource attackSound;
     [SerializeField] protected AudioSource deadSound;
     [SerializeField] protected Transform textPos;
-    [SerializeField] protected BoxCollider2D destroyOwnCollider;
+    [SerializeField] protected BoxCollider2D ownCollider;
     [SerializeField] protected DetectCollider detectCollider;
 
     protected int atkLoop;
     protected int giveGold;
-    protected float maxHp;
+    protected float defaultHp;              // 재생성됐을 때 체력을 재설정하기 위한 변수
     protected float defaultAtk;
     protected Animator objectAnimator;
 
-    private void Start()
+    private void Awake()
     {
-        maxHp = hp;
+        defaultHp = hp;
         defaultAtk = atk;
         atkLoop = 0;
     }
 
-    protected void ChangeDefault()
-    {
-        if (hp > maxHp && hp < 100000)
-            maxHp = hp;
-
-        if (atk > defaultAtk && atk < 10000)
-            defaultAtk = atk;
-    }
-
-    public void Death()
+    public void Death(Action deadEvent)
     {
         hp = 0;
         atkLoop = 0;
-        destroyOwnCollider.enabled = false;
+        ownCollider.enabled = false;
         StartCoroutine(ResetObject());
 
         if (gameObject.CompareTag("Monster") || gameObject.CompareTag("Boss"))
@@ -53,7 +45,7 @@ public abstract class Object : MonoBehaviour, IObject
             if (objectAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime <= 0.0f)
             {
                 GameManager.Instance.gameGold.curGold[0] += giveGold;
-                deadSound.Play();
+                deadEvent.Invoke();
 
                 if (gameObject.CompareTag("Monster"))
                     ItemManager.Instance.SpawnItem(transform.position);
@@ -70,19 +62,19 @@ public abstract class Object : MonoBehaviour, IObject
             if (objectAnimator.CompareTag("Monster"))
             {
                 yield return waitForSeconds;
-                hp = maxHp;
+                hp = defaultHp;
                 ObjectSpawn.Instance.PullObject(gameObject);
             }
             else if (objectAnimator.CompareTag("Boss"))
             {
                 yield return waitForSeconds;
-                hp = maxHp;
+                hp = defaultHp;
                 ObjectSpawn.Instance.ReturnPoolingBoss(gameObject);
             }
             else if (objectAnimator.CompareTag("Player"))
             {
                 yield return waitForSeconds;
-                hp = maxHp;
+                hp = defaultHp;
             }
         }
     }
@@ -90,9 +82,15 @@ public abstract class Object : MonoBehaviour, IObject
     protected void PlayAttackSound(AudioSource attackAudio, int soundIndex)
     {
         atkLoop += 1;
-        detectCollider.getTargetAttack.GetAttackDamage(atk); // detectCollider 체력을 공격력만큼 깎는 메서드를 호출
+        detectCollider.getTargetAttack.GetAttackDamage(atk); // 공격력만큼 detectCollider의 체력을 깎는 함수를 호출
         attackAudio.clip = SoundManager.Instance.attackSounds[soundIndex].audioClip;
         attackAudio.Play();
+    }
+
+    protected void PlayDeadSound(AudioSource deadAudio, int soundIndex)
+    {
+        deadAudio.clip = SoundManager.Instance.deadSounds[soundIndex].audioClip;
+        deadAudio.Play();
     }
 
     protected float AttackStateTime()
@@ -111,7 +109,7 @@ public abstract class Object : MonoBehaviour, IObject
     {
         if (detectCollider.getTargetObject.CurrentHp() <= 0)
         {
-            detectCollider.DeleteCurrentCollider2D();
+            detectCollider.DeleteCollider2D();
             objectAnimator.SetBool("attack", false);
             atkLoop = 0;
         }

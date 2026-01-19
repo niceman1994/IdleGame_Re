@@ -14,4 +14,5 @@ public class SoundManager : Singleton<SoundManager>
     public AudioSource buttonSound;
     public AudioSource upgradeSound;
     public SoundName[] attackSounds;
+    public SoundName[] deadSounds;
 }

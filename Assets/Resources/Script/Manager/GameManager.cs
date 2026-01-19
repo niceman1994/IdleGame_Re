@@ -9,7 +9,7 @@ public class GameManager : Singleton<GameManager>
     [Header("유저 정보")]
     public Player player;
     public Text currentHp;
-    public Text fullHp;
+    public Text maxHp;
     public Image hpBar;
     public float userSpeed;
     public GameGold gameGold;

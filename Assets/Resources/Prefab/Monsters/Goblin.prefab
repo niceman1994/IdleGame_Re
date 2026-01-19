@@ -141,7 +141,7 @@ MonoBehaviour:
   attackSound: {fileID: 5290689315286901581}
   deadSound: {fileID: 5382306233727355465}
   textPos: {fileID: 2351455605036713742}
-  destroyOwnCollider: {fileID: 4021928827729624681}
+  ownCollider: {fileID: 4021928827729624681}
   detectCollider: {fileID: 1265449328750113178}
 --- !u!114 &1265449328750113178
 MonoBehaviour:
@@ -251,7 +251,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: b51570d60c6f3d9468f6bda71b11ba9f, type: 3}
+  m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 0.8
   m_Pitch: 1

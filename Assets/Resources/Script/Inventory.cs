@@ -1,10 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 public class Inventory : MonoBehaviour
 {
+    [SerializeField] RectTransform itemExchangeRectParent;
     [SerializeField] RectTransform content;
     [SerializeField] GameObject horizontalListPrefab;
     [SerializeField] RectTransform addListButtonParent;
@@ -19,6 +21,35 @@ public class Inventory : MonoBehaviour
     {
         MakeInvetorySlots();
         addListButton.onClick.AddListener(AddHorizontalList);
+    }
+
+    private void Update()
+    {
+        if (Input.GetMouseButtonDown(1))
+        {
+            if (itemExchanger.IsOpen == false)
+                PointerOverThisSlot();
+            else itemExchanger.DeactivateItemExchangeBox();
+        }
+    }
+
+    private void PointerOverThisSlot()
+    {
+        PointerEventData data = new PointerEventData(EventSystem.current);
+        data.position = Input.mousePosition;
+
+        var results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(data, results);
+
+        for (int i = 0; i < results.Count; i++)
+        {
+            if (results[i].gameObject.name.Equals("Slot"))
+            {
+                InventorySlot slot = results[i].gameObject.GetComponent<InventorySlot>();
+                ItemExchange(slot, data.position);
+                return;
+            }
+        }
     }
 
     public void SlotItemsUI()
@@ -71,20 +102,6 @@ public class Inventory : MonoBehaviour
     {
         yield return null;
         slots = content.GetComponentsInChildren<InventorySlot>();
-
-        /*
-           인벤토리 슬롯은 게임이 실행되면 생성되는 방식임
-          1. 여기서 잡템을 모아서 변환해줘야 할 때 실행 시작시 생성된 슬롯을 클릭했을 때 잡템인지 확인하고 우클릭했을 때 아이템 변환 UI를 보여주는 방식으로 할 것
-          2. 이때 잡템의 수에 따라 바꿀 수 있는 아이템이 다르고 바꿀 수 없는 아이템은 반투명하고 만들어서 안되는 것처럼 보이게 만들고 실제로도 변환이 안되게 할 것
-          3. 문제는 아이템 변환 스크립트를 어디에 배치할지가 고민인데 슬롯은 게임을 실행해야 생성되는데 아이템 변환 UI는 재활용하기 위해서 먼저 만들어놓은 상태임
-
-           인벤토리 슬롯은 미리 생성되지 않으니 이미 있는 인벤토리에서 슬롯 정보를 가져와서 아이템 변환 UI가 작동하도록 코드를 작성하는게 좋아보임
-         */
-        for (int i = 0; i < slots.Length; i++)
-        {
-            //itemExchanger.SetItemExchangeBoxPosition(Input.mousePosition);
-            slots[i].SetItemExchangePosition();
-        }
     }
 
     private bool CheckSameItem(InventorySlot slot)
@@ -95,5 +112,15 @@ public class Inventory : MonoBehaviour
     public void GetItem(Item dropItem)
     {
         item = dropItem;
+    }
+
+    private void ItemExchange(InventorySlot slot, Vector2 dataPosition)
+    {
+        Debug.Log($"클릭한 스프라이트 이름 : {slot.Icon.sprite.name}");
+        if (slot.Icon.sprite.name.Equals("Bottle"))
+        {
+            itemExchanger.SetItemExchangeBoxPosition(itemExchangeRectParent, dataPosition);
+            itemExchanger.ShowExchangeableItem(slot.ItemCount);
+        }
     }
 }
