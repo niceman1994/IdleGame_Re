@@ -9,15 +9,15 @@ public class ItemManager : Singleton<ItemManager>
     [SerializeField] ItemDrop itemDrop;
     [SerializeField] Transform dropitemParent;
 
-    // 서로 다른 아이템을 드랍하는거라서 큐보단 리스트가 적합
-    public List<GameObject> dropItemList = new List<GameObject>();
+    // 같은 아이템이 아닌 다른 아이템을 드랍하는거라서 큐보단 리스트가 적합
+    public List<Item> dropItemList = new List<Item>();
 
     private void Start()
     {
-        CreateItem();
+        CreateItemList();
     }
 
-    private void CreateItem()
+    private void CreateItemList()
     {
         itemDrop.CreateAllItem(dropitemParent, dropItemList);
     }
@@ -25,5 +25,11 @@ public class ItemManager : Singleton<ItemManager>
     public void SpawnItem(Vector3 position)
     {
         itemDrop.SpawnItem(position);
+    }
+
+    public Item CreateItem(string itemName)
+    {
+        Item newItem = dropItemList.Find(x => x.name.Equals(itemName));
+        return newItem;
     }
 }

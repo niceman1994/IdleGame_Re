@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public struct SkillInfo
 {
     public Button skillBtn;
-    public float coolTime;      // 스킬 쿨타임을 표시하기 위한 변수
+    public float coolTime;      // 게임화면 상단에 있는 임의의 스킬을 쓴 후 coolTimeText에 줄어드는 쿨타임을 표시하기 위한 변수
     public float coolTimeReset;
     public float buffTime;
     public float skillPower;
@@ -32,9 +32,9 @@ public class Skill : Singleton<Skill>
 
         for (int i = 0; i < skill.Count; i++)
         {
-            /// <see cref="https://mentum.tistory.com/343"/> 참조할 것</para>
-            /* for문에서 버튼 이벤트 등록을 람다식으로 할 땐 모든 람다식이 마지막 반복문의 변수 값으로 참조되어 
-              Closure Problem 이 발생해 값을 복사해서 사용해야 한다고 함 */
+            // "https://mentum.tistory.com/343" 링크를 참조할 것
+            // for문에서 버튼 이벤트 등록을 람다식으로 할 땐 모든 람다식이
+            // 마지막 반복문의 변수 값으로 참조되어 Closure Problem 이 발생해 값을 복사해서 사용해야 한다고 함
             int temp = i;
             skill[i].skillBtn.onClick.AddListener(() => ClickSkill(skill[temp]));
         }

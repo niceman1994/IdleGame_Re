@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -28,15 +29,15 @@ public class Inventory : MonoBehaviour
         if (Input.GetMouseButtonDown(1))
         {
             if (itemExchanger.IsOpen == false)
-                PointerOverThisSlot();
+                PointerOverInventorySlot();
             else itemExchanger.DeactivateItemExchangeBox();
         }
     }
 
-    private void PointerOverThisSlot()
+    private void PointerOverInventorySlot()
     {
         PointerEventData data = new PointerEventData(EventSystem.current);
-        data.position = Input.mousePosition;
+        data.position = Input.mousePosition;    // 이 코드가 없으면 마우스 클릭과 이벤트가 연결되지 않아서 이벤트 시스템을 이용할 수 없음
 
         var results = new List<RaycastResult>();
         EventSystem.current.RaycastAll(data, results);
@@ -58,10 +59,10 @@ public class Inventory : MonoBehaviour
         {
             // 1. 인벤토리 슬롯에 아이템 이미지가 없을 때
             // 2. 획득한 아이템의 이미지와 슬롯 아이템 이미지가 같으면서, 아이템의 갯수가 최대 갯수 이하일 때
-            if (!slots[i].haveItem || CheckSameItem(slots[i]))
+            if (slots[i].CheckHaveItem() || slots[i].CheckItemMaxCount())
             {
-                // 아이템 추가 또는 갯수 증가
-                if (!slots[i].haveItem)
+                // 없는 아이템 추가 또는 소유한 아이템 수 증가
+                if (!slots[i].CheckSameItem())
                     slots[i].AddItem(item);
                 else
                     slots[i].SetItemCount(1);
@@ -86,7 +87,7 @@ public class Inventory : MonoBehaviour
     {
         addListCount++;
 
-        // Grid Layout Group으로 정리된 content의 자식객체로 horizontalListPrefab을 생성한다.
+        // Grid Layout Group으로 정리된 content의 자식객체로 horizontalListPrefab을 생성
         GameObject Obj = Instantiate(horizontalListPrefab, content);
         Obj.name = "HorizontalList";
 
@@ -104,11 +105,6 @@ public class Inventory : MonoBehaviour
         slots = content.GetComponentsInChildren<InventorySlot>();
     }
 
-    private bool CheckSameItem(InventorySlot slot)
-    {
-        return item.ItemImage == slot.Icon.sprite && slot.ItemCount < item.MaxCount;
-    }
-
     public void GetItem(Item dropItem)
     {
         item = dropItem;
@@ -116,11 +112,13 @@ public class Inventory : MonoBehaviour
 
     private void ItemExchange(InventorySlot slot, Vector2 dataPosition)
     {
-        Debug.Log($"클릭한 스프라이트 이름 : {slot.Icon.sprite.name}");
         if (slot.Icon.sprite.name.Equals("Bottle"))
         {
             itemExchanger.SetItemExchangeBoxPosition(itemExchangeRectParent, dataPosition);
             itemExchanger.ShowExchangeableItem(slot.ItemCount);
+            itemExchanger.itemExchangeEvent.Invoke(slot);
+            //if (itemExchanger.CheckDeactiveButton() == true)
+            //    itemExchanger.itemExchangeEvent.Invoke(slot);
         }
     }
 }

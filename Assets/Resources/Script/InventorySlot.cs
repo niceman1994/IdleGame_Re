@@ -19,7 +19,7 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     /// </summary>
     [SerializeField] ScrollRect scrollParent;
 
-    public bool haveItem;
+    private bool haveItem;
 
     public int ItemCount { get { return itemCount; } }
     public Image Icon { get { return slotIcon; } }
@@ -39,7 +39,7 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     public void AddItem(Item newItem, int count = 1)
     {
-        haveItem = true;
+        //haveItem = true;
         item = newItem;
         itemCount = count;
         slotIcon.sprite = item.ItemImage;
@@ -71,6 +71,36 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
         if (itemCount <= 0)
             ClearSlot();
+    }
+
+    public bool CheckHaveItem()
+    {
+        if (Icon.sprite != null)
+        {
+            haveItem = true;
+            return haveItem;
+        }
+
+        haveItem = false;
+        return haveItem;
+    }
+
+    public bool CheckSameItem()
+    {
+        if (Icon.sprite != null && item.ItemImage == Icon.sprite)
+            return true;
+
+        return false;
+    }
+
+    public bool CheckItemMaxCount()
+    {
+        if (itemCountText.text == string.Empty)
+            return true;
+        else if (itemCountText.text != string.Empty && itemCount < item.MaxCount)
+            return true;
+
+        return false;
     }
 
     public void UseItem()
@@ -190,8 +220,11 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         DragSlot.instance.isDrag = false;   // 드래그가 끝났으니 bool 값을 false로 되돌림
     }
 
-    public void ItemExchange()
+    public void ItemExchange(int requiredItemCount)
     {
-        
+        itemCount -= requiredItemCount;
+
+        if (slotIcon.name.Equals("Bottle") && itemCount <= 0)
+            ClearSlot();
     }
 }

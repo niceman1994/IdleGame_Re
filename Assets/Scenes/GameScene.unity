@@ -7129,10 +7129,17 @@ MonoBehaviour:
   itemExchangeButtons:
   - itemExchageButtonImage: {fileID: 2919861747276495063}
     itemExchangeButton: {fileID: 2919861747276495060}
+    itemExchangeText: {fileID: 0}
   - itemExchageButtonImage: {fileID: 2919861746705022631}
     itemExchangeButton: {fileID: 2919861746705022628}
+    itemExchangeText: {fileID: 0}
   - itemExchageButtonImage: {fileID: 2919861745807478143}
     itemExchangeButton: {fileID: 2919861745807478140}
+    itemExchangeText: {fileID: 0}
+  itemSprites:
+  - {fileID: 21300000, guid: eaf020b8e8f3f434e9af9f57f3556f07, type: 3}
+  - {fileID: 21300000, guid: d97ee3d689bd42a4a8530a0608adaaf6, type: 3}
+  - {fileID: 21300000, guid: d1e698ba991e4854bae095a8fccc13f7, type: 3}
 --- !u!4 &1781999146348200016
 Transform:
   m_ObjectHideFlags: 0

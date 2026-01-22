@@ -14,7 +14,7 @@ public class Boss : Object
     {
         giveGold += 500;
         objectAnimator = GetComponent<Animator>();
-        objectAnimator.SetFloat("attackspeed", attackSpeed);
+        objectAnimator.SetFloat("attackSpeed", attackSpeed);
         PrepareSpell();
     }
 
