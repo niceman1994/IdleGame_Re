@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
-using UnityEngine.Events;
-using System;
 
 public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
 {
+    /// <summary>
+    /// 슬롯에 있는 아이템에 대한 변수
+    /// </summary>
     [SerializeField] Item item;
     [SerializeField] int itemCount;
     [SerializeField] Image slotIcon;
@@ -21,6 +22,7 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     private bool haveItem;
 
+    public bool HaveItem => haveItem;
     public int ItemCount { get { return itemCount; } }
     public Image Icon { get { return slotIcon; } }
 
@@ -37,13 +39,13 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         scrollParent = transform.parent.parent.parent.parent.GetComponent<ScrollRect>();
     }
 
-    public void AddItem(Item newItem, int count = 1)
+    public void AddNewItem(Item newItem, int count = 1)
     {
-        //haveItem = true;
+        haveItem = true;
         item = newItem;
         itemCount = count;
         slotIcon.sprite = item.ItemImage;
-        itemCountText.text = item.GetItemType != Item.ItemType.Weapon ? itemCount.ToString() : "";
+        itemCountText.text = item.GetItemType != Item.ItemType.Weapon ? itemCount.ToString() : string.Empty;
         SetColor(1);
     }
 
@@ -53,7 +55,7 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         item = null;
         itemCount = 0;
         slotIcon.sprite = null;
-        itemCountText.text = "";
+        itemCountText.text = string.Empty;
         SetColor(0);
     }
 
@@ -64,7 +66,7 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         slotIcon.color = color;
     }
 
-    public void SetItemCount(int count)
+    public void AddSameItem(int count)
     {
         itemCount += count;
         itemCountText.text = itemCount.ToString();
@@ -73,34 +75,14 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             ClearSlot();
     }
 
-    public bool CheckHaveItem()
+    /// <summary>
+    /// 슬롯에 있는 아이템과 획득한 아이템의 이미지를 비교하고 수량이 최대치 (<see cref="Item.MaxCount"></see>) 보다 적으면 true를 반환하는 함수
+    /// </summary>
+    /// <param name="addItem"></param>
+    /// <returns></returns>
+    public bool IsSameItem(Item addItem)
     {
-        if (Icon.sprite != null)
-        {
-            haveItem = true;
-            return haveItem;
-        }
-
-        haveItem = false;
-        return haveItem;
-    }
-
-    public bool CheckSameItem()
-    {
-        if (Icon.sprite != null && item.ItemImage == Icon.sprite)
-            return true;
-
-        return false;
-    }
-
-    public bool CheckItemMaxCount()
-    {
-        if (itemCountText.text == string.Empty)
-            return true;
-        else if (itemCountText.text != string.Empty && itemCount < item.MaxCount)
-            return true;
-
-        return false;
+        return addItem.ItemImage == Icon.sprite && ItemCount < item.MaxCount;
     }
 
     public void UseItem()
@@ -125,7 +107,7 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                     ObjectPoolManager.Instance.ShowItemText("ATK", item.ItemAbility,
                         GameManager.Instance.player.transform.position, new Color(0, 0, 0, 255), 20);
                 }
-                SetItemCount(-1);
+                AddSameItem(-1);
             }
         }
     }
@@ -191,26 +173,26 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         Item tempItem = item;           // 아이템이 이미 있는 슬롯으로 옮길때 기존에 있는 아이템을 임시로 저장
         int tempItemCount = itemCount;  // 마찬가지로 기존에 있는 아이템의 갯수를 임시로 저장
 
-        AddItem(DragSlot.instance.dragSlot.item, DragSlot.instance.dragSlot.itemCount);
+        AddNewItem(DragSlot.instance.dragSlot.item, DragSlot.instance.dragSlot.itemCount);
 
         if (tempItem != null)   // 바꾸려는 슬롯에 아이템이 존재할 경우
         {
             if (tempItem.name != DragSlot.instance.dragSlot.item.name)      // 기존 슬롯의 아이템 이름이 드래그한 슬롯의 아이템 이름과 같지 않다면
-                DragSlot.instance.dragSlot.AddItem(tempItem, tempItemCount);
+                DragSlot.instance.dragSlot.AddNewItem(tempItem, tempItemCount);
             else                                                            // 기존 슬롯의 아이템 이름이 드래그한 슬롯의 아이템 이름과 같다면
             {
                 int totalItemCount = tempItemCount + DragSlot.instance.dragSlot.itemCount;
 
                 if (totalItemCount <= item.MaxCount)    // 합산된 아이템 갯수가 최대 갯수 이하일 경우
                 {
-                    AddItem(DragSlot.instance.dragSlot.item, tempItemCount + DragSlot.instance.dragSlot.itemCount);
+                    AddNewItem(DragSlot.instance.dragSlot.item, tempItemCount + DragSlot.instance.dragSlot.itemCount);
                     DragSlot.instance.dragSlot.ClearSlot();
                 }
                 else                                    // 합산된 아이템 갯수가 최대 갯수를 넘을 경우
                 {
                     // 현재 슬롯을 최대 갯수로 채우고 나머지는 이전 슬롯에 추가
-                    AddItem(DragSlot.instance.dragSlot.item, item.MaxCount);
-                    DragSlot.instance.dragSlot.AddItem(DragSlot.instance.dragSlot.item, totalItemCount - item.MaxCount);
+                    AddNewItem(DragSlot.instance.dragSlot.item, item.MaxCount);
+                    DragSlot.instance.dragSlot.AddNewItem(DragSlot.instance.dragSlot.item, totalItemCount - item.MaxCount);
                 }
             }
         }
@@ -220,11 +202,12 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         DragSlot.instance.isDrag = false;   // 드래그가 끝났으니 bool 값을 false로 되돌림
     }
 
-    public void ItemExchange(int requiredItemCount)
+    public void SubtractItemCount(int requiredItemCount)
     {
         itemCount -= requiredItemCount;
+        itemCountText.text = itemCount.ToString();
 
-        if (slotIcon.name.Equals("Bottle") && itemCount <= 0)
+        if (itemCount <= 0)
             ClearSlot();
     }
 }

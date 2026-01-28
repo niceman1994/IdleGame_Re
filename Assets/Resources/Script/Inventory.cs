@@ -14,14 +14,18 @@ public class Inventory : MonoBehaviour
     [SerializeField] Button addListButton;
     [SerializeField] ItemExchanger itemExchanger;
 
-    private InventorySlot[] slots;
+    /// <summary>
+    /// 획득한 아이템에 대한 변수
+    /// </summary>
     private Item item;
+    private InventorySlot[] slots;
     private int addListCount = 0;
 
     private void Start()
     {
         MakeInvetorySlots();
         addListButton.onClick.AddListener(AddHorizontalList);
+        itemExchanger.OnClickExchangeButton(() => GetItem(itemExchanger.ExchangeItem), UpdateItemSlot);
     }
 
     private void Update()
@@ -47,25 +51,25 @@ public class Inventory : MonoBehaviour
             if (results[i].gameObject.name.Equals("Slot"))
             {
                 InventorySlot slot = results[i].gameObject.GetComponent<InventorySlot>();
-                ItemExchange(slot, data.position);
+                ShowItemExchangeUI(slot, data.position);
                 return;
             }
         }
     }
 
-    public void SlotItemsUI()
+    public void UpdateItemSlot()
     {
-        for (int i = 0; i < slots.Length; ++i)
+        for (int i = 0; i < slots.Length; i++)
         {
-            // 1. 인벤토리 슬롯에 아이템 이미지가 없을 때
+            // 1. 인벤토리 슬롯에 아이템을 존재하지 않을 때
             // 2. 획득한 아이템의 이미지와 슬롯 아이템 이미지가 같으면서, 아이템의 갯수가 최대 갯수 이하일 때
-            if (slots[i].CheckHaveItem() || slots[i].CheckItemMaxCount())
+            if (!slots[i].HaveItem || slots[i].IsSameItem(item))
             {
                 // 없는 아이템 추가 또는 소유한 아이템 수 증가
-                if (!slots[i].CheckSameItem())
-                    slots[i].AddItem(item);
+                if (!slots[i].HaveItem)
+                    slots[i].AddNewItem(item);
                 else
-                    slots[i].SetItemCount(1);
+                    slots[i].AddSameItem(1);
 
                 return;
             }
@@ -110,15 +114,12 @@ public class Inventory : MonoBehaviour
         item = dropItem;
     }
 
-    private void ItemExchange(InventorySlot slot, Vector2 dataPosition)
+    private void ShowItemExchangeUI(InventorySlot slot, Vector2 dataPosition)
     {
         if (slot.Icon.sprite.name.Equals("Bottle"))
         {
             itemExchanger.SetItemExchangeBoxPosition(itemExchangeRectParent, dataPosition);
-            itemExchanger.ShowExchangeableItem(slot.ItemCount);
-            itemExchanger.itemExchangeEvent.Invoke(slot);
-            //if (itemExchanger.CheckDeactiveButton() == true)
-            //    itemExchanger.itemExchangeEvent.Invoke(slot);
+            itemExchanger.ShowExchangeableItem(slot);
         }
     }
 }

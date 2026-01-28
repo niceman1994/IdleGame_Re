@@ -1,31 +1,33 @@
-using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using System.Linq;
+using UnityEngine.Events;
 
 [System.Serializable]
 public class ExchangeButton
 {
     public Image itemExchageButtonImage;
     public Button itemExchangeButton;
-    public Text itemExchangeText;
 }
 
 public class ItemExchanger : MonoBehaviour
 {
     [SerializeField] bool isOpen = false;
+    [SerializeField] int minItemCount;      // 다른 아이템 교환에 필요한 최소 갯수
     [SerializeField] RectTransform itemExchangeBox;
     [SerializeField] List<ExchangeButton> itemExchangeButtons = new List<ExchangeButton>();
 
-    public bool IsOpen => isOpen;
-    public Action<InventorySlot> itemExchangeEvent;
+    /// <summary>
+    /// 매개변수 없이 itemExchangeButton 에 이벤트를 등록하기 위해서 캐싱하는 인벤토리 슬롯 변수<para/>
+    /// <see cref="Inventory.Start"/> 에서 OnClickExchangeButton 함수를 호출함
+    /// </summary>
+    private InventorySlot cachedSlot;
+    private Item item;
 
-    private void Start()
-    {
-        itemExchangeEvent += OnClickExchangeButton;
-    }
+    public Item ExchangeItem => item;
+    public bool IsOpen => isOpen;
 
     public void SetItemExchangeBoxPosition(RectTransform boxParent, Vector2 setBoxPosition)
     {
@@ -43,66 +45,50 @@ public class ItemExchanger : MonoBehaviour
         itemExchangeBox.gameObject.SetActive(false);
     }
 
-    public void ShowExchangeableItem(int itemCount)
+    public void ShowExchangeableItem(InventorySlot slot)
+    {
+        cachedSlot = slot;
+        
+        for (int i = 0; i < itemExchangeButtons.Count; i++)
+            SetButtonInteractable(i, cachedSlot.ItemCount >= (i + 1) * minItemCount);
+    }
+
+    public void OnClickExchangeButton(UnityAction getItemEvent, UnityAction itemExchangeEvent)
     {
         for (int i = 0; i < itemExchangeButtons.Count; i++)
         {
-            if (itemCount < 4)
-                SetButtonInteractable(i, false, new Color(1, 1, 1, 0.5f));
-            else if (itemCount >= 4 && itemCount < 8)
-                SetButtonInteractable(i, true, Color.white);
-            else if (itemCount >= 8 && itemCount < 12)
-                SetButtonInteractable(i, true, Color.white);
-            else if (itemCount >= 12)
-                SetButtonInteractable(i, true, Color.white);
+            // "https://mentum.tistory.com/343" 링크를 참조할 것
+            // for문에서 람다식으로 버튼 이벤트를 등록하면 반복문의 마지막 변수 값만 참조되어 Closure Problem 이 발생해 값을 복사해서 사용해야함
+            int temp = i;
+            itemExchangeButtons[i].itemExchangeButton.onClick.AddListener(() => ItemExchange(temp));
+            itemExchangeButtons[i].itemExchangeButton.onClick.AddListener(getItemEvent);
+            itemExchangeButtons[i].itemExchangeButton.onClick.AddListener(itemExchangeEvent);
         }
     }
 
-    private void ItemExchange(InventorySlot slot)
+    private void ItemExchange(int buttonIndex)
     {
-        for (int i = 0; i < itemExchangeButtons.Count; i++)
-        {
-            if (slot.ItemCount >= 4 && slot.ItemCount < 8)
-            {
-                slot.ItemExchange((i + 1) * 4);
-                slot.AddItem(ItemManager.Instance.CreateItem("Gold"));
-                return;
-            }
-            else if (slot.ItemCount >= 8 && slot.ItemCount < 12)
-            {
-                slot.ItemExchange((i + 1) * 4);
-                slot.AddItem(ItemManager.Instance.CreateItem("HpPotion"));
-                return;
-            }
-            else if (slot.ItemCount >= 12)
-            {
-                slot.ItemExchange((i + 1) * 4);
-                slot.AddItem(ItemManager.Instance.CreateItem("Sword"));
-                return;
-            }
-        }
+        if (buttonIndex == 0)
+            item = ItemManager.Instance.CreateItem("Gold");
+        else if (buttonIndex == 1)
+            item = ItemManager.Instance.CreateItem("HpPotion");
+        else if (buttonIndex == 2)
+            item = ItemManager.Instance.CreateItem("Sword");
+        
+        cachedSlot.SubtractItemCount((buttonIndex + 1) * minItemCount);
         itemExchangeBox.gameObject.SetActive(false);
     }
 
-    private void OnClickExchangeButton(InventorySlot slot)
-    {
-        for (int i = 0; i < itemExchangeButtons.Count; i++)
-            itemExchangeButtons[i].itemExchangeButton.onClick.AddListener(() => ItemExchange(slot));
-    }
-
-    private void SetButtonInteractable(int buttonIndex, bool interactable, Color color)
+    private void SetButtonInteractable(int buttonIndex, bool interactable)
     {
         itemExchangeButtons[buttonIndex].itemExchangeButton.interactable = interactable;
-        itemExchangeButtons[buttonIndex].itemExchageButtonImage.color = color;
-    }
 
-    public bool CheckDeactiveButton()
-    {
-        // 병 아이템의 수가 모자라 버튼에 등록된 이벤트를 호출시킬 수 없을 때
-        if (itemExchangeButtons.All(x => x.itemExchangeButton.interactable == false))
-            return false;
-
+        if (interactable == true)
+            itemExchangeButtons[buttonIndex].itemExchageButtonImage.color = Color.white;
         else
-            return true;
+        {
+            itemExchangeButtons[buttonIndex].itemExchageButtonImage.color =
+                  new Color(255.0f / 255.0f, 255.0f / 255.0f, 255.0f / 255.0f, 128.0f / 255.0f);
+        }
     }
 }

@@ -52,7 +52,7 @@ public class Player : Object
             // 플레이어와 충돌한 객체 정보를 받아온다.
             GameManager.Instance.inventory.GetItem(collision.gameObject.GetComponent<Item>());
             // 아이템 정보를 받아왔으니 인벤토리 슬롯을 갱신한다.
-            GameManager.Instance.inventory.SlotItemsUI();
+            GameManager.Instance.inventory.UpdateItemSlot();
         }
     }
 

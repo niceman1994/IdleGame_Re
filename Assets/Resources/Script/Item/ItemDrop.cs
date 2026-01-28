@@ -32,12 +32,12 @@ public class ItemDrop : MonoBehaviour
         // ElementAt() : 지정된 시퀀스의 인덱스 요소를 반환
         if (currentItemPercent <= 100 && currentItemPercent > 0)
              MakeItem(spawnPosition, ItemManager.Instance.dropItemList[0]);                // ElementAt(0) : 잡템인 병
-        //else if (currentItemPercent <= 65 && currentItemPercent > 40)
-        //     MakeItem(spawnPosition, ItemManager.Instance.dropItemList[1]);                // ElementAt(1) : 회복 포션
-        //else if (currentItemPercent <= 30 && currentItemPercent > 10)
-        //     MakeItem(spawnPosition, ItemManager.Instance.dropItemList[2]);                // ElementAt(2) : 골드
-        //else if (currentItemPercent <= 10 && currentItemPercent > 0)
-        //     MakeItem(spawnPosition, ItemManager.Instance.dropItemList[3]);                // ElementAt(3) : 공격력을 증가시킬 검
+        else if (currentItemPercent <= 65 && currentItemPercent > 40)
+             MakeItem(spawnPosition, ItemManager.Instance.dropItemList[1]);                // ElementAt(1) : 회복 포션
+        else if (currentItemPercent <= 30 && currentItemPercent > 10)
+             MakeItem(spawnPosition, ItemManager.Instance.dropItemList[2]);                // ElementAt(2) : 골드
+        else if (currentItemPercent <= 10 && currentItemPercent > 0)
+             MakeItem(spawnPosition, ItemManager.Instance.dropItemList[3]);                // ElementAt(3) : 공격력을 증가시킬 검
     }
 
     public void SpawnItem(float _x, float _y, float _z)
