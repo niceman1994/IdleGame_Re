@@ -12,7 +12,7 @@ public class DamageText : MonoBehaviour
     [SerializeField] Vector3 textMoveVector;
     [SerializeField] TextMeshPro damageText;
 
-    // 피격당한 객체가 TakeDamage 메서드를 호출
+    // 피격당했을 때 TakeDamage 함수를 호출
     public void TakeDamage(float num, Transform target, Color color)
     {
         transform.position = target.position + textMoveVector;
@@ -22,11 +22,11 @@ public class DamageText : MonoBehaviour
         damageText.text = Math.Truncate(MathF.Abs(num)).ToString();
         damageText.color = color;
         damageText.name = "Damage Text";
-        StartCoroutine(TextPos(() => ObjectPoolManager.Instance.ReturnDamageTextObject(this)));
+        StartCoroutine(TextPos(() => TextPoolManager.Instance.ReturnDamageTextObject(this)));
 
     }
 
-    // 회복과 관련된 것을 사용해 체력을 회복할 때 TakeHeal 메서드를 호출
+    // 회복과 관련된 것을 사용해 체력을 회복할 때 TakeHeal 함수를 호출
     public void TakeHeal(float num, Transform target, Color color)
     {
         transform.position = target.position + textMoveVector;
@@ -36,10 +36,10 @@ public class DamageText : MonoBehaviour
         damageText.text = $"+{Math.Truncate(num)}";
         damageText.color = color;
         damageText.name = "Heal";
-        StartCoroutine(TextPos(() => ObjectPoolManager.Instance.ReturnDamageTextObject(this)));
+        StartCoroutine(TextPos(() => TextPoolManager.Instance.ReturnDamageTextObject(this)));
     }
 
-    // 회복이 아닌 아이템을 사용할 때는 다른 색으로 표시하는 ItemTypeName 메서드를 호출
+    // 회복이 아닌 아이템을 사용할 때는 다른 색으로 표시하는 ItemTypeName 함수를 호출
     public void ItemTypeName(string itemName, float num, Vector3 target, Color color, int fontsize = 20)
     {
         transform.position = target + Vector3.up;
@@ -49,10 +49,10 @@ public class DamageText : MonoBehaviour
         damageText.text = $"+{Math.Truncate(num)} {itemName}";
         damageText.color = color;
         damageText.fontSize = fontsize;
-        StartCoroutine(TextPos(() => ObjectPoolManager.Instance.ReturnItemTextObject(this)));
+        StartCoroutine(TextPos(() => TextPoolManager.Instance.ReturnItemTextObject(this)));
     }
 
-    // 오브젝트가 피해를 받거나 아이템을 사용하거나 체력을 회복했을 때 텍스트가 위로 올라가게 하는 메서드
+    // 피해를 받거나 아이템을 사용하거나 체력을 회복했을 때 텍스트가 위로 올라가게 하는 함수
     private IEnumerator TextPos(Action poolingAction)
     {
         float elapsedTime = 0.0f;

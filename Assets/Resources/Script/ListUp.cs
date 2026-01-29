@@ -8,53 +8,36 @@ public class ListUp : MonoBehaviour
 {
     [SerializeField] List<UpgradeStatus> upgradeStatusButton;
     [Space(15)]
+    [SerializeField] Button statusButton;
     [SerializeField] RectTransform upgradeUI;
     [SerializeField] Transform upgradeUIInLeft;
     [SerializeField] Transform upgradeUIOutRight;
     [Space(15)]
+    [SerializeField] Button invenButton;
     [SerializeField] RectTransform invenUI;
     [SerializeField] Transform invenUIInUp;
     [SerializeField] Transform invenUIOutDown;
 
-    private bool moveUI;
-    private bool moveInven;
+    private bool moveStatusUI;
+    private bool moveInventory;
 
     private void Start()
     {
         SetStatusUpButtonEvent();
-        moveUI = false;
-        moveInven = false;
+        OnClickButtonsEvent();
+        moveStatusUI = false;
+        moveInventory = false;
     }
 
     private void Update()
     {
-        MoveUpgradeParts();
+        MoveStatusUI();
         MoveInventory();
     }
 
-    public void ClickStatus()
+    private void MoveStatusUI()
     {
-        if (moveUI == false && moveInven == false)
-            moveUI = true;
-        else if (moveUI == true && moveInven == false)
-            moveUI = false;
-        else if (moveUI == false && moveInven == true)
-            moveUI = false;
-    }
-
-    public void ClickInventory()
-    {
-        if (moveInven == false && moveUI == false)
-            moveInven = true;
-        else if (moveInven == true && moveUI == false)
-            moveInven = false;
-        else if (moveInven == false && moveUI == true)
-            moveInven = false;
-    }
-
-    private void MoveUpgradeParts()
-    {
-        if (moveUI == true)
+        if (moveStatusUI == true)
             upgradeUI.localPosition = Vector3.Lerp(upgradeUI.localPosition, upgradeUIOutRight.localPosition, 0.055f);
         else
             upgradeUI.localPosition = Vector3.Lerp(upgradeUI.localPosition, upgradeUIInLeft.localPosition, 0.055f);
@@ -62,7 +45,7 @@ public class ListUp : MonoBehaviour
 
     private void MoveInventory()
     {
-        if (moveInven == true)
+        if (moveInventory == true)
             invenUI.localPosition = Vector3.Lerp(invenUI.localPosition, invenUIInUp.localPosition, 0.05f);
         else
             invenUI.localPosition = Vector3.Lerp(invenUI.localPosition, invenUIOutDown.localPosition, 0.05f);
@@ -96,5 +79,34 @@ public class ListUp : MonoBehaviour
                     break;
             }
         }
+    }
+
+    private void OnClickButtonsEvent()
+    {
+        statusButton.onClick.RemoveAllListeners();
+        invenButton.onClick.RemoveAllListeners();
+
+        statusButton.onClick.AddListener(OnClickStatusButton);
+        invenButton.onClick.AddListener(OnClickInvenButtonEvent);
+    }
+
+    private void OnClickStatusButton()
+    {
+        if (moveStatusUI == false)
+            moveStatusUI = true;
+        else moveStatusUI = false;
+
+        moveInventory = false;
+        SoundManager.Instance.buttonSound.Play();
+    }
+
+    private void OnClickInvenButtonEvent()
+    {
+        if (moveInventory == false)
+            moveInventory = true;
+        else moveInventory = false;
+
+        moveStatusUI = false;
+        SoundManager.Instance.buttonSound.Play();
     }
 }

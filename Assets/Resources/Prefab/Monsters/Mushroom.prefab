@@ -170,9 +170,9 @@ GameObject:
   - component: {fileID: 9188382311713116028}
   - component: {fileID: 1396685253771338045}
   - component: {fileID: 4970856892486855057}
+  - component: {fileID: 7100346811240458704}
   - component: {fileID: 2518302144419265205}
   - component: {fileID: 8910356538254991765}
-  - component: {fileID: 7100346811240458704}
   m_Layer: 6
   m_Name: Mushroom
   m_TagString: Monster
@@ -271,6 +271,26 @@ MonoBehaviour:
   textPos: {fileID: 7903252600355128896}
   ownCollider: {fileID: 8910356538254991765}
   detectCollider: {fileID: 7100346811240458704}
+  objectType: 2
+--- !u!114 &7100346811240458704
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1610170386261745759}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc8ee385259ffb649a42ac81c385103b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isDetected: 0
+  meleePos: {fileID: 2498325624518042682}
+  boxSize: {x: 0.27, y: 2}
+  currentTarget: {fileID: 0}
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!95 &2518302144419265205
 Animator:
   serializedVersion: 5
@@ -318,25 +338,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.22329897, y: 0.3772149}
   m_EdgeRadius: 0
---- !u!114 &7100346811240458704
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1610170386261745759}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc8ee385259ffb649a42ac81c385103b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isDetected: 0
-  meleePos: {fileID: 2498325624518042682}
-  boxSize: {x: 0.27, y: 2}
-  currentTarget: {fileID: 0}
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 64
 --- !u!1 &6312180745392192521
 GameObject:
   m_ObjectHideFlags: 0

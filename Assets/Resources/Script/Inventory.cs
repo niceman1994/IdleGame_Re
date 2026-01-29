@@ -25,6 +25,7 @@ public class Inventory : MonoBehaviour
     {
         MakeInvetorySlots();
         addListButton.onClick.AddListener(AddHorizontalList);
+        // 여기서 OnClickExchangeButton 에 함수를 등록해 아이템을 교환하면서 슬롯을 갱신함
         itemExchanger.OnClickExchangeButton(() => GetItem(itemExchanger.ExchangeItem), UpdateItemSlot);
     }
 

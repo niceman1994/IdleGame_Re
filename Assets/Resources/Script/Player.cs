@@ -49,9 +49,9 @@ public class Player : Object
         if (collision.gameObject.CompareTag("Item"))
         {
             collision.gameObject.SetActive(false);
-            // 플레이어와 충돌한 객체 정보를 받아온다.
+            // 플레이어와 충돌한 객체 정보를 받아옴
             GameManager.Instance.inventory.GetItem(collision.gameObject.GetComponent<Item>());
-            // 아이템 정보를 받아왔으니 인벤토리 슬롯을 갱신한다.
+            // 아이템 정보를 받아왔으니 인벤토리 슬롯을 갱신
             GameManager.Instance.inventory.UpdateItemSlot();
         }
     }
@@ -61,15 +61,11 @@ public class Player : Object
         if (detectCollider.getEnemyCollider == null)
         {
             if (transform.position != endPoint.localPosition)
-            {
-                if (currentState != PlayerState.Death)
-                    transform.localPosition = Vector2.MoveTowards(transform.localPosition, endPoint.localPosition, moveSpeed * Time.deltaTime);
-                else Invoke("ResetGame", 2.0f);
-            }
+                transform.localPosition = Vector2.MoveTowards(transform.localPosition, endPoint.localPosition, moveSpeed * Time.deltaTime);
             else
             {
                 ChangeState(PlayerState.Idle);
-                Invoke("StageUp", 2.0f);
+                Invoke("StageUp", 2.0f);        // 죽인 몬스터를 1.5초 후에 큐로 회수하기 때문에 2초 뒤에 다음 스테이지로 넘어감
             }
         }
     }
@@ -107,7 +103,8 @@ public class Player : Object
                     objectAnimator.SetBool("attack", false);
                     objectAnimator.SetBool("idle", false);
                     objectAnimator.SetBool("death", true);
-                }   
+                }
+                Invoke("ResetGame", 2.0f);
                 break;
             default:
                 break;
@@ -122,7 +119,7 @@ public class Player : Object
         {
             if (objectAnimator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
             {
-                // targetCollider의 현재 체력이 0이하일 경우
+                // targetCollider의 현재 체력이 0 이하일 경우
                 if (detectCollider.getTargetObject.CurrentHp() <= 0)
                 {
                     atkLoop = 0;
@@ -149,19 +146,19 @@ public class Player : Object
 
     private void StageUp()
     {
-        if (currentState.Equals(PlayerState.Idle))
+        if (currentState == PlayerState.Idle)
         {
             ResetPosition();
-            ObjectSpawn.Instance.StageUp();
+            ObjectPoolManager.Instance.StageUp();
         }
     }
 
     private void ResetGame()
     {
-        if (currentState.Equals(PlayerState.Death))
+        if (currentState == PlayerState.Death)
         {
             ResetPosition();
-            ObjectSpawn.Instance.StageDown();
+            ObjectPoolManager.Instance.StageDown();
         }
     }
 
@@ -169,8 +166,8 @@ public class Player : Object
     {
         atkLoop = 0;
         transform.localPosition = startPoint.localPosition;
-        currentState = PlayerState.Run;
         objectAnimator.SetBool("death", false);
+        currentState = PlayerState.Run;
         moveSpeed = GameManager.Instance.userSpeed;
         ownCollider.enabled = true;
         detectCollider.DeleteCollider2D();
@@ -209,7 +206,6 @@ public class Player : Object
         healthSystem.TakeDamage(hp, dmg);
     }
 
-    // 아무 영향이 없는 현재 체력 함수
     public override float CurrentHp()
     {
         return hp;
@@ -223,7 +219,7 @@ public class Player : Object
         hp += value;
         
         ShowCurrentHp();
-        ObjectPoolManager.Instance.ShowHealText(value, textPos, new Color(0.0f, 255.0f, 0.0f, 255.0f));
+        TextPoolManager.Instance.ShowHealText(value, textPos, new Color(0.0f, 255.0f, 0.0f, 255.0f));
     }
 
     public override float HpUp(float addHp)

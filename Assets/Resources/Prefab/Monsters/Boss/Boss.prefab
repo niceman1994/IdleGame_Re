@@ -447,6 +447,7 @@ MonoBehaviour:
   textPos: {fileID: 2498965124995000519}
   ownCollider: {fileID: 3354738036288994199}
   detectCollider: {fileID: 7320035648123066918}
+  objectType: 5
   spell: {fileID: 4961344482941813673, guid: a35d4ac34bf94b9478f6c5e73baf6561, type: 3}
   castSound: {fileID: 1838115016906275888}
 --- !u!114 &7320035648123066918

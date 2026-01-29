@@ -45,7 +45,7 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         item = newItem;
         itemCount = count;
         slotIcon.sprite = item.ItemImage;
-        itemCountText.text = item.GetItemType != Item.ItemType.Weapon ? itemCount.ToString() : string.Empty;
+        itemCountText.text = $"{itemCount}";
         SetColor(1);
     }
 
@@ -69,7 +69,7 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void AddSameItem(int count)
     {
         itemCount += count;
-        itemCountText.text = itemCount.ToString();
+        itemCountText.text = $"{itemCount}";
 
         if (itemCount <= 0)
             ClearSlot();
@@ -96,7 +96,7 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                 if (item.ItemAbilityType == Item.AbilityType.GoldUp)        // 아이템 능력이 골드 증가일 때
                 {
                     GameManager.Instance.gameGold.curGold[0] += item.ItemAbility;
-                    ObjectPoolManager.Instance.ShowItemText("Gold", item.ItemAbility,
+                    TextPoolManager.Instance.ShowItemText("Gold", item.ItemAbility,
                         GameManager.Instance.player.transform.position, new Color(255, 200, 0, 255), 16);
                 }
                 else if (item.ItemAbilityType == Item.AbilityType.Heal)     // 아이템 능력이 체력 회복일 때
@@ -104,7 +104,7 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                 else if (item.ItemAbilityType == Item.AbilityType.PowerUp)  // 아이템 능력이 공격력 증가일 때
                 {
                     GameManager.Instance.player.CurrentAtk(item.ItemAbility);
-                    ObjectPoolManager.Instance.ShowItemText("ATK", item.ItemAbility,
+                    TextPoolManager.Instance.ShowItemText("ATK", item.ItemAbility,
                         GameManager.Instance.player.transform.position, new Color(0, 0, 0, 255), 20);
                 }
                 AddSameItem(-1);
@@ -205,7 +205,7 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public void SubtractItemCount(int requiredItemCount)
     {
         itemCount -= requiredItemCount;
-        itemCountText.text = itemCount.ToString();
+        itemCountText.text = $"{itemCount}";
 
         if (itemCount <= 0)
             ClearSlot();

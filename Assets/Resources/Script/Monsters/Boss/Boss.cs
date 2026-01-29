@@ -79,8 +79,8 @@ public class Boss : Object
     {
         objectAnimator.SetBool("cast", true);
 
-        /* AttackState와 CastState에 if문을 넣지 않으면 루프가 아닌
-         CastState의 normalizedTime의 값이 1.0f보다 커져서 보스가 공격할 때 소리가 나지않는 현상이 발생 */
+        /* AttackState와 CastState에 if문을 넣지 않으면 루프가 아닌 CastState(공격 애니메이션)의
+         normalizedTime의 값이 1.0f보다 커져서 보스가 공격할 때 소리가 나지않는 현상이 발생 */
         if (objectAnimator.GetCurrentAnimatorStateInfo(0).IsName("Cast"))
         {
             float normalizedTime = objectAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime;
@@ -123,11 +123,10 @@ public class Boss : Object
 
     public override void GetAttackDamage(float dmg)
     {
-        ObjectPoolManager.Instance.ShowDamageText(dmg, textPos);
+        TextPoolManager.Instance.ShowDamageText(dmg, textPos);
         hp -= dmg;
     }
 
-    // 아무 영향이 없는 현재 체력 함수
     public override float CurrentHp()
     {
         return hp;
@@ -136,7 +135,7 @@ public class Boss : Object
     // 데미지를 받은 수치만큼 텍스트를 보여주는 함수
     public override void CurrentHp(float value)
     {
-        ObjectPoolManager.Instance.ShowDamageText(value, textPos);
+        TextPoolManager.Instance.ShowDamageText(value, textPos);
         hp += value;
     }
 

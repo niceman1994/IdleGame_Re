@@ -60,11 +60,10 @@ public class MonsterSkeleton : Object
 
     public override void GetAttackDamage(float dmg)
     {
-        ObjectPoolManager.Instance.ShowDamageText(dmg, textPos);
+        TextPoolManager.Instance.ShowDamageText(dmg, textPos);
         hp -= dmg;
     }
 
-    // 아무 영향이 없는 현재 체력 함수
     public override float CurrentHp()
     {
         return hp;
@@ -73,7 +72,7 @@ public class MonsterSkeleton : Object
     // 데미지를 받은 수치만큼 텍스트를 보여주는 함수
     public override void CurrentHp(float value)
     {
-        ObjectPoolManager.Instance.ShowDamageText(value, textPos);
+        TextPoolManager.Instance.ShowDamageText(value, textPos);
         hp += value;
     }
 

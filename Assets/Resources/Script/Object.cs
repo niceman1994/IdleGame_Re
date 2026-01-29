@@ -3,6 +3,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+public enum ObjectType
+{
+    Player, Skeleton, Mushroom, Goblin, FlyingEye, Boss
+}
+
 /// <summary>
 /// 상호작용하는 오브젝트에 붙여서 사용하는 스크립트
 /// </summary>
@@ -16,10 +21,11 @@ public abstract class Object : MonoBehaviour, IObject
     [SerializeField] protected Transform textPos;
     [SerializeField] protected BoxCollider2D ownCollider;
     [SerializeField] protected DetectCollider detectCollider;
+    [SerializeField] protected ObjectType objectType;
 
     protected int atkLoop;
     protected int giveGold;
-    protected float defaultHp;              // 재생성됐을 때 체력을 재설정하기 위한 변수
+    protected float defaultHp;              // 체력이 0인 오브젝트의 체력을 재설정해 다시 쓰기 위한 변수
     protected float defaultAtk;
     protected Animator objectAnimator;
 
@@ -55,6 +61,7 @@ public abstract class Object : MonoBehaviour, IObject
 
     private IEnumerator ResetObject()
     {
+        // 오브젝트 풀링으로 죽은 몬스터를 빠르게 회수하면 죽는 소리가 짤려서 잠깐 기다림
         WaitForSeconds waitForSeconds = new WaitForSeconds(1.5f);
 
         if (objectAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
@@ -63,13 +70,13 @@ public abstract class Object : MonoBehaviour, IObject
             {
                 yield return waitForSeconds;
                 hp = defaultHp;
-                ObjectSpawn.Instance.PullObject(gameObject);
+                ObjectPoolManager.Instance.PullObject(this);
             }
             else if (objectAnimator.CompareTag("Boss"))
             {
                 yield return waitForSeconds;
                 hp = defaultHp;
-                ObjectSpawn.Instance.ReturnPoolingBoss(gameObject);
+                ObjectPoolManager.Instance.ReturnPoolingBoss(gameObject);
             }
             else if (objectAnimator.CompareTag("Player"))
             {
@@ -113,6 +120,11 @@ public abstract class Object : MonoBehaviour, IObject
             objectAnimator.SetBool("attack", false);
             atkLoop = 0;
         }
+    }
+
+    public bool CompareObjectType(Object compareObject)
+    {
+        return objectType == compareObject.objectType;
     }
 
     public abstract void CheckState();

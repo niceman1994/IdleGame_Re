@@ -24,6 +24,10 @@ public class ItemExchanger : MonoBehaviour
     /// <see cref="Inventory.Start"/> 에서 OnClickExchangeButton 함수를 호출함
     /// </summary>
     private InventorySlot cachedSlot;
+
+    /// <summary>
+    /// 교환할 아이템 정보를 <see cref="Inventory"/> 로 넘기기 위해 캐싱하는 아이템 변수
+    /// </summary>
     private Item item;
 
     public Item ExchangeItem => item;

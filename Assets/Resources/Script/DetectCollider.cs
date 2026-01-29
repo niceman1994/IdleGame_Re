@@ -35,7 +35,7 @@ public class DetectCollider : MonoBehaviour
     {
         if (isDetected == true) return;
 
-        // OverlapBox 메서드를 이용해 boxSize 범위의 있는 콜라이더를 지속적으로 탐지한다.
+        // OverlapBox 메서드를 이용해 boxSize 범위의 있는 콜라이더를 지속적으로 탐지함
         currentTarget = Physics2D.OverlapBox(meleePos.position, boxSize, 0, layerMask);
 
         if (currentTarget != null)

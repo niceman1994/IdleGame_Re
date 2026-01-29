@@ -143,6 +143,7 @@ MonoBehaviour:
   textPos: {fileID: 2351455605036713742}
   ownCollider: {fileID: 4021928827729624681}
   detectCollider: {fileID: 1265449328750113178}
+  objectType: 3
 --- !u!114 &1265449328750113178
 MonoBehaviour:
   m_ObjectHideFlags: 0

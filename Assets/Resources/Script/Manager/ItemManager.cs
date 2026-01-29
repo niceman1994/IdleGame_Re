@@ -9,7 +9,7 @@ public class ItemManager : Singleton<ItemManager>
     [SerializeField] ItemDrop itemDrop;
     [SerializeField] Transform dropitemParent;
 
-    // 같은 아이템이 아닌 다른 아이템을 드랍하는거라서 큐보단 리스트가 적합
+    // 서로 다른 아이템을 드랍하는거라서 큐보단 리스트가 적합
     public List<Item> dropItemList = new List<Item>();
 
     private void Start()
