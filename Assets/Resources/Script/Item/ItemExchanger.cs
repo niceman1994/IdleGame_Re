@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 
 [System.Serializable]
 public class ExchangeButton
@@ -94,5 +95,24 @@ public class ItemExchanger : MonoBehaviour
             itemExchangeButtons[buttonIndex].itemExchageButtonImage.color =
                   new Color(255.0f / 255.0f, 255.0f / 255.0f, 255.0f / 255.0f, 128.0f / 255.0f);
         }
+    }
+
+    public bool PointerOverItemExchangeButton()
+    {
+        PointerEventData data = new PointerEventData(EventSystem.current);
+        data.position = Input.mousePosition;    // 이 코드가 없으면 마우스 클릭과 이벤트가 연결되지 않아서 이벤트 시스템을 이용할 수 없음
+
+        var results = new List<RaycastResult>();
+        EventSystem.current.RaycastAll(data, results);
+
+        for (int i = 0; i < results.Count; i++)
+        {
+            var button = results[i].gameObject.GetComponent<Button>();
+
+            if (results[i].gameObject.name.Contains("Button") && button.IsInteractable() == true)
+                return true;
+        }
+
+        return false;
     }
 }

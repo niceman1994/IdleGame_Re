@@ -5,25 +5,42 @@ using UnityEngine;
 
 public class BossSpell : MonoBehaviour
 {
+    [SerializeField] bool isReturned;
     [SerializeField] float damage;
-    private float waitTime = 1.0f;
 
-    // 데미지 처리 후 BossSpell 오브젝트를 큐에 넣기 위해서 사용하는 이벤트 변수
-    public Action spellEvent;
+    private Animator spellAnimator;
+
+    public Action spellEnqueueAction;
+
+    private void OnEnable()
+    {
+        spellAnimator = GetComponent<Animator>();
+    }
+
+    private void Update()
+    {
+        if (spellAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f && !isReturned)
+        {
+            isReturned = true;
+            DeactivateSpell();
+        }
+    }
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Player"))
         {
             collision.GetComponent<IObject>().GetAttackDamage(damage);
-            StartCoroutine(Damage());
         }
     }
 
-    private IEnumerator Damage()
+    public void DeactivateSpell()
     {
-        yield return new WaitForSeconds(waitTime);
-        gameObject.SetActive(false);
-        spellEvent.Invoke();
+        if (spellEnqueueAction != null)
+        {
+            spellEnqueueAction.Invoke();
+            gameObject.SetActive(false);
+            isReturned = false;
+        }
     }
 }

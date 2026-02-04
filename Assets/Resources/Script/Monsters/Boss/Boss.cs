@@ -4,23 +4,34 @@ using UnityEngine;
 
 public class Boss : Object
 {
+    [SerializeField] bool isSpellCast;
     [SerializeField] BossSpell spell;
     [SerializeField] AudioSource castSound;
 
-    private float random;
+    private int lastSpellAttackCount;
+    private int currentSpellAttackCount;
+    private float spellAttackRandomValue;
     private Queue<BossSpell> bossSpellQueue = new Queue<BossSpell>();
 
-    private void Start()
+    protected override void Start()
     {
-        giveGold += 500;
-        objectAnimator = GetComponent<Animator>();
-        objectAnimator.SetFloat("attackSpeed", attackSpeed);
-        PrepareSpell();
+        InitBoss();
+        base.Start();
     }
 
     private void Update()
     {
         CheckState();
+    }
+
+    private void InitBoss()
+    {
+        spellAttackRandomValue = 0.75f;
+        lastSpellAttackCount = 0;
+        currentSpellAttackCount = 0;
+        isSpellCast = false;
+        giveGold += 500;
+        PrepareSpell();
     }
 
     public override void CheckState()
@@ -31,34 +42,32 @@ public class Boss : Object
                 EnemyDetect();
             else
             {
-                if (random > 0.85f)
+                if (objectAnimator.GetFloat("spellAttack") > spellAttackRandomValue && !isSpellCast)
+                    objectAnimator.SetBool("cast", isSpellCast = true);
+                else if (isSpellCast)
                     CastState();
-                else AttackState();
+                else
+                    AttackState();
             }
-        }
-        else
-        {
-            objectAnimator.SetBool("death", true);
-            Death(() => PlayDeadSound(deadSound, 1));
         }
     }
 
     private void PrepareSpell()
     {
-        for (int i = 0; i < 3; i++)
+        for (int i = 0; i < 5; i++)
         {
             BossSpell spellObject = Instantiate(spell, transform);
             spellObject.gameObject.SetActive(false);
             spellObject.transform.localScale = new Vector3(spellObject.transform.localScale.x / transform.localScale.x,
             spellObject.transform.localScale.y / transform.localScale.y, 1.0f);
-            spellObject.name = spell.name;
+            spellObject.name = $"{spell.name}_{i}";
             bossSpellQueue.Enqueue(spellObject);
         }
     }
 
     private void EnemyDetect()
     {
-        if (detectCollider.getEnemyCollider != null && detectCollider.getEnemyCollider.CompareTag("Player"))
+        if (detectCollider.IsDetectEnemyCollider("Player"))
             objectAnimator.SetBool("attack", true);
     }
 
@@ -69,45 +78,49 @@ public class Boss : Object
             if (AttackStateProcess() > 0.625f && AttackStateTime() > atkLoop)
             {
                 PlayAttackSound(attackSound, 1);
-                random = Random.Range(0.3f, 1.0f);
                 ClearAttackTarget();
+                objectAnimator.SetFloat("spellAttack", Random.Range(0.25f, 1.0f));
             }
         }
     }
 
     private void CastState()
     {
-        objectAnimator.SetBool("cast", true);
-
-        /* AttackState와 CastState에 if문을 넣지 않으면 루프가 아닌 CastState(공격 애니메이션)의
-         normalizedTime의 값이 1.0f보다 커져서 보스가 공격할 때 소리가 나지않는 현상이 발생 */
-        if (objectAnimator.GetCurrentAnimatorStateInfo(0).IsName("Cast"))
+        if (objectAnimator.GetCurrentAnimatorStateInfo(0).IsName("Cast") &&
+            objectAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
         {
-            float normalizedTime = objectAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime;
-
-            if (normalizedTime >= 1.0f)
+            if (lastSpellAttackCount != currentSpellAttackCount)
             {
-                PlayAttackSound(castSound, 6);
-                CastSpell(new Vector3(transform.position.x - 0.11f, spell.transform.position.y, spell.transform.position.z));
-
-                // random 값에 Random.Range를 설정하지 않으면 spellObj가 하나만 만들어지는 것이 아니라 여러개 만들어짐
-                random = Random.Range(0.3f, 1.0f);
-                objectAnimator.SetBool("cast", false);
-                // atkLoop를 0으로 초기화하지 않으면 보스가 공격해도 AttackState의 normalizedTime만큼 소리가 나지 않음
-                atkLoop = 0;
+                lastSpellAttackCount = currentSpellAttackCount;
+                SummonSpell();
             }
         }
     }
 
-    /// <summary>
-    /// <see cref="BossSpell.spellEvent"/> 변수를 여기서 사용함
-    /// </summary>
-    private void CastSpell(Vector3 spellPosition)
+    public void AddCurrentSpellAttackCount()
     {
-        var castSpell = bossSpellQueue.Dequeue();
-        castSpell.gameObject.SetActive(true);
-        castSpell.transform.position = spellPosition;
-        castSpell.spellEvent += () => bossSpellQueue.Enqueue(castSpell);
+        currentSpellAttackCount++;
+    }
+
+    private void SummonSpell()
+    {
+        castSound.clip = SoundManager.Instance.attackSounds[6].audioClip;
+        castSound.Play();
+
+        var bossSpell = bossSpellQueue.Dequeue();
+        bossSpell.gameObject.SetActive(true);
+        bossSpell.transform.position = new Vector3(transform.position.x - 0.11f, spell.transform.position.y, spell.transform.position.z);
+
+        // atkLoop를 0으로 초기화하지 않으면 보스가 공격해도 AttackState의 normalizedTime만큼 소리가 나지 않음
+        atkLoop = 0;
+
+        bossSpell.spellEnqueueAction += () => bossSpellQueue.Enqueue(bossSpell);
+        objectAnimator.SetBool("cast", isSpellCast = false);
+        objectAnimator.SetFloat("spellAttack", Random.Range(0.25f, 1.0f));
+
+        // spellAttack 값이 연속으로 spellAttackRandomValue 보다 크게 나오면 Cast 애니메이션을 다시 실행시킴
+        if (objectAnimator.GetFloat("spellAttack") > spellAttackRandomValue)
+            objectAnimator.SetTrigger("recast");
     }
 
     public override float CurrentAtk()
@@ -125,18 +138,14 @@ public class Boss : Object
     {
         TextPoolManager.Instance.ShowDamageText(dmg, textPos);
         hp -= dmg;
+
+        if (hp <= 0)
+            Death(() => PlayDeadSound(deadSound, 1));
     }
 
     public override float CurrentHp()
     {
         return hp;
-    }
-
-    // 데미지를 받은 수치만큼 텍스트를 보여주는 함수
-    public override void CurrentHp(float value)
-    {
-        TextPoolManager.Instance.ShowDamageText(value, textPos);
-        hp += value;
     }
 
     // 스테이지가 오를 수록 체력을 올리기 위해 사용하는 함수
@@ -146,4 +155,6 @@ public class Boss : Object
         defaultHp += addHp;
         return hp;
     }
+
+    public override void CurrentHpChange(float value) { }
 }

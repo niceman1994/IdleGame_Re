@@ -4,11 +4,10 @@ using UnityEngine;
 
 public class MonsterMushroom : Object
 {
-    private void Start()
+    protected override void Start()
     {
         giveGold += Random.Range(16, 20);
-        objectAnimator = GetComponent<Animator>();
-        objectAnimator.SetFloat("attackSpeed", attackSpeed);
+        base.Start();
     }
 
     private void Update()
@@ -22,16 +21,14 @@ public class MonsterMushroom : Object
         {
             if (objectAnimator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
                 EnemyDetect();
-
-            if (objectAnimator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+            else if (objectAnimator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
                 AttackState();
         }
-        else Death(() => PlayDeadSound(deadSound, 4));
     }
 
     private void EnemyDetect()
     {
-        if (detectCollider.getEnemyCollider != null && detectCollider.getEnemyCollider.CompareTag("Player"))
+        if (detectCollider.IsDetectEnemyCollider("Player"))
             objectAnimator.SetBool("attack", true);
     }
 
@@ -42,8 +39,8 @@ public class MonsterMushroom : Object
         normalizedTime > atkLoop만 있으면 공격 모션보다 데미지가 더 빨리 나와서 의도와 맞지 않게 된다.*/
         if (AttackStateProcess() > 0.85f && AttackStateTime() > atkLoop)
         {
-            PlayAttackSound(attackSound, 4);
             ClearAttackTarget();
+            PlayAttackSound(attackSound, 4);
         }
     }
 
@@ -62,18 +59,14 @@ public class MonsterMushroom : Object
     {
         TextPoolManager.Instance.ShowDamageText(dmg, textPos);
         hp -= dmg;
+
+        if (hp <= 0)
+            Death(() => PlayDeadSound(deadSound, 4));
     }
 
     public override float CurrentHp()
     {
         return hp;
-    }
-
-    // 데미지를 받은 수치만큼 텍스트를 보여주는 함수
-    public override void CurrentHp(float value)
-    {
-        TextPoolManager.Instance.ShowDamageText(value, textPos);
-        hp += value;
     }
 
     // 스테이지가 오를 수록 체력을 올리기 위해 사용하는 함수
@@ -83,4 +76,6 @@ public class MonsterMushroom : Object
         defaultHp += addHp;
         return hp;
     }
+
+    public override void CurrentHpChange(float value) { }
 }

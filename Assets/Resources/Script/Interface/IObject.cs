@@ -4,6 +4,6 @@
 public interface IObject : IAttack
 {
     public float CurrentHp();
-    public void CurrentHp(float hp);
+    public void CurrentHpChange(float hp);
     public float HpUp(float addhp);
 }

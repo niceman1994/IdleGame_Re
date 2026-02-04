@@ -20,7 +20,7 @@ public class GameManager : Singleton<GameManager>
     public Transform thunderPos;
     [SerializeField] Transform thunderParent;
 
-    public Queue<Thunder> poolingThunder = new Queue<Thunder>();
+    private List<Thunder> thunderList = new List<Thunder>();
 
     private void Start()
     {
@@ -28,28 +28,24 @@ public class GameManager : Singleton<GameManager>
         {
             var thunderObj = Instantiate(thunder.gameObject);
             thunderObj.transform.SetParent(thunderParent);
-            thunderObj.name = "Thunder";
+            thunderObj.name = $"Thunder_{i}";
             thunderObj.gameObject.SetActive(false);
-            poolingThunder.Enqueue(thunderObj.GetComponent<Thunder>());
+            thunderList.Add(thunderObj.GetComponent<Thunder>());
         }
     }
 
     public void SummonThunder()
     {
-        var thunderArray = poolingThunder.ToArray();
-
-        for (int i = 0; i < thunderArray.Length; i++)
+        for (int i = 0; i < thunderList.Count; i++)
         {
-            thunderArray[i].gameObject.SetActive(true);
-            thunderArray[i].transform.position = new Vector3(thunderPos.position.x + (1.5f * i), thunderPos.position.y - 0.4f, 0.0f);
+            thunderList[i].gameObject.SetActive(true);
+            thunderList[i].transform.position = new Vector3(thunderPos.position.x + (1.5f * i), thunderPos.position.y - 0.4f, 0.0f);
         }
     }
 
     public void AddThunderPower(float addDamage)
     {
-        var thunderArray = poolingThunder.ToArray();
-
-        for (int i = 0; i < thunderArray.Length; i++)
-            thunderArray[i].AddPower(addDamage);
+        for (int i = 0; i < thunderList.Count; i++)
+            thunderList[i].AddPower(addDamage);
     }
 }

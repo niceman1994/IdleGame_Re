@@ -74,8 +74,8 @@ GameObject:
   - component: {fileID: 4966793514400007287}
   - component: {fileID: 2728765158353956591}
   - component: {fileID: 5960060843693291654}
-  - component: {fileID: -8867629547088983338}
   - component: {fileID: 2093662078}
+  - component: {fileID: -8867629547088983338}
   m_Layer: 6
   m_Name: Skeleton
   m_TagString: Monster
@@ -168,7 +168,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hp: 106
   atk: 10
-  attackSpeed: 1.05
+  attackSpeed: 1.2
   attackSound: {fileID: 2476235893765015667}
   deadSound: {fileID: 4513727075121585837}
   textPos: {fileID: 545828199337599106}
@@ -194,6 +194,27 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 64
+--- !u!95 &2093662078
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4423209227590101289}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 0029fe9a7a2d7824e9f6f3e60f82517f, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!61 &-8867629547088983338
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -220,27 +241,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.32449967, y: 0.52687126}
   m_EdgeRadius: 0
---- !u!95 &2093662078
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4423209227590101289}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 0029fe9a7a2d7824e9f6f3e60f82517f, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &6234396330491164052
 GameObject:
   m_ObjectHideFlags: 0
@@ -285,7 +285,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 0.6
+  m_Volume: 1
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -413,7 +413,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 0.8
+  m_Volume: 1
   m_Pitch: 1
   Loop: 0
   Mute: 0

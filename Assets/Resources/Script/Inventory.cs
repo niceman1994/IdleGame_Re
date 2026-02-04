@@ -37,6 +37,11 @@ public class Inventory : MonoBehaviour
                 PointerOverInventorySlot();
             else itemExchanger.DeactivateItemExchangeBox();
         }
+        else if (Input.GetMouseButtonDown(0))
+        {
+            if (itemExchanger.IsOpen == true && itemExchanger.PointerOverItemExchangeButton() == false)
+                itemExchanger.DeactivateItemExchangeBox();
+        }
     }
 
     private void PointerOverInventorySlot()

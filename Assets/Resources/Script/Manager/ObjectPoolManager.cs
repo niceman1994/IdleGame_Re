@@ -10,39 +10,42 @@ public class ObjectPoolManager : Singleton<ObjectPoolManager>
     public int stageNum;
     public Text stage;
     [SerializeField] int bossStage;
+
     [Space(15.0f)]
     public int monsterCount;
     public Transform monsterParent;
+
     [Header("보스 및 몬스터 프리팹")]
     public List<GameObject> monsterPrefab;
     public GameObject boss;
 
-    private Queue<GameObject> bossQueue = new Queue<GameObject>();
+    private int prevStage;
+    private Queue<Object> bossQueue = new Queue<Object>();
     private Dictionary<int, Queue<Object>> monsterPools = new Dictionary<int, Queue<Object>>();
+
     // 플레이어가 진행 도중에 죽었을 때 남은 몬스터를 회수하기 위해 사용하는 리스트 변수
     private List<Object> dequeueMonsterList = new List<Object>();
 
-    private void Start()
+    protected override void Awake()
     {
-        GetCurrentStage();
+        base.Awake();
         EnqueueMonsters();
         SummonMonster();
+        GetCurrentStage();
     }
 
     private void SummonMonster()
     {
         if (stageNum % bossStage == 0)
-        {
-            GameObject bossObject = Instantiate(boss, new Vector3(12.0f, boss.transform.position.y, 0.0f), Quaternion.identity, monsterParent);
-            bossObject.name = "Boss";
-            bossQueue.Enqueue(bossObject);
-        }
+            SetBoss();
         else
             SetMonsterPosition(7.0f);
     }
 
     private void EnqueueMonsters()
     {
+        EnqueueBoss();
+
         for (int i = 0; i < monsterPrefab.Count; i++)
             monsterPools.Add(i, new Queue<Object>());
 
@@ -57,6 +60,14 @@ public class ObjectPoolManager : Singleton<ObjectPoolManager>
         }
     }
 
+    private void EnqueueBoss()
+    {
+        GameObject bossObject = Instantiate(boss, new Vector3(12.0f, boss.transform.position.y, 0.0f), Quaternion.identity, monsterParent);
+        bossObject.name = "Boss";        
+        bossObject.gameObject.SetActive(false);
+        bossQueue.Enqueue(bossObject.GetComponent<Object>());
+    }
+
     private void SetMonsterPosition(float summonInterval)
     {
         for (int i = 0; i < monsterCount; i++)
@@ -68,33 +79,47 @@ public class ObjectPoolManager : Singleton<ObjectPoolManager>
         }
     }
 
-    public void PullObject(Object pooledObject)
+    private void SetBoss()
     {
-        pooledObject.GetComponent<BoxCollider2D>().enabled = true;
-        pooledObject.gameObject.SetActive(false);
+        Object bossObject = bossQueue.Peek();
+        bossObject.gameObject.SetActive(true);
+    }
 
-        for (int i = 0; i < monsterPools.Values.Count; i++)
+    public void ReturnPooledObject(Object pooledObject)
+    {
+        if (pooledObject.gameObject.activeSelf == true)
         {
-            Object monster = monsterPools.Values.ElementAt(i).Peek();
+            pooledObject.ResetObjectStatus();
+            pooledObject.GetComponent<BoxCollider2D>().enabled = true;
+            pooledObject.gameObject.SetActive(false);
 
-            // 오브젝트 풀링으로 재활용하기 큐에서 뺐던 오브젝트와 현재 큐의 맨 앞에 있는 오브젝트를 비교해 일치하면 다시 큐에 넣음
-            if (pooledObject.CompareObjectType(monster))
+            if (!pooledObject.name.Contains("Boss"))
             {
-                dequeueMonsterList.Remove(pooledObject);
-                monsterPools.Values.ElementAt(i).Enqueue(pooledObject);
-                return;
+                for (int i = 0; i < monsterPools.Values.Count; i++)
+                {
+                    Object monster = monsterPools.Values.ElementAt(i).Peek();
+
+                    // 오브젝트 풀링으로 재활용하기 큐에서 뺐던 오브젝트와 현재 큐의 맨 앞에 있는 오브젝트를 비교해 일치하면 다시 큐에 넣음
+                    if (pooledObject.CompareObjectType(monster))
+                    {
+                        monsterPools.Values.ElementAt(i).Enqueue(pooledObject);
+                        dequeueMonsterList.Remove(pooledObject);
+                    }
+                }
             }
         }
     }
 
     private void GetCurrentStage()
     {
+        prevStage = stageNum;
         stage.text = $"STAGE {stageNum}";
     }
 
     public void StageUp()
     {
         stageNum += 1;
+        prevStage = stageNum;
         SummonMonster();
         GetCurrentStage();
     }
@@ -102,30 +127,25 @@ public class ObjectPoolManager : Singleton<ObjectPoolManager>
     public void StageDown()
     {
         if (stageNum > 1)
-            stageNum -= 1;
+            stageNum = prevStage;
         else
             stageNum = 1;
-
-        for (int i = 0; i < dequeueMonsterList.Count; i++)
-        {
-            dequeueMonsterList[i].gameObject.SetActive(false);
-
-            for (int j = 0; j < monsterPools.Count; j++)
-            {
-                // 진행 도중 플레이어가 죽었다면 큐에서 빼낸 오브젝트가 남아있고 새롭게 몬스터를 배치할거라서 다시 큐에 넣어줌
-                if (dequeueMonsterList[i].CompareObjectType(monsterPools[j].Peek()))
-                    monsterPools[j].Enqueue(dequeueMonsterList[i]);
-            }
-        }
-        // 나와있는 몬스터를 전부 큐에 넣었기 때문에 리스트를 비워줌
-        dequeueMonsterList.Clear();
 
         SummonMonster();
         GetCurrentStage();
     }
 
-    public void ReturnPoolingBoss(GameObject bossObject)
+    public void ReturnPooledMonsters()
     {
-        bossObject.SetActive(false);
+        // 플레이어가 죽어서 뒤에서부터 확인하면서 생성된 몬스터를 큐에 다시 집어넣음
+        for (int i = dequeueMonsterList.Count - 1; i >= 0; i--)
+            ReturnPooledObject(dequeueMonsterList[i]);
+
+        ReturnPooledObject(bossQueue.Peek());
+    }
+
+    public bool IsReturnComplete()
+    {
+        return dequeueMonsterList.Count == 0;
     }
 }

@@ -44,7 +44,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 0.5
+  m_Volume: 0.65
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -172,7 +172,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 8af1819e837a50449a8a4bcd98f3832e, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.4
+  m_Volume: 0.65
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -296,11 +296,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3354738036288994194}
-  - component: {fileID: 3354738036288994195}
-  - component: {fileID: 3354738036288994199}
   - component: {fileID: 3354738036288994192}
   - component: {fileID: 3354738036288994198}
   - component: {fileID: 7320035648123066918}
+  - component: {fileID: 3354738036288994195}
+  - component: {fileID: 3354738036288994199}
   m_Layer: 6
   m_Name: Boss
   m_TagString: Boss
@@ -328,6 +328,70 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!95 &3354738036288994192
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3354738036288994156}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: d37a0d434e16fc34ca472f6eaea9ebe4, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &3354738036288994198
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3354738036288994156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a33bc276ebcbc174bbede8f52cf18cf0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  hp: 400
+  atk: 16
+  attackSpeed: 1.26
+  attackSound: {fileID: 1650362143514806642}
+  deadSound: {fileID: 8005362815944249473}
+  textPos: {fileID: 2498965124995000519}
+  ownCollider: {fileID: 3354738036288994199}
+  detectCollider: {fileID: 7320035648123066918}
+  objectType: 5
+  spell: {fileID: 4961344482941813673, guid: a35d4ac34bf94b9478f6c5e73baf6561, type: 3}
+  castSound: {fileID: 1838115016906275888}
+  isSpellCast: 0
+--- !u!114 &7320035648123066918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3354738036288994156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fc8ee385259ffb649a42ac81c385103b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isDetected: 0
+  meleePos: {fileID: 3354738036162989945}
+  boxSize: {x: 0.25, y: 2}
+  currentTarget: {fileID: 0}
+  layerMask:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!212 &3354738036288994195
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -406,69 +470,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 0.44954523, y: 0.55049664}
   m_EdgeRadius: 0
---- !u!95 &3354738036288994192
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3354738036288994156}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: d37a0d434e16fc34ca472f6eaea9ebe4, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
---- !u!114 &3354738036288994198
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3354738036288994156}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a33bc276ebcbc174bbede8f52cf18cf0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hp: 400
-  atk: 16
-  attackSpeed: 1.21
-  attackSound: {fileID: 1650362143514806642}
-  deadSound: {fileID: 8005362815944249473}
-  textPos: {fileID: 2498965124995000519}
-  ownCollider: {fileID: 3354738036288994199}
-  detectCollider: {fileID: 7320035648123066918}
-  objectType: 5
-  spell: {fileID: 4961344482941813673, guid: a35d4ac34bf94b9478f6c5e73baf6561, type: 3}
-  castSound: {fileID: 1838115016906275888}
---- !u!114 &7320035648123066918
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3354738036288994156}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: fc8ee385259ffb649a42ac81c385103b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isDetected: 0
-  meleePos: {fileID: 3354738036162989945}
-  boxSize: {x: 0.25, y: 2}
-  currentTarget: {fileID: 0}
-  layerMask:
-    serializedVersion: 2
-    m_Bits: 64
 --- !u!1 &7135765020656371766
 GameObject:
   m_ObjectHideFlags: 0
@@ -513,7 +514,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 0.35
+  m_Volume: 0.55
   m_Pitch: 1
   Loop: 0
   Mute: 0

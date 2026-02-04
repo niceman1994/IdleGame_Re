@@ -29,80 +29,74 @@ public abstract class Object : MonoBehaviour, IObject
     protected float defaultAtk;
     protected Animator objectAnimator;
 
-    private void Awake()
+    protected virtual void OnEnable()
+    {
+        objectAnimator = GetComponent<Animator>();
+        objectAnimator.Rebind();
+        objectAnimator.Update(0.0f);
+        objectAnimator.SetFloat("attackSpeed", attackSpeed);
+    }
+
+    protected virtual void Start()
     {
         defaultHp = hp;
         defaultAtk = atk;
         atkLoop = 0;
     }
 
-    public void Death(Action deadEvent)
+    protected void Death(Action deadAction)
     {
         hp = 0;
         atkLoop = 0;
         ownCollider.enabled = false;
-        StartCoroutine(ResetObject());
+        detectCollider.EmptyDetectCollider2D();
+        objectAnimator.SetBool("attack", false);
+        objectAnimator.SetBool("death", true);
 
-        if (gameObject.CompareTag("Monster") || gameObject.CompareTag("Boss"))
+        if (CompareTag("Monster") || CompareTag("Boss"))
         {
-            objectAnimator.SetBool("attack", false);
-            objectAnimator.SetBool("death", true);
-
-            if (objectAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime <= 0.0f)
-            {
-                GameManager.Instance.gameGold.curGold[0] += giveGold;
-                deadEvent.Invoke();
-
-                if (gameObject.CompareTag("Monster"))
-                    ItemManager.Instance.SpawnItem(transform.position);
-            }
+            GameManager.Instance.gameGold.curGold[0] += giveGold;
+            deadAction.Invoke();
         }
+
+        if (gameObject.CompareTag("Monster"))
+            ItemManager.Instance.SpawnItem(transform.position);
     }
 
-    private IEnumerator ResetObject()
+    private IEnumerator OnDeathAnimComplete()
     {
         // 오브젝트 풀링으로 죽은 몬스터를 빠르게 회수하면 죽는 소리가 짤려서 잠깐 기다림
-        WaitForSeconds waitForSeconds = new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(1.35f);
 
-        if (objectAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f)
-        {
-            if (objectAnimator.CompareTag("Monster"))
-            {
-                yield return waitForSeconds;
-                hp = defaultHp;
-                ObjectPoolManager.Instance.PullObject(this);
-            }
-            else if (objectAnimator.CompareTag("Boss"))
-            {
-                yield return waitForSeconds;
-                hp = defaultHp;
-                ObjectPoolManager.Instance.ReturnPoolingBoss(gameObject);
-            }
-            else if (objectAnimator.CompareTag("Player"))
-            {
-                yield return waitForSeconds;
-                hp = defaultHp;
-            }
-        }
+        if (!CompareTag("Player"))
+            ObjectPoolManager.Instance.ReturnPooledObject(this);
+
+        hp = defaultHp;
     }
 
     protected void PlayAttackSound(AudioSource attackAudio, int soundIndex)
     {
-        atkLoop += 1;
-        detectCollider.getTargetAttack.GetAttackDamage(atk); // 공격력만큼 detectCollider의 체력을 깎는 함수를 호출
-        attackAudio.clip = SoundManager.Instance.attackSounds[soundIndex].audioClip;
-        attackAudio.Play();
+        if (detectCollider.getTargetAttack != null)
+        {
+            atkLoop += 1;
+            detectCollider.getTargetAttack.GetAttackDamage(atk); // 공격력만큼 detectCollider의 체력을 깎는 함수를 호출
+            attackAudio.clip = SoundManager.Instance.attackSounds[soundIndex].audioClip;
+            attackAudio.Play();
+        }
     }
 
     protected void PlayDeadSound(AudioSource deadAudio, int soundIndex)
     {
-        deadAudio.clip = SoundManager.Instance.deadSounds[soundIndex].audioClip;
-        deadAudio.Play();
+        if (deadAudio != null)
+        {
+            deadAudio.clip = SoundManager.Instance.deadSounds[soundIndex].audioClip;
+            deadAudio.Play();
+        }
     }
 
     protected float AttackStateTime()
     {
-        // 애니메이션이 루프일 경우 1이상의 시간을 가짐
+        // 애니메이션이 종료되지 않으면 normalizedTime 변수가 1이상의 값이 됨
         return objectAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime;
     }
 
@@ -112,13 +106,16 @@ public abstract class Object : MonoBehaviour, IObject
         return AttackStateTime() - Mathf.Floor(AttackStateTime());
     }
 
+    /// <summary>
+    /// 몬스터가 플레이어의 체력을 0으로 만들었을 때 실행되는 함수
+    /// </summary>
     protected void ClearAttackTarget()
     {
         if (detectCollider.getTargetObject.CurrentHp() <= 0)
         {
-            detectCollider.DeleteCollider2D();
-            objectAnimator.SetBool("attack", false);
             atkLoop = 0;
+            detectCollider.EmptyDetectCollider2D();
+            objectAnimator.SetBool("attack", false);
         }
     }
 
@@ -127,9 +124,17 @@ public abstract class Object : MonoBehaviour, IObject
         return objectType == compareObject.objectType;
     }
 
+    public void ResetObjectStatus()
+    {
+        hp = defaultHp;
+        atk = defaultAtk;
+        atkLoop = 0;
+        detectCollider.EmptyDetectCollider2D();
+    }
+
     public abstract void CheckState();
     public abstract float CurrentHp();
-    public abstract void CurrentHp(float currentHp);
+    public abstract void CurrentHpChange(float currentHp);
     public abstract float HpUp(float addHp);
     public abstract float CurrentAtk();
     public abstract float CurrentAtk(float addAtk);

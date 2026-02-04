@@ -17,7 +17,7 @@ public struct SkillInfo
 public class Skill : Singleton<Skill>
 {
     [SerializeField] List<SkillInfo> skill;
-    [SerializeField] AudioSource _thunderSound;
+    [SerializeField] AudioSource thunderSound;
 
     private Color normalColor;
     private Color disableColor;
@@ -55,8 +55,8 @@ public class Skill : Singleton<Skill>
         {
             GameManager.Instance.SummonThunder();
 
-            if (!_thunderSound.isPlaying)
-                _thunderSound.Play();
+            if (!thunderSound.isPlaying)
+                thunderSound.Play();
         }
     }
 
@@ -67,15 +67,18 @@ public class Skill : Singleton<Skill>
         while (skill.skillBtn.enabled == false)
         {
             if (buffTime > 0 && skill.skillBtn.name.Equals("Heal"))
-                GameManager.Instance.player.CurrentHp(skill.skillPower);
+                GameManager.Instance.player.CurrentHpChange(skill.skillPower);
 
             skill.coolTimeText.gameObject.SetActive(true);
             yield return waitForSeconds;
 
-            buffTime--;
+            if (GameManager.Instance.player.CurrentHp() > 0)
+                buffTime--;
+            else buffTime = 0.0f;
+            Debug.Log($"남은 버프 시간 : {buffTime}");
             skill.coolTimeText.text = skill.coolTime > 0 ? ((int)--skill.coolTime).ToString() : 0.ToString();
 
-            if (buffTime == 0)
+            if (buffTime == 0 || GameManager.Instance.player.CurrentHp() > 0)
             {
                 if (skill.skillBtn.name.Equals("PowerUp"))
                     GameManager.Instance.player.CurrentAtk(-skill.skillPower);

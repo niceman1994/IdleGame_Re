@@ -1,16 +1,13 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 public class GameStart : MonoBehaviour
 {
-    private void Update()
-    {
-        ClickStart();
-    }
+    [SerializeField] Button startButton;
 
-    private void ClickStart()
+    private void Start()
     {
-        if (Input.GetMouseButtonDown(0))
-            SceneManager.LoadScene("GameScene");
+        startButton.onClick.AddListener(() => SceneManager.LoadScene("GameScene"));
     }
 }

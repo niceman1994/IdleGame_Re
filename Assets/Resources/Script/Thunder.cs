@@ -32,7 +32,7 @@ public class Thunder : MonoBehaviour
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Monster") || collision.gameObject.CompareTag("Boss"))
-            collision.gameObject.GetComponent<IObject>().CurrentHp(-damage);
+            collision.gameObject.GetComponent<IObject>().GetAttackDamage(damage);
     }
 
     public float AddPower(float addDamage)

@@ -18,21 +18,23 @@ public class Player : Object
 
     private PlayerState previousState;
 
-    private void OnEnable()
+    protected override void OnEnable()
     {
-        healthSystem.onHealthChanged += UpdateCurrentHp;
+        base.OnEnable();
+
+        healthSystem.onHealthChanged += (playerHp) =>
+        {
+            UpdateCurrentHp(playerHp);
+            ShowCurrentHp();
+        };
     }
 
-    private void Start()
+    protected override void Start()
     {
-        GameManager.Instance.userSpeed = moveSpeed;
-        currentState = PlayerState.Run;
-        objectAnimator = GetComponent<Animator>();
-        objectAnimator.SetFloat("attackSpeed", attackSpeed);
-        ShowCurrentHp();
+        SetPlayerStatus();
+        base.Start();
     }
 
-    // Update에 이동 함수를 넣으면 캐릭터가 떨리면서 이동하기 때문에 FixedUpdate에 넣었음
     private void FixedUpdate()
     {
         PlayerMove();
@@ -40,6 +42,7 @@ public class Player : Object
 
     private void Update()
     {
+        ShowCurrentHp();
         CheckState();
         ChangeState(currentState);
     }
@@ -56,12 +59,23 @@ public class Player : Object
         }
     }
 
+    private void SetPlayerStatus()
+    {
+        GameManager.Instance.userSpeed = moveSpeed;
+        currentState = PlayerState.Run;
+    }
+
     private void PlayerMove()
     {
         if (detectCollider.getEnemyCollider == null)
         {
             if (transform.position != endPoint.localPosition)
-                transform.localPosition = Vector2.MoveTowards(transform.localPosition, endPoint.localPosition, moveSpeed * Time.deltaTime);
+            {
+                if (currentState != PlayerState.Death)
+                    transform.localPosition = Vector2.MoveTowards(transform.localPosition, endPoint.localPosition, moveSpeed * Time.deltaTime);
+                else
+                    transform.localPosition = Vector2.MoveTowards(transform.localPosition, endPoint.localPosition, 0.0f);
+            }
             else
             {
                 ChangeState(PlayerState.Idle);
@@ -87,7 +101,6 @@ public class Player : Object
                     objectAnimator.SetBool("attack", false);
                     objectAnimator.SetBool("idle", false);
                 }
-                atkLoop = 0;
                 playerState = detectCollider.getEnemyCollider != null ? PlayerState.Attack : PlayerState.Run;
                 break;
             case PlayerState.Attack:
@@ -104,9 +117,6 @@ public class Player : Object
                     objectAnimator.SetBool("idle", false);
                     objectAnimator.SetBool("death", true);
                 }
-                Invoke("ResetGame", 2.0f);
-                break;
-            default:
                 break;
         }
         previousState = currentState;
@@ -122,9 +132,9 @@ public class Player : Object
                 // targetCollider의 현재 체력이 0 이하일 경우
                 if (detectCollider.getTargetObject.CurrentHp() <= 0)
                 {
-                    atkLoop = 0;
-                    detectCollider.DeleteCollider2D();
+                    detectCollider.EmptyDetectCollider2D();
                     ChangeState(PlayerState.Run);
+                    atkLoop = 0;
                     return;
                 }
 
@@ -132,15 +142,8 @@ public class Player : Object
                 /* normalizedTimeInProcess만 있으면 0.8f 이상부터는 계속 데미지를 계산해 한 번의 공격에 몬스터가 죽게 되고
                 normalizedTime > atkLoop만 있으면 공격 모션보다 데미지가 더 빨리 나와서 의도와 맞지 않게 된다.*/
                 if (AttackStateProcess() >= 0.8f && AttackStateTime() > atkLoop)
-                {
                     PlayAttackSound(attackSound, 0);
-                }
             }
-        }
-        else
-        {
-            ChangeState(PlayerState.Death);
-            Death(() => PlayDeadSound(deadSound, 0));
         }
     }
 
@@ -153,15 +156,6 @@ public class Player : Object
         }
     }
 
-    private void ResetGame()
-    {
-        if (currentState == PlayerState.Death)
-        {
-            ResetPosition();
-            ObjectPoolManager.Instance.StageDown();
-        }
-    }
-
     private void ResetPosition()
     {
         atkLoop = 0;
@@ -170,7 +164,7 @@ public class Player : Object
         currentState = PlayerState.Run;
         moveSpeed = GameManager.Instance.userSpeed;
         ownCollider.enabled = true;
-        detectCollider.DeleteCollider2D();
+        detectCollider.enabled = true;
     }
 
     private void ShowCurrentHp()
@@ -183,7 +177,21 @@ public class Player : Object
     private void UpdateCurrentHp(float currentHp)
     {
         hp = currentHp;
-        ShowCurrentHp();
+    }
+
+    private void OnPlayerDeathComplete()
+    {
+        StartCoroutine(DeathAfterSequence());
+    }
+
+    private IEnumerator DeathAfterSequence()
+    {
+        yield return new WaitForSeconds(1.2f);
+        ObjectPoolManager.Instance.ReturnPooledMonsters();
+        yield return new WaitUntil(() => ObjectPoolManager.Instance.IsReturnComplete());
+        ResetPosition();
+        hp = defaultHp;
+        ObjectPoolManager.Instance.StageDown();
     }
 
     public float GetMoveSpeed(float speed)
@@ -204,6 +212,13 @@ public class Player : Object
     public override void GetAttackDamage(float dmg)
     {
         healthSystem.TakeDamage(hp, dmg);
+
+        if (hp <= 0)
+        {
+            detectCollider.enabled = false;
+            ChangeState(PlayerState.Death);
+            Death(() => PlayDeadSound(deadSound, 0));
+        }
     }
 
     public override float CurrentHp()
@@ -211,8 +226,10 @@ public class Player : Object
         return hp;
     }
 
-    public override void CurrentHp(float value)
+    public override void CurrentHpChange(float value)
     {
+        if (hp <= 0) return;
+
         if (hp + value > defaultHp)
             value -= hp + value - defaultHp;
 

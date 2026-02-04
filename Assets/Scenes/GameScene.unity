@@ -209,7 +209,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: 100
+  m_Text: 1000
 --- !u!222 &41651973
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -713,7 +713,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 1
     m_VerticalOverflow: 1
     m_LineSpacing: 1
-  m_Text: '0 '
+  m_Text: 1000
 --- !u!222 &147027500
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2440,7 +2440,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -242, y: 162.49997}
+  m_AnchoredPosition: {x: -242, y: 162.50003}
   m_SizeDelta: {x: 475, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &544136247
@@ -3261,7 +3261,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: bea21b3a12a796d45b756d708449bc25, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.5
+  m_Volume: 0.9
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -4328,7 +4328,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1825844285}
   m_HandleRect: {fileID: 1825844284}
   m_Direction: 2
-  m_Value: 1
+  m_Value: 0
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -5103,9 +5103,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   stageNum: 1
-  stageButton: {fileID: 1734870316}
   stage: {fileID: 1734870318}
-  bossStage: 4
+  bossStage: 1
   monsterCount: 8
   monsterParent: {fileID: 160869687}
   monsterPrefab:
@@ -6316,7 +6315,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
-  m_Volume: 0.6
+  m_Volume: 1
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -6444,7 +6443,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 217727066fe096642b41eb29a65e22c9, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.6
+  m_Volume: 0.85
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -6716,7 +6715,7 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 10ab8e37da758974f955241a21293581, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.6
+  m_Volume: 0.85
   m_Pitch: 1
   Loop: 0
   Mute: 0
@@ -6877,7 +6876,7 @@ MonoBehaviour:
     buffTime: 15
     skillPower: 15
     coolTimeText: {fileID: 1325967001}
-  _thunderSound: {fileID: 788716735}
+  thunderSound: {fileID: 788716735}
 --- !u!114 &2144952172
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7079,7 +7078,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isOpen: 0
-  minItemCount: 3
+  minItemCount: 1
   itemExchangeBox: {fileID: 2919861746770081674}
   itemExchangeButtons:
   - itemExchageButtonImage: {fileID: 2919861747276495063}
@@ -11310,12 +11309,12 @@ GameObject:
   m_Component:
   - component: {fileID: 2673993270644381606}
   - component: {fileID: 2673993270644381607}
-  - component: {fileID: 2673993270644381600}
-  - component: {fileID: 6107476453365903139}
   - component: {fileID: 902291214548806501}
   - component: {fileID: 6107476453365903137}
   - component: {fileID: 6107476453365903140}
   - component: {fileID: 6107476453365903138}
+  - component: {fileID: 2673993270644381600}
+  - component: {fileID: 6107476453365903139}
   - component: {fileID: 5485309158292465446}
   m_Layer: 6
   m_Name: Player
@@ -12236,16 +12235,16 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ccc230134e78a343b9ca1b267738cc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hp: 1000
-  atk: 18
-  attackSpeed: 1
+  hp: 100000
+  atk: 0
+  attackSpeed: 1.15
   attackSound: {fileID: 2033598077}
   deadSound: {fileID: 0}
   textPos: {fileID: 7677236500333918709}
   ownCollider: {fileID: 2673993270644381600}
   detectCollider: {fileID: 6107476453365903140}
   objectType: 0
-  moveSpeed: 2
+  moveSpeed: 5
   startPoint: {fileID: 1675842053}
   endPoint: {fileID: 96692590}
   currentState: 0
