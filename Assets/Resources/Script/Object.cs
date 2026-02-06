@@ -8,29 +8,29 @@ public enum ObjectType
     Player, Skeleton, Mushroom, Goblin, FlyingEye, Boss
 }
 
-/// <summary>
-/// 상호작용하는 오브젝트에 붙여서 사용하는 스크립트
-/// </summary>
 public abstract class Object : MonoBehaviour, IObject
 {
+    [Header("Object 스크립트")]
     [SerializeField] protected float hp;
     [SerializeField] protected float atk;
     [SerializeField] protected float attackSpeed;
     [SerializeField] protected AudioSource attackSound;
     [SerializeField] protected AudioSource deadSound;
     [SerializeField] protected Transform textPos;
-    [SerializeField] protected BoxCollider2D ownCollider;
     [SerializeField] protected DetectCollider detectCollider;
     [SerializeField] protected ObjectType objectType;
 
+    protected bool isDead;
     protected int atkLoop;
     protected int giveGold;
     protected float defaultHp;              // 체력이 0인 오브젝트의 체력을 재설정해 다시 쓰기 위한 변수
     protected float defaultAtk;
+    protected BoxCollider2D ownCollider;
     protected Animator objectAnimator;
 
     protected virtual void OnEnable()
     {
+        ownCollider = GetComponent<BoxCollider2D>();
         objectAnimator = GetComponent<Animator>();
         objectAnimator.Rebind();
         objectAnimator.Update(0.0f);
@@ -63,14 +63,13 @@ public abstract class Object : MonoBehaviour, IObject
             ItemManager.Instance.SpawnItem(transform.position);
     }
 
-    private IEnumerator OnDeathAnimComplete()
+    protected IEnumerator OnMonsterDeathComplete()
     {
         // 오브젝트 풀링으로 죽은 몬스터를 빠르게 회수하면 죽는 소리가 짤려서 잠깐 기다림
-        yield return new WaitForSeconds(1.35f);
+        yield return new WaitForSeconds(0.35f);
 
-        if (!CompareTag("Player"))
-            ObjectPoolManager.Instance.ReturnPooledObject(this);
-
+        ObjectPoolManager.Instance.ReturnPooledObject(this);
+        isDead = false;
         hp = defaultHp;
     }
 
@@ -79,7 +78,7 @@ public abstract class Object : MonoBehaviour, IObject
         if (detectCollider.getTargetAttack != null)
         {
             atkLoop += 1;
-            detectCollider.getTargetAttack.GetAttackDamage(atk); // 공격력만큼 detectCollider의 체력을 깎는 함수를 호출
+            detectCollider.getTargetAttack.GetAttackDamage(atk); // 공격력만큼 탐지된 적의 체력을 깎는 함수를 호출
             attackAudio.clip = SoundManager.Instance.attackSounds[soundIndex].audioClip;
             attackAudio.Play();
         }
@@ -130,6 +129,14 @@ public abstract class Object : MonoBehaviour, IObject
         atk = defaultAtk;
         atkLoop = 0;
         detectCollider.EmptyDetectCollider2D();
+    }
+
+    protected bool IsObjectAnimComplete(string animName)
+    {
+        bool isDeathComplete = objectAnimator.GetCurrentAnimatorStateInfo(0).IsName(animName) &&
+            objectAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f && !isDead;
+
+        return isDeathComplete;
     }
 
     public abstract void CheckState();

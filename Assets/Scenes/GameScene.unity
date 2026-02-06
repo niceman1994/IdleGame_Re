@@ -2440,7 +2440,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -242, y: 162.50003}
+  m_AnchoredPosition: {x: -242, y: 162.5}
   m_SizeDelta: {x: 475, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &544136247
@@ -3929,7 +3929,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   curGold: 840300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-  getGold: 15
+  getGold: 18
   goldText: {fileID: 1379017197}
   index: 0
 --- !u!114 &966894963
@@ -5104,7 +5104,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   stageNum: 1
   stage: {fileID: 1734870318}
-  bossStage: 1
+  bossStage: 2
   monsterCount: 8
   monsterParent: {fileID: 160869687}
   monsterPrefab:
@@ -12235,16 +12235,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ccc230134e78a343b9ca1b267738cc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hp: 100000
-  atk: 0
+  hp: 350
+  atk: 17
   attackSpeed: 1.15
   attackSound: {fileID: 2033598077}
   deadSound: {fileID: 0}
   textPos: {fileID: 7677236500333918709}
-  ownCollider: {fileID: 2673993270644381600}
   detectCollider: {fileID: 6107476453365903140}
   objectType: 0
-  moveSpeed: 5
+  moveSpeed: 2.25
   startPoint: {fileID: 1675842053}
   endPoint: {fileID: 96692590}
   currentState: 0

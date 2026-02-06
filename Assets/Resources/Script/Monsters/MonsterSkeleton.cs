@@ -24,6 +24,8 @@ public class MonsterSkeleton : Object
             else if (objectAnimator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
                 AttackState();
         }
+        else if (IsObjectAnimComplete("Death"))
+            StartCoroutine(OnMonsterDeathComplete());
     }
 
     private void EnemyDetect()

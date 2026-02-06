@@ -10,6 +10,7 @@ public enum PlayerState
 
 public class Player : Object
 {
+    [Header("Object를 상속받은 Player 스크립트")]
     [SerializeField] float moveSpeed;
     [SerializeField] Transform startPoint;
     [SerializeField] Transform endPoint;
@@ -42,9 +43,11 @@ public class Player : Object
 
     private void Update()
     {
-        ShowCurrentHp();
         CheckState();
         ChangeState(currentState);
+
+        if (IsObjectAnimComplete("Death"))
+            OnPlayerDeathComplete();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -63,6 +66,7 @@ public class Player : Object
     {
         GameManager.Instance.userSpeed = moveSpeed;
         currentState = PlayerState.Run;
+        ShowCurrentHp();
     }
 
     private void PlayerMove()
@@ -79,7 +83,7 @@ public class Player : Object
             else
             {
                 ChangeState(PlayerState.Idle);
-                Invoke("StageUp", 2.0f);        // 죽인 몬스터를 1.5초 후에 큐로 회수하기 때문에 2초 뒤에 다음 스테이지로 넘어감
+                Invoke("StageUp", 2.0f);        // 죽인 몬스터를 잠깐 대기 후 큐로 회수하기 때문에 2초 뒤에 다음 스테이지로 넘어감
             }
         }
     }
@@ -181,6 +185,8 @@ public class Player : Object
 
     private void OnPlayerDeathComplete()
     {
+        Debug.Log("OnPlayerDeathComplete 호출");
+        isDead = true;
         StartCoroutine(DeathAfterSequence());
     }
 
@@ -192,6 +198,8 @@ public class Player : Object
         ResetPosition();
         hp = defaultHp;
         ObjectPoolManager.Instance.StageDown();
+        isDead = false;
+        Debug.Log("DeathAfterSequence 코루틴 호출");
     }
 
     public float GetMoveSpeed(float speed)

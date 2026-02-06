@@ -43,8 +43,9 @@ public class Skill : Singleton<Skill>
     {
         skill.skillBtn.GetComponent<Image>().color = disableColor;
         skill.skillBtn.enabled = false;
-        StartCoroutine(RunningSkill(skill, skill.buffTime));
         SkillName(skill, skill.skillPower);
+        StartCoroutine(RunningSkill(skill));
+        StartCoroutine(BuffControl(skill, skill.buffTime));
     }
 
     private void SkillName(SkillInfo skillInfo, float skillValue)
@@ -60,29 +61,16 @@ public class Skill : Singleton<Skill>
         }
     }
 
-    private IEnumerator RunningSkill(SkillInfo skill, float buffTime)
+    private IEnumerator RunningSkill(SkillInfo skill)
     {
         WaitForSeconds waitForSeconds = new WaitForSeconds(1.0f);
 
         while (skill.skillBtn.enabled == false)
         {
-            if (buffTime > 0 && skill.skillBtn.name.Equals("Heal"))
-                GameManager.Instance.player.CurrentHpChange(skill.skillPower);
-
             skill.coolTimeText.gameObject.SetActive(true);
             yield return waitForSeconds;
-
-            if (GameManager.Instance.player.CurrentHp() > 0)
-                buffTime--;
-            else buffTime = 0.0f;
-            Debug.Log($"남은 버프 시간 : {buffTime}");
+            
             skill.coolTimeText.text = skill.coolTime > 0 ? ((int)--skill.coolTime).ToString() : 0.ToString();
-
-            if (buffTime == 0 || GameManager.Instance.player.CurrentHp() > 0)
-            {
-                if (skill.skillBtn.name.Equals("PowerUp"))
-                    GameManager.Instance.player.CurrentAtk(-skill.skillPower);
-            }
 
             if (skill.coolTime == 0)
             {
@@ -91,6 +79,29 @@ public class Skill : Singleton<Skill>
                 skill.skillBtn.enabled = true;
                 skill.coolTimeText.gameObject.SetActive(false);
             }
+        }
+    }
+
+    private IEnumerator BuffControl(SkillInfo skill, float buffTime)
+    {
+        WaitForSeconds waitForSeconds = new WaitForSeconds(1.0f);
+
+        while (buffTime != 0)
+        {
+            if (buffTime > 0 && skill.skillBtn.name.Equals("Heal"))
+                GameManager.Instance.player.CurrentHpChange(skill.skillPower);
+
+            yield return waitForSeconds;
+
+            if (GameManager.Instance.player.CurrentHp() > 0)
+                buffTime--;
+            else buffTime = 0.0f;
+        }
+        
+        if (buffTime == 0)
+        {
+            if (skill.skillBtn.name.Equals("PowerUp"))
+                GameManager.Instance.player.CurrentAtk(-skill.skillPower);
         }
     }
 }

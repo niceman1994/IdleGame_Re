@@ -95,8 +95,10 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             {
                 if (item.ItemAbilityType == Item.AbilityType.GoldUp)        // 아이템 능력이 골드 증가일 때
                 {
-                    GameManager.Instance.gameGold.curGold[0] += item.ItemAbility;
-                    TextPoolManager.Instance.ShowItemText("Gold", item.ItemAbility,
+                    int getGold = item.ItemAbility + (5 * ObjectPoolManager.Instance.EnterMaxStage);
+                    
+                    GameManager.Instance.gameGold.curGold[0] += getGold;
+                    TextPoolManager.Instance.ShowItemText("Gold", getGold,
                         GameManager.Instance.player.transform.position, new Color(255, 200, 0, 255), 16);
                 }
                 else if (item.ItemAbilityType == Item.AbilityType.Heal)     // 아이템 능력이 체력 회복일 때

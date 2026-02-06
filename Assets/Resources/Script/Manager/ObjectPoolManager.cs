@@ -20,11 +20,13 @@ public class ObjectPoolManager : Singleton<ObjectPoolManager>
     public GameObject boss;
 
     private int prevStage;
+    private int enterMaxStage;      // 플레이어가 진입한 가장 높은 스테이지
     private Queue<Object> bossQueue = new Queue<Object>();
     private Dictionary<int, Queue<Object>> monsterPools = new Dictionary<int, Queue<Object>>();
-
     // 플레이어가 진행 도중에 죽었을 때 남은 몬스터를 회수하기 위해 사용하는 리스트 변수
     private List<Object> dequeueMonsterList = new List<Object>();
+
+    public int EnterMaxStage => enterMaxStage;
 
     protected override void Awake()
     {
@@ -32,6 +34,7 @@ public class ObjectPoolManager : Singleton<ObjectPoolManager>
         EnqueueMonsters();
         SummonMonster();
         GetCurrentStage();
+        enterMaxStage = 0;
     }
 
     private void SummonMonster()
@@ -120,6 +123,7 @@ public class ObjectPoolManager : Singleton<ObjectPoolManager>
     {
         stageNum += 1;
         prevStage = stageNum;
+        enterMaxStage = stageNum - 1;
         SummonMonster();
         GetCurrentStage();
     }
@@ -137,7 +141,7 @@ public class ObjectPoolManager : Singleton<ObjectPoolManager>
 
     public void ReturnPooledMonsters()
     {
-        // 플레이어가 죽어서 뒤에서부터 확인하면서 생성된 몬스터를 큐에 다시 집어넣음
+        // 플레이어가 죽었을 때 생성된 몬스터를 담은 리스트의 뒤부터 확인하면서 큐에 집어넣음
         for (int i = dequeueMonsterList.Count - 1; i >= 0; i--)
             ReturnPooledObject(dequeueMonsterList[i]);
 

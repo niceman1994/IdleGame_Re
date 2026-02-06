@@ -361,18 +361,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a33bc276ebcbc174bbede8f52cf18cf0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hp: 400
+  hp: 412
   atk: 16
   attackSpeed: 1.26
   attackSound: {fileID: 1650362143514806642}
   deadSound: {fileID: 8005362815944249473}
   textPos: {fileID: 2498965124995000519}
-  ownCollider: {fileID: 3354738036288994199}
   detectCollider: {fileID: 7320035648123066918}
   objectType: 5
+  isSpellCast: 0
   spell: {fileID: 4961344482941813673, guid: a35d4ac34bf94b9478f6c5e73baf6561, type: 3}
   castSound: {fileID: 1838115016906275888}
-  isSpellCast: 0
 --- !u!114 &7320035648123066918
 MonoBehaviour:
   m_ObjectHideFlags: 0

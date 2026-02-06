@@ -4,14 +4,26 @@ using UnityEngine;
 
 public class Boss : Object
 {
+    [Header("Object를 상속받은 Boss 스크립트")]
     [SerializeField] bool isSpellCast;
     [SerializeField] BossSpell spell;
     [SerializeField] AudioSource castSound;
 
     private int lastSpellAttackCount;
     private int currentSpellAttackCount;
-    private float spellAttackRandomValue;
+    private float spellAttackValue;
     private Queue<BossSpell> bossSpellQueue = new Queue<BossSpell>();
+    // 플레이어가 죽어서 스테이지 초기화됐을 때 BossSpell이 회수되지 않을 수 있는걸 방지하기 위한 변수
+    private List<BossSpell> activeBossSpells = new List<BossSpell>();
+
+    private void OnDisable()
+    {
+        for (int i = 0; i < activeBossSpells.Count; i++)
+            bossSpellQueue.Enqueue(activeBossSpells[i]);
+
+        activeBossSpells.Clear();
+        isSpellCast = false;
+    }
 
     protected override void Start()
     {
@@ -26,7 +38,7 @@ public class Boss : Object
 
     private void InitBoss()
     {
-        spellAttackRandomValue = 0.75f;
+        spellAttackValue = 0.75f;
         lastSpellAttackCount = 0;
         currentSpellAttackCount = 0;
         isSpellCast = false;
@@ -42,7 +54,7 @@ public class Boss : Object
                 EnemyDetect();
             else
             {
-                if (objectAnimator.GetFloat("spellAttack") > spellAttackRandomValue && !isSpellCast)
+                if (objectAnimator.GetFloat("spellAttack") > spellAttackValue && !isSpellCast)
                     objectAnimator.SetBool("cast", isSpellCast = true);
                 else if (isSpellCast)
                     CastState();
@@ -50,6 +62,8 @@ public class Boss : Object
                     AttackState();
             }
         }
+        else if (IsObjectAnimComplete("Death"))
+            StartCoroutine(OnMonsterDeathComplete());
     }
 
     private void PrepareSpell()
@@ -108,18 +122,24 @@ public class Boss : Object
         castSound.Play();
 
         var bossSpell = bossSpellQueue.Dequeue();
+        activeBossSpells.Add(bossSpell);
         bossSpell.gameObject.SetActive(true);
         bossSpell.transform.position = new Vector3(transform.position.x - 0.11f, spell.transform.position.y, spell.transform.position.z);
 
         // atkLoop를 0으로 초기화하지 않으면 보스가 공격해도 AttackState의 normalizedTime만큼 소리가 나지 않음
         atkLoop = 0;
 
-        bossSpell.spellEnqueueAction += () => bossSpellQueue.Enqueue(bossSpell);
+        bossSpell.spellEnqueueAction += () =>
+        {
+            bossSpellQueue.Enqueue(bossSpell);
+            activeBossSpells.Remove(bossSpell);
+        };
+
         objectAnimator.SetBool("cast", isSpellCast = false);
         objectAnimator.SetFloat("spellAttack", Random.Range(0.25f, 1.0f));
 
         // spellAttack 값이 연속으로 spellAttackRandomValue 보다 크게 나오면 Cast 애니메이션을 다시 실행시킴
-        if (objectAnimator.GetFloat("spellAttack") > spellAttackRandomValue)
+        if (objectAnimator.GetFloat("spellAttack") > spellAttackValue)
             objectAnimator.SetTrigger("recast");
     }
 
@@ -140,7 +160,10 @@ public class Boss : Object
         hp -= dmg;
 
         if (hp <= 0)
+        {
+            isSpellCast = false;
             Death(() => PlayDeadSound(deadSound, 1));
+        }
     }
 
     public override float CurrentHp()
