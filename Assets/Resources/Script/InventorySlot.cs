@@ -23,8 +23,8 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     private bool haveItem;
 
     public bool HaveItem => haveItem;
-    public int ItemCount { get { return itemCount; } }
-    public Image Icon { get { return slotIcon; } }
+    public int ItemCount => itemCount;
+    public Image Icon => slotIcon;
 
     private void Start()
     {
@@ -44,7 +44,7 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         haveItem = true;
         item = newItem;
         itemCount = count;
-        slotIcon.sprite = item.ItemImage;
+        slotIcon.sprite = item.ItemData.itemImage;
         itemCountText.text = $"{itemCount}";
         SetColor(1);
     }
@@ -76,37 +76,37 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     }
 
     /// <summary>
-    /// 슬롯에 있는 아이템과 획득한 아이템의 이미지를 비교하고 수량이 최대치 (<see cref="Item.MaxCount"></see>) 보다 적으면 true를 반환하는 함수
+    /// 슬롯에 있는 아이템과 획득한 아이템의 이미지를 비교하고 수량이 최대치 (<see cref="ItemStatSO.itemMaxCount"></see>) 보다 적으면 true를 반환하는 함수
     /// </summary>
     /// <param name="addItem"></param>
     /// <returns></returns>
     public bool IsSameItem(Item addItem)
     {
-        return addItem.ItemImage == Icon.sprite && ItemCount < item.MaxCount;
+        return addItem.ItemData.itemImage == Icon.sprite && ItemCount < item.ItemData.itemMaxCount/* item.MaxCount*/;
     }
 
     public void UseItem()
     {
         if (item != null)
         {
-            if (item.ItemAbilityType == Item.AbilityType.None)              // 아이템 능력이 아무것도 없다면 사용할 수 없게함
+            if (item.ItemData.itemAbilityType == ItemStatSO.AbilityType.None)              // 아이템 능력이 아무것도 없다면 사용할 수 없게함
                 itemCount -= 0;
             else
             {
-                if (item.ItemAbilityType == Item.AbilityType.GoldUp)        // 아이템 능력이 골드 증가일 때
+                if (item.ItemData.itemAbilityType == ItemStatSO.AbilityType.GoldUp)        // 아이템 능력이 골드 증가일 때
                 {
-                    int getGold = item.ItemAbility + (5 * ObjectPoolManager.Instance.EnterMaxStage);
+                    int getGold = item.ItemData.itemAbility + (5 * ObjectPoolManager.Instance.EnterMaxStage);
                     
                     GameManager.Instance.gameGold.curGold[0] += getGold;
                     TextPoolManager.Instance.ShowItemText("Gold", getGold,
                         GameManager.Instance.player.transform.position, new Color(255, 200, 0, 255), 16);
                 }
-                else if (item.ItemAbilityType == Item.AbilityType.Heal)     // 아이템 능력이 체력 회복일 때
-                    GameManager.Instance.player.CurrentHpChange(item.ItemAbility);
-                else if (item.ItemAbilityType == Item.AbilityType.PowerUp)  // 아이템 능력이 공격력 증가일 때
+                else if (item.ItemData.itemAbilityType == ItemStatSO.AbilityType.Heal)     // 아이템 능력이 체력 회복일 때
+                    GameManager.Instance.player.CurrentHpChange(item.ItemData.itemAbility);
+                else if (item.ItemData.itemAbilityType == ItemStatSO.AbilityType.PowerUp)  // 아이템 능력이 공격력 증가일 때
                 {
-                    GameManager.Instance.player.CurrentAtk(item.ItemAbility);
-                    TextPoolManager.Instance.ShowItemText("ATK", item.ItemAbility,
+                    GameManager.Instance.player.CurrentAtk(item.ItemData.itemAbility);
+                    TextPoolManager.Instance.ShowItemText("ATK", item.ItemData.itemAbility,
                         GameManager.Instance.player.transform.position, new Color(0, 0, 0, 255), 20);
                 }
                 AddSameItem(-1);
@@ -185,7 +185,7 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             {
                 int totalItemCount = tempItemCount + DragSlot.instance.dragSlot.itemCount;
 
-                if (totalItemCount <= item.MaxCount)    // 합산된 아이템 갯수가 최대 갯수 이하일 경우
+                if (totalItemCount <= item.ItemData.itemMaxCount)    // 합산된 아이템 갯수가 최대 갯수 이하일 경우
                 {
                     AddNewItem(DragSlot.instance.dragSlot.item, tempItemCount + DragSlot.instance.dragSlot.itemCount);
                     DragSlot.instance.dragSlot.ClearSlot();
@@ -193,8 +193,8 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
                 else                                    // 합산된 아이템 갯수가 최대 갯수를 넘을 경우
                 {
                     // 현재 슬롯을 최대 갯수로 채우고 나머지는 이전 슬롯에 추가
-                    AddNewItem(DragSlot.instance.dragSlot.item, item.MaxCount);
-                    DragSlot.instance.dragSlot.AddNewItem(DragSlot.instance.dragSlot.item, totalItemCount - item.MaxCount);
+                    AddNewItem(DragSlot.instance.dragSlot.item, item.ItemData.itemMaxCount);
+                    DragSlot.instance.dragSlot.AddNewItem(DragSlot.instance.dragSlot.item, totalItemCount - item.ItemData.itemMaxCount);
                 }
             }
         }

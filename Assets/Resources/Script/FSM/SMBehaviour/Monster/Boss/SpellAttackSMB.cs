@@ -5,7 +5,7 @@ using UnityEngine;
 /// <summary>
 /// 보스의 특수 공격 애니메이션 진입시 필요한 것들을 처리하기 위해 사용하는 클래스
 /// </summary>
-public class SpellAttackStateMachine : StateMachineBehaviour
+public class SpellAttackSMB : StateMachineBehaviour
 {
     [SerializeField] Boss boss;
 

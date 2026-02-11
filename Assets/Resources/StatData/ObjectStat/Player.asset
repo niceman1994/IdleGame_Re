@@ -1,0 +1,21 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a7e8c62811a5ed4f8b2998b599bc8d7, type: 3}
+  m_Name: Player
+  m_EditorClassIdentifier: 
+  playerStats:
+    baseHp: 400
+    baseAttack: 17
+    baseAttackSpeed: 1.17
+    attackClip: {fileID: 8300000, guid: 97f65600c30b27b409e2adf57e3defb7, type: 3}
+    deadClip: {fileID: 0}
+  baseMoveSpeed: 2.3

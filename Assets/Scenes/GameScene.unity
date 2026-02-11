@@ -2440,7 +2440,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -242, y: 162.5}
+  m_AnchoredPosition: {x: -242, y: 162.49997}
   m_SizeDelta: {x: 475, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &544136247
@@ -3910,7 +3910,6 @@ MonoBehaviour:
   currentHp: {fileID: 41651972}
   maxHp: {fileID: 147027499}
   hpBar: {fileID: 2658467882850245449}
-  userSpeed: 0
   gameGold: {fileID: 966894962}
   inventory: {fileID: 1147911693}
   thunder: {fileID: 8698096739187070251, guid: b745e94d4cdac454e857ea23ae7609bc, type: 3}
@@ -12235,19 +12234,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ccc230134e78a343b9ca1b267738cc7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hp: 350
-  atk: 17
-  attackSpeed: 1.15
+  runtimeStats:
+    hp: 0
+    maxHp: 0
+    attack: 0
+    attackSpeed: 0
   attackSound: {fileID: 2033598077}
   deadSound: {fileID: 0}
   textPos: {fileID: 7677236500333918709}
   detectCollider: {fileID: 6107476453365903140}
   objectType: 0
-  moveSpeed: 2.25
+  playerData: {fileID: 11400000, guid: b507d66d675917d45b3bb2476c3403ed, type: 2}
+  moveSpeed: 0
   startPoint: {fileID: 1675842053}
   endPoint: {fileID: 96692590}
   currentState: 0
-  healthSystem: {fileID: 6107476453365903138}
 --- !u!114 &6107476453365903138
 MonoBehaviour:
   m_ObjectHideFlags: 0

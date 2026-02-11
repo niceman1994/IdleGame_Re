@@ -41,7 +41,6 @@ public class BossSpell : MonoBehaviour
             spellEnqueueAction.Invoke();
             gameObject.SetActive(false);
             isReturned = false;
-            Debug.Log("BossSpell 회수 완료");
         }
     }
 }

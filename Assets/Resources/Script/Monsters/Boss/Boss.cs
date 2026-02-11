@@ -5,6 +5,7 @@ using UnityEngine;
 public class Boss : Object
 {
     [Header("Object를 상속받은 Boss 스크립트")]
+    [SerializeField] MonsterStatSO bossData;
     [SerializeField] bool isSpellCast;
     [SerializeField] BossSpell spell;
     [SerializeField] AudioSource castSound;
@@ -13,7 +14,7 @@ public class Boss : Object
     private int currentSpellAttackCount;
     private float spellAttackValue;
     private Queue<BossSpell> bossSpellQueue = new Queue<BossSpell>();
-    // 플레이어가 죽어서 스테이지 초기화됐을 때 BossSpell이 회수되지 않을 수 있는걸 방지하기 위한 변수
+    // 플레이어가 죽어서 스테이지가 초기화됐을 때 BossSpell이 회수되지 않을 수 있는걸 방지하기 위한 변수
     private List<BossSpell> activeBossSpells = new List<BossSpell>();
 
     private void OnDisable()
@@ -25,10 +26,10 @@ public class Boss : Object
         isSpellCast = false;
     }
 
-    protected override void Start()
+    protected override void Awake()
     {
+        base.Awake();
         InitBoss();
-        base.Start();
     }
 
     private void Update()
@@ -38,17 +39,19 @@ public class Boss : Object
 
     private void InitBoss()
     {
+        SetDefaultStats(bossData.monsterStats.baseHp, bossData.monsterStats.baseAttack, bossData.monsterStats.baseAttackSpeed);
+
         spellAttackValue = 0.75f;
         lastSpellAttackCount = 0;
         currentSpellAttackCount = 0;
         isSpellCast = false;
-        giveGold += 500;
+        giveGold = bossData.giveGold;
         PrepareSpell();
     }
 
     public override void CheckState()
     {
-        if (hp > 0)
+        if (runtimeStats.hp > 0)
         {
             if (objectAnimator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
                 EnemyDetect();
@@ -62,8 +65,6 @@ public class Boss : Object
                     AttackState();
             }
         }
-        else if (IsObjectAnimComplete("Death"))
-            StartCoroutine(OnMonsterDeathComplete());
     }
 
     private void PrepareSpell()
@@ -81,7 +82,7 @@ public class Boss : Object
 
     private void EnemyDetect()
     {
-        if (detectCollider.IsDetectEnemyCollider("Player"))
+        if (detectCollider.IsDetectEnemy("Player"))
             objectAnimator.SetBool("attack", true);
     }
 
@@ -89,10 +90,9 @@ public class Boss : Object
     {
         if (objectAnimator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
         {
-            if (AttackStateProcess() > 0.625f && AttackStateTime() > atkLoop)
+            if (AttackStateProcess() > 0.625f && AttackStateTime() > attackLoop)
             {
-                PlayAttackSound(attackSound, 1);
-                ClearAttackTarget();
+                PlayAttackSound(bossData.monsterStats.attackClip);
                 objectAnimator.SetFloat("spellAttack", Random.Range(0.25f, 1.0f));
             }
         }
@@ -127,7 +127,7 @@ public class Boss : Object
         bossSpell.transform.position = new Vector3(transform.position.x - 0.11f, spell.transform.position.y, spell.transform.position.z);
 
         // atkLoop를 0으로 초기화하지 않으면 보스가 공격해도 AttackState의 normalizedTime만큼 소리가 나지 않음
-        atkLoop = 0;
+        attackLoop = 0;
 
         bossSpell.spellEnqueueAction += () =>
         {
@@ -143,40 +143,36 @@ public class Boss : Object
             objectAnimator.SetTrigger("recast");
     }
 
-    public override float CurrentAtk()
-    {
-        return atk;
-    }
-
     public override float CurrentAtk(float addAtk)
     {
-        atk += addAtk;
-        return atk;
+        runtimeStats.attack += addAtk;
+        return runtimeStats.attack;
     }
 
     public override void GetAttackDamage(float dmg)
     {
         TextPoolManager.Instance.ShowDamageText(dmg, textPos);
-        hp -= dmg;
+        runtimeStats.hp -= dmg;
 
-        if (hp <= 0)
+        if (runtimeStats.hp <= 0)
         {
             isSpellCast = false;
-            Death(() => PlayDeadSound(deadSound, 1));
+            Death(() => PlayDeadSound(bossData.monsterStats.deadClip));
+            HealthSystem.NotifyDeath();
         }
     }
 
     public override float CurrentHp()
     {
-        return hp;
+        return runtimeStats.hp;
     }
 
     // 스테이지가 오를 수록 체력을 올리기 위해 사용하는 함수
     public override float HpUp(float addHp)
     {
-        hp += addHp;
-        defaultHp += addHp;
-        return hp;
+        runtimeStats.hp += addHp;
+        runtimeStats.maxHp += addHp;
+        return runtimeStats.hp;
     }
 
     public override void CurrentHpChange(float value) { }

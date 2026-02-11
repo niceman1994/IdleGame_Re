@@ -11,9 +11,8 @@ public class GameManager : Singleton<GameManager>
     public Text currentHp;
     public Text maxHp;
     public Image hpBar;
-    public float userSpeed;
     public GameGold gameGold;
-    public Inventory inventory;
+    [SerializeField] Inventory inventory;
 
     [Header("½ºÅ³")]
     public Thunder thunder;
@@ -21,6 +20,7 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] Transform thunderParent;
 
     private List<Thunder> thunderList = new List<Thunder>();
+    public Inventory Inventory => inventory;
 
     private void Start()
     {

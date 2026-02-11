@@ -124,10 +124,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b598e862a7583ed419df13e3dca6da34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemName: Gold
-  maxCount: 20
-  description: "\uC0AC\uC6A9\uD558\uBA74 \uC18C\uB7C9\uC758 \uACE8\uB4DC\uB97C \uD68D\uB4DD\uD55C\uB2E4."
-  itemType: 0
-  itemAbilityType: 0
-  itemAbility: 350
-  itemImage: {fileID: 21300000, guid: eaf020b8e8f3f434e9af9f57f3556f07, type: 3}
+  itemData: {fileID: 11400000, guid: f96257b02365f8d499a26f80e57a0e86, type: 2}

@@ -2,11 +2,13 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerStateMachine : StateMachineBehaviour
+public class MonsterIdleSMB : StateMachineBehaviour
 {
+    [SerializeField] Object monster;
+
     public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
     {
-        animator.SetBool("attack", false);
-        animator.SetBool("idle", true);
+        if (monster == null)
+            monster = animator.GetComponent<Object>();
     }
 }

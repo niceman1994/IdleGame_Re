@@ -124,10 +124,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b598e862a7583ed419df13e3dca6da34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemName: Bottle
-  maxCount: 50
-  description: "\uB531\uD788 \uC6A9\uB3C4\uB294 \uC5C6\uB294 \uC544\uC774\uD15C\uC774\uB2E4"
-  itemType: 3
-  itemAbilityType: 3
-  itemAbility: 0
-  itemImage: {fileID: 21300000, guid: 7d9c71946b5fa4b4e91eb59c78a0b51b, type: 3}
+  itemData: {fileID: 11400000, guid: 203e7c887169f53489536f294c8e9cda, type: 2}

@@ -3,7 +3,6 @@
 /// </summary>
 public interface IAttack
 {
-    public float CurrentAtk();
     public float CurrentAtk(float addAtk);
     public void GetAttackDamage(float dmg);
 }

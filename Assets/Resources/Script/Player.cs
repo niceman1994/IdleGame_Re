@@ -11,29 +11,31 @@ public enum PlayerState
 public class Player : Object
 {
     [Header("Object를 상속받은 Player 스크립트")]
+    [SerializeField] PlayerStatSO playerData;
     [SerializeField] float moveSpeed;
     [SerializeField] Transform startPoint;
     [SerializeField] Transform endPoint;
     [SerializeField] PlayerState currentState;
-    [SerializeField] HealthSystem healthSystem;
 
+    private float runtimeMoveSpeed;
+    private StateMachine playerStateMachine;
     private PlayerState previousState;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        SetPlayerStatus();
+    }
 
     protected override void OnEnable()
     {
         base.OnEnable();
-
-        healthSystem.onHealthChanged += (playerHp) =>
-        {
-            UpdateCurrentHp(playerHp);
-            ShowCurrentHp();
-        };
+        HealthSystem.onHealthChanged += GetCurrentHp;
     }
 
-    protected override void Start()
+    private void OnDisable()
     {
-        SetPlayerStatus();
-        base.Start();
+        HealthSystem.onHealthChanged -= GetCurrentHp;
     }
 
     private void FixedUpdate()
@@ -45,9 +47,6 @@ public class Player : Object
     {
         CheckState();
         ChangeState(currentState);
-
-        if (IsObjectAnimComplete("Death"))
-            OnPlayerDeathComplete();
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -56,24 +55,28 @@ public class Player : Object
         {
             collision.gameObject.SetActive(false);
             // 플레이어와 충돌한 객체 정보를 받아옴
-            GameManager.Instance.inventory.GetItem(collision.gameObject.GetComponent<Item>());
+            GameManager.Instance.Inventory.GetItem(collision.gameObject.GetComponent<Item>());
             // 아이템 정보를 받아왔으니 인벤토리 슬롯을 갱신
-            GameManager.Instance.inventory.UpdateItemSlot();
+            GameManager.Instance.Inventory.UpdateItemSlot();
         }
     }
 
     private void SetPlayerStatus()
     {
-        GameManager.Instance.userSpeed = moveSpeed;
+        SetDefaultStats(playerData.playerStats.baseHp, playerData.playerStats.baseAttack, playerData.playerStats.baseAttackSpeed);
+        runtimeMoveSpeed = moveSpeed = playerData.baseMoveSpeed;
+
+        playerStateMachine = new StateMachine(this);
+        playerStateMachine.ChangeState(playerStateMachine.RunState);
         currentState = PlayerState.Run;
         ShowCurrentHp();
     }
 
     private void PlayerMove()
     {
-        if (detectCollider.getEnemyCollider == null)
+        if (detectCollider.DetectedEnemy == null)
         {
-            if (transform.position != endPoint.localPosition)
+            if (transform.localPosition != endPoint.localPosition)
             {
                 if (currentState != PlayerState.Death)
                     transform.localPosition = Vector2.MoveTowards(transform.localPosition, endPoint.localPosition, moveSpeed * Time.deltaTime);
@@ -83,7 +86,6 @@ public class Player : Object
             else
             {
                 ChangeState(PlayerState.Idle);
-                Invoke("StageUp", 2.0f);        // 죽인 몬스터를 잠깐 대기 후 큐로 회수하기 때문에 2초 뒤에 다음 스테이지로 넘어감
             }
         }
     }
@@ -94,33 +96,21 @@ public class Player : Object
         {
             case PlayerState.Idle:
                 if (previousState != currentState)
-                {
-                    objectAnimator.SetBool("attack", false);
-                    objectAnimator.SetBool("idle", true);
-                }
+                    playerStateMachine.ChangeState(playerStateMachine.IdleState);
                 break;
             case PlayerState.Run:
                 if (previousState != currentState)
-                {
-                    objectAnimator.SetBool("attack", false);
-                    objectAnimator.SetBool("idle", false);
-                }
-                playerState = detectCollider.getEnemyCollider != null ? PlayerState.Attack : PlayerState.Run;
+                    playerStateMachine.ChangeState(playerStateMachine.RunState);
+
+                playerState = detectCollider.DetectedEnemy != null ? PlayerState.Attack : PlayerState.Run;
                 break;
             case PlayerState.Attack:
                 if (previousState != currentState)
-                {
-                    objectAnimator.SetBool("attack", true);
-                    objectAnimator.SetBool("idle", false);
-                }
+                    playerStateMachine.ChangeState(playerStateMachine.AttackState);
                 break;
             case PlayerState.Death:
                 if (previousState != currentState)
-                {
-                    objectAnimator.SetBool("attack", false);
-                    objectAnimator.SetBool("idle", false);
-                    objectAnimator.SetBool("death", true);
-                }
+                    playerStateMachine.ChangeState(playerStateMachine.DeathState);
                 break;
         }
         previousState = currentState;
@@ -129,64 +119,62 @@ public class Player : Object
 
     public override void CheckState()
     {
-        if (hp > 0)
+        if (runtimeStats.hp > 0 && objectAnimator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
         {
-            if (objectAnimator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
-            {
-                // targetCollider의 현재 체력이 0 이하일 경우
-                if (detectCollider.getTargetObject.CurrentHp() <= 0)
-                {
-                    detectCollider.EmptyDetectCollider2D();
-                    ChangeState(PlayerState.Run);
-                    atkLoop = 0;
-                    return;
-                }
+            // targetCollider의 현재 체력이 0 이하일 경우
+            //if (detectCollider.targetObject.CurrentHp() <= 0)
+            //{
+            //    detectCollider.EmptyDetectCollider2D();
+            //    attackLoop = 0;
+            //    return;
+            //}
 
-                // 공격 횟수는 처음엔 0이며 한 번 공격할 때마다 atkLoop에 1을 더해줌
-                /* normalizedTimeInProcess만 있으면 0.8f 이상부터는 계속 데미지를 계산해 한 번의 공격에 몬스터가 죽게 되고
-                normalizedTime > atkLoop만 있으면 공격 모션보다 데미지가 더 빨리 나와서 의도와 맞지 않게 된다.*/
-                if (AttackStateProcess() >= 0.8f && AttackStateTime() > atkLoop)
-                    PlayAttackSound(attackSound, 0);
-            }
+            // 공격 횟수는 처음엔 0이며 한 번 공격할 때마다 atkLoop에 1을 더해줌
+            /* normalizedTimeInProcess만 있으면 0.8f 이상부터는 계속 데미지를 계산해 한 번의 공격에 몬스터가 죽게 되고
+            normalizedTime > atkLoop만 있으면 공격 모션보다 데미지가 더 빨리 나와서 의도와 맞지 않게 된다.*/
+            if (AttackStateProcess() >= 0.8f && AttackStateTime() > attackLoop)
+                PlayAttackSound(playerData.playerStats.attackClip);
         }
     }
 
-    private void StageUp()
+    public IEnumerator StageUp()
     {
-        if (currentState == PlayerState.Idle)
-        {
-            ResetPosition();
-            ObjectPoolManager.Instance.StageUp();
-        }
+        yield return new WaitForSeconds(2.0f);      // 죽인 몬스터를 잠깐 대기 후 큐로 회수하기 때문에 2초 뒤에 다음 스테이지로 넘어감
+        ResetPosition();
+        ObjectPoolManager.Instance.StageUp();
     }
 
     private void ResetPosition()
     {
-        atkLoop = 0;
+        attackLoop = 0;
         transform.localPosition = startPoint.localPosition;
-        objectAnimator.SetBool("death", false);
         currentState = PlayerState.Run;
-        moveSpeed = GameManager.Instance.userSpeed;
+
+        playerStateMachine.ChangeState(playerStateMachine.RunState);
+        ShowCurrentHp();
+        moveSpeed = runtimeMoveSpeed;
         ownCollider.enabled = true;
-        detectCollider.enabled = true;
+
+        if (detectCollider.enabled == false)
+            detectCollider.enabled = true;
     }
 
     private void ShowCurrentHp()
     {
-        GameManager.Instance.hpBar.fillAmount = hp / defaultHp;
-        GameManager.Instance.currentHp.text = Math.Truncate(hp).ToString();
-        GameManager.Instance.maxHp.text = Math.Truncate(defaultHp).ToString();
+        GameManager.Instance.hpBar.fillAmount = runtimeStats.hp / runtimeStats.maxHp;
+        GameManager.Instance.currentHp.text = Math.Truncate(runtimeStats.hp).ToString();
+        GameManager.Instance.maxHp.text = Math.Truncate(runtimeStats.maxHp).ToString();
     }
 
-    private void UpdateCurrentHp(float currentHp)
+    private void GetCurrentHp(float currentHp)
     {
-        hp = currentHp;
+        runtimeStats.hp = currentHp;
+        ShowCurrentHp();
     }
 
-    private void OnPlayerDeathComplete()
+    public void OnPlayerDeathComplete()
     {
-        Debug.Log("OnPlayerDeathComplete 호출");
-        isDead = true;
+        isDeathAnimComplete = true;
         StartCoroutine(DeathAfterSequence());
     }
 
@@ -195,53 +183,54 @@ public class Player : Object
         yield return new WaitForSeconds(1.2f);
         ObjectPoolManager.Instance.ReturnPooledMonsters();
         yield return new WaitUntil(() => ObjectPoolManager.Instance.IsReturnComplete());
+
+        runtimeStats.hp = playerData.playerStats.baseHp;
+        isDeathAnimComplete = false;
         ResetPosition();
-        hp = defaultHp;
         ObjectPoolManager.Instance.StageDown();
-        isDead = false;
-        Debug.Log("DeathAfterSequence 코루틴 호출");
     }
 
     public float GetMoveSpeed(float speed)
     {
         moveSpeed += speed;
-        GameManager.Instance.userSpeed = moveSpeed;
+        runtimeMoveSpeed = moveSpeed;
         return moveSpeed;
     }
 
     // 스탯을 올리는 UI에서 강화할 경우 호출되는 함수
     public float GetAttackSpeed(float atkSpeed)
     {
-        attackSpeed += atkSpeed;
-        objectAnimator.SetFloat("attackSpeed", attackSpeed);
-        return attackSpeed;
+        runtimeStats.attackSpeed += atkSpeed;
+        objectAnimator.SetFloat("attackSpeed", runtimeStats.attackSpeed);
+        return runtimeStats.attackSpeed;
     }
 
     public override void GetAttackDamage(float dmg)
     {
-        healthSystem.TakeDamage(hp, dmg);
+        HealthSystem.TakeDamage(runtimeStats.hp, dmg);
 
-        if (hp <= 0)
+        if (runtimeStats.hp <= 0)
         {
-            detectCollider.enabled = false;
             ChangeState(PlayerState.Death);
-            Death(() => PlayDeadSound(deadSound, 0));
+            Death(() => PlayDeadSound(playerData.playerStats.deadClip));
+            detectCollider.enabled = false;
+            HealthSystem.NotifyDeath();
         }
     }
 
     public override float CurrentHp()
     {
-        return hp;
+        return runtimeStats.hp;
     }
 
     public override void CurrentHpChange(float value)
     {
-        if (hp <= 0) return;
+        if (runtimeStats.hp <= 0) return;
 
-        if (hp + value > defaultHp)
-            value -= hp + value - defaultHp;
+        if (runtimeStats.hp + value > playerData.playerStats.baseHp)
+            value -= runtimeStats.hp + value - playerData.playerStats.baseHp;
 
-        hp += value;
+        runtimeStats.hp += value;
         
         ShowCurrentHp();
         TextPoolManager.Instance.ShowHealText(value, textPos, new Color(0.0f, 255.0f, 0.0f, 255.0f));
@@ -249,21 +238,16 @@ public class Player : Object
 
     public override float HpUp(float addHp)
     {
-        hp += addHp;
-        defaultHp += addHp;
+        runtimeStats.hp += addHp;
+        playerData.playerStats.baseHp += addHp;
         ShowCurrentHp();
 
-        return hp;
-    }
-
-    public override float CurrentAtk()
-    {
-        return atk;
+        return runtimeStats.hp;
     }
 
     public override float CurrentAtk(float addAtk)
     {
-        atk += addAtk;
-        return atk;
+        runtimeStats.attack += addAtk;
+        return runtimeStats.attack;
     }
 }

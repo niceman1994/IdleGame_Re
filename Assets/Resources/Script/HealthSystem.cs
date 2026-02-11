@@ -5,17 +5,23 @@ using UnityEngine;
 
 public class HealthSystem : MonoBehaviour
 {
-    public float currentHP { get; private set; }
+    public float CurrentHP { get; private set; }
 
-    public Action<float> onHealthChanged;
+    public event Action<float> onHealthChanged;
+    public event Action onDeath;
 
     public void TakeDamage(float hp, float damage)
     {
-        currentHP = hp;
+        CurrentHP = hp;
         
-        if (currentHP > 0)
-            currentHP -= damage;
+        if (CurrentHP > 0)
+            CurrentHP -= damage;
 
-        onHealthChanged?.Invoke(currentHP);
+        onHealthChanged?.Invoke(CurrentHP);
+    }
+
+    public void NotifyDeath()
+    {
+        onDeath?.Invoke();
     }
 }

@@ -11,13 +11,10 @@ public class DetectCollider : MonoBehaviour
     [SerializeField] Collider2D currentTarget;
     [SerializeField] LayerMask layerMask;
 
-    private DetectCollider detectEnemyCollider;
-    private IAttack targetAttackInterface;
-    private IObject targetObjectInterface;
+    public Object DetectedEnemy { get; private set; }
 
-    public DetectCollider getEnemyCollider => detectEnemyCollider;
-    public IAttack getTargetAttack => targetAttackInterface;
-    public IObject getTargetObject => targetObjectInterface;
+    public IAttack targetAttack;
+    public IObject targetObject;
 
     private void OnDrawGizmos() 
     {
@@ -40,23 +37,23 @@ public class DetectCollider : MonoBehaviour
         if (currentTarget != null)
         {
             isDetected = true;
-            detectEnemyCollider = currentTarget.GetComponent<DetectCollider>();
-            targetAttackInterface = currentTarget.GetComponent<IAttack>();
-            targetObjectInterface = currentTarget.GetComponent<IObject>();
+            DetectedEnemy = currentTarget.GetComponent<Object>();
+            targetAttack = currentTarget.GetComponent<IAttack>();
+            targetObject = currentTarget.GetComponent<IObject>();
         }
     }
 
     public void EmptyDetectCollider2D()
     {
         currentTarget = null;
-        detectEnemyCollider = null;
-        targetAttackInterface = null;
-        targetObjectInterface = null;
+        DetectedEnemy = null;
+        targetAttack = null;
+        targetObject = null;
         isDetected = false;
     }
 
-    public bool IsDetectEnemyCollider(string enemyTag)
+    public bool IsDetectEnemy(string enemyTag)
     {
-        return detectEnemyCollider != null && detectEnemyCollider.CompareTag(enemyTag);
+        return DetectedEnemy != null && DetectedEnemy.CompareTag(enemyTag);
     }
 }

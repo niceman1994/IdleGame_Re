@@ -299,6 +299,7 @@ GameObject:
   - component: {fileID: 3354738036288994192}
   - component: {fileID: 3354738036288994198}
   - component: {fileID: 7320035648123066918}
+  - component: {fileID: 2811531860635496952}
   - component: {fileID: 3354738036288994195}
   - component: {fileID: 3354738036288994199}
   m_Layer: 6
@@ -361,14 +362,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a33bc276ebcbc174bbede8f52cf18cf0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hp: 412
-  atk: 16
-  attackSpeed: 1.26
+  runtimeStats:
+    hp: 0
+    maxHp: 0
+    attack: 0
+    attackSpeed: 0
   attackSound: {fileID: 1650362143514806642}
   deadSound: {fileID: 8005362815944249473}
   textPos: {fileID: 2498965124995000519}
   detectCollider: {fileID: 7320035648123066918}
+  attackSystem: {fileID: 0}
   objectType: 5
+  bossData: {fileID: 11400000, guid: 0241fd312f8e7fa41bc4f4a316f5a713, type: 2}
   isSpellCast: 0
   spell: {fileID: 4961344482941813673, guid: a35d4ac34bf94b9478f6c5e73baf6561, type: 3}
   castSound: {fileID: 1838115016906275888}
@@ -391,6 +396,18 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 64
+--- !u!114 &2811531860635496952
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3354738036288994156}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 534e8a5b5d43d594981cfa997e7d1686, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!212 &3354738036288994195
 SpriteRenderer:
   m_ObjectHideFlags: 0

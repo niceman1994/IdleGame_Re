@@ -74,6 +74,7 @@ GameObject:
   - component: {fileID: 4966793514400007287}
   - component: {fileID: 2728765158353956591}
   - component: {fileID: 5960060843693291654}
+  - component: {fileID: 6955032131244985627}
   - component: {fileID: 2093662078}
   - component: {fileID: -8867629547088983338}
   m_Layer: 6
@@ -166,15 +167,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4809f2100bd44ee42aa9b54fe219a5f1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  hp: 106
-  atk: 10
-  attackSpeed: 1.2
+  runtimeStats:
+    hp: 0
+    maxHp: 0
+    attack: 0
+    attackSpeed: 0
   attackSound: {fileID: 2476235893765015667}
   deadSound: {fileID: 4513727075121585837}
   textPos: {fileID: 545828199337599106}
-  ownCollider: {fileID: -8867629547088983338}
   detectCollider: {fileID: 5960060843693291654}
+  attackSystem: {fileID: 0}
   objectType: 1
+  monsterData: {fileID: 11400000, guid: d35354d3be03e9244b8190c9dec18e2a, type: 2}
 --- !u!114 &5960060843693291654
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -194,6 +198,18 @@ MonoBehaviour:
   layerMask:
     serializedVersion: 2
     m_Bits: 64
+--- !u!114 &6955032131244985627
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4423209227590101289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 534e8a5b5d43d594981cfa997e7d1686, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!95 &2093662078
 Animator:
   serializedVersion: 5

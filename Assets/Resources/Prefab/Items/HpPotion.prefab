@@ -124,10 +124,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b598e862a7583ed419df13e3dca6da34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemName: HpPotion
-  maxCount: 25
-  description: "\uC0AC\uC6A9\uD558\uBA74 \uCCB4\uB825\uC758 \uC77C\uBD80\uB97C \uD68C\uBCF5\uD55C\uB2E4."
-  itemType: 1
-  itemAbilityType: 1
-  itemAbility: 125
-  itemImage: {fileID: 21300000, guid: d97ee3d689bd42a4a8530a0608adaaf6, type: 3}
+  itemData: {fileID: 11400000, guid: e8c791f4af3f9f24c9934080fc0c67d2, type: 2}
