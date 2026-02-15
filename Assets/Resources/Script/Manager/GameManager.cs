@@ -20,9 +20,15 @@ public class GameManager : Singleton<GameManager>
     [SerializeField] Transform thunderParent;
 
     private List<Thunder> thunderList = new List<Thunder>();
+
     public Inventory Inventory => inventory;
 
-    private void Start()
+    //private void Start()
+    //{
+    //    PrepareThunder();
+    //}
+
+    public void PrepareThunder()
     {
         for (int i = 0; i < 5; i++)
         {
@@ -39,7 +45,7 @@ public class GameManager : Singleton<GameManager>
         for (int i = 0; i < thunderList.Count; i++)
         {
             thunderList[i].gameObject.SetActive(true);
-            thunderList[i].transform.position = new Vector3(thunderPos.position.x + (1.5f * i), thunderPos.position.y - 0.4f, 0.0f);
+            thunderList[i].transform.position = new Vector3(thunderPos.position.x + (1.75f * i), thunderPos.position.y - 0.4f, 0.0f);
         }
     }
 

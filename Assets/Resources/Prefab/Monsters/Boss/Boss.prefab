@@ -371,7 +371,6 @@ MonoBehaviour:
   deadSound: {fileID: 8005362815944249473}
   textPos: {fileID: 2498965124995000519}
   detectCollider: {fileID: 7320035648123066918}
-  attackSystem: {fileID: 0}
   objectType: 5
   bossData: {fileID: 11400000, guid: 0241fd312f8e7fa41bc4f4a316f5a713, type: 2}
   isSpellCast: 0

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "CreateItemStat")]
+[CreateAssetMenu(menuName = "CreateSO/CreateItemStat")]
 public class ItemStatSO : ScriptableObject
 {
     public enum ItemType

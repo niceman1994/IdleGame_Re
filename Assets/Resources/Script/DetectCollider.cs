@@ -12,9 +12,7 @@ public class DetectCollider : MonoBehaviour
     [SerializeField] LayerMask layerMask;
 
     public Object DetectedEnemy { get; private set; }
-
-    public IAttack targetAttack;
-    public IObject targetObject;
+    public IAttack AttackTarget { get; private set; }
 
     private void OnDrawGizmos() 
     {
@@ -38,8 +36,7 @@ public class DetectCollider : MonoBehaviour
         {
             isDetected = true;
             DetectedEnemy = currentTarget.GetComponent<Object>();
-            targetAttack = currentTarget.GetComponent<IAttack>();
-            targetObject = currentTarget.GetComponent<IObject>();
+            AttackTarget = currentTarget.GetComponent<IAttack>();
         }
     }
 
@@ -47,8 +44,6 @@ public class DetectCollider : MonoBehaviour
     {
         currentTarget = null;
         DetectedEnemy = null;
-        targetAttack = null;
-        targetObject = null;
         isDetected = false;
     }
 

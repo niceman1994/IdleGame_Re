@@ -176,7 +176,6 @@ MonoBehaviour:
   deadSound: {fileID: 4513727075121585837}
   textPos: {fileID: 545828199337599106}
   detectCollider: {fileID: 5960060843693291654}
-  attackSystem: {fileID: 0}
   objectType: 1
   monsterData: {fileID: 11400000, guid: d35354d3be03e9244b8190c9dec18e2a, type: 2}
 --- !u!114 &5960060843693291654

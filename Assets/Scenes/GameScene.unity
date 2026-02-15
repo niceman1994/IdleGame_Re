@@ -535,6 +535,56 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 125656165}
   m_CullTransparentMesh: 0
+--- !u!1 &128764030
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 128764032}
+  - component: {fileID: 128764031}
+  m_Layer: 0
+  m_Name: TextPoolManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &128764031
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 128764030}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ce04b837bad85940866ca84de69b8a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultCapity: 10
+  damageTextPrefab: {fileID: 5271160387624875537, guid: c5208ca815a8ecf48ab749fd87db5fe9, type: 3}
+  damageTextParent: {fileID: 888366980}
+  itemTextParent: {fileID: 1441585221}
+--- !u!4 &128764032
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 128764030}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 888366980}
+  - {fileID: 1441585221}
+  m_Father: {fileID: 0}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &136044880
 GameObject:
   m_ObjectHideFlags: 0
@@ -1235,6 +1285,7 @@ GameObject:
   m_Component:
   - component: {fileID: 313868000}
   - component: {fileID: 313868002}
+  - component: {fileID: 313868004}
   - component: {fileID: 313868001}
   - component: {fileID: 313868003}
   m_Layer: 5
@@ -1347,6 +1398,22 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &313868004
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 313867999}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab285e717ee977c47a7ed98ad1ba458b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skillData: {fileID: 11400000, guid: 9cdb22c114612b6439bbcaacf68e60f9, type: 2}
+  skillButton: {fileID: 313868003}
+  coolTime: 45
+  coolTimeText: {fileID: 1835073671}
 --- !u!1 &349057711
 GameObject:
   m_ObjectHideFlags: 0
@@ -1589,7 +1656,7 @@ Transform:
   - {fileID: 1675842053}
   - {fileID: 96692590}
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &385556759
 GameObject:
@@ -2440,7 +2507,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -242, y: 162.49997}
+  m_AnchoredPosition: {x: -242, y: 162.49904}
   m_SizeDelta: {x: 475, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &544136247
@@ -2552,7 +2619,7 @@ Transform:
   - {fileID: 2044396629}
   - {fileID: 2090676733}
   m_Father: {fileID: 0}
-  m_RootOrder: 4
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &586212646
 MonoBehaviour:
@@ -2568,34 +2635,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buttonSound: {fileID: 2044396628}
   upgradeSound: {fileID: 2090676734}
-  attackSounds:
-  - soundName: PlayerAttack
-    audioClip: {fileID: 8300000, guid: 97f65600c30b27b409e2adf57e3defb7, type: 3}
-  - soundName: BossAttack
-    audioClip: {fileID: 8300000, guid: fa69ffe03f579594fbfcb2a57401c6ab, type: 3}
-  - soundName: FlyingEyeAttack
-    audioClip: {fileID: 8300000, guid: 951f02a37c0a34e439f2bc3d7e34a8a8, type: 3}
-  - soundName: GoblinAttack
-    audioClip: {fileID: 8300000, guid: 6640ab08e10022e418e633e8fc30e540, type: 3}
-  - soundName: MushroomAttack
-    audioClip: {fileID: 8300000, guid: 47f4d6a53b9a8a84b857e23b7ebbd5f2, type: 3}
-  - soundName: SkeletonAttack
-    audioClip: {fileID: 8300000, guid: f348285c4418ee04cad7bff8abfe7f83, type: 3}
-  - soundName: CastSound
+  castSounds:
+  - soundName: BossSpellCast
     audioClip: {fileID: 8300000, guid: 8af1819e837a50449a8a4bcd98f3832e, type: 3}
-  deadSounds:
-  - soundName: PlayerDead
-    audioClip: {fileID: 0}
-  - soundName: BossDead
-    audioClip: {fileID: 8300000, guid: c685aea64768ba1499f1ee60e81e6dc7, type: 3}
-  - soundName: FlyingEyeDead
-    audioClip: {fileID: 8300000, guid: 24cd1ceb805269e499bc8b2c53763797, type: 3}
-  - soundName: GoblinDead
-    audioClip: {fileID: 8300000, guid: b51570d60c6f3d9468f6bda71b11ba9f, type: 3}
-  - soundName: MushroomDead
-    audioClip: {fileID: 8300000, guid: 34b0a015d698f0b479c31fa5990bba70, type: 3}
-  - soundName: SkeletonDead
-    audioClip: {fileID: 8300000, guid: cdb255ee621c63547aee75e975ebd3aa, type: 3}
 --- !u!1 &626898611
 GameObject:
   m_ObjectHideFlags: 0
@@ -2760,6 +2802,7 @@ GameObject:
   m_Component:
   - component: {fileID: 651142771}
   - component: {fileID: 651142773}
+  - component: {fileID: 651142775}
   - component: {fileID: 651142772}
   - component: {fileID: 651142774}
   m_Layer: 5
@@ -2872,6 +2915,22 @@ MonoBehaviour:
   m_OnClick:
     m_PersistentCalls:
       m_Calls: []
+--- !u!114 &651142775
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 651142770}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab285e717ee977c47a7ed98ad1ba458b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skillData: {fileID: 11400000, guid: de33301df8b5354459b670b9c2ddd311, type: 2}
+  skillButton: {fileID: 651142774}
+  coolTime: 55
+  coolTimeText: {fileID: 1325967001}
 --- !u!1 &696833330
 GameObject:
   m_ObjectHideFlags: 0
@@ -3136,6 +3195,7 @@ GameObject:
   m_Component:
   - component: {fileID: 788716731}
   - component: {fileID: 788716733}
+  - component: {fileID: 788716736}
   - component: {fileID: 788716732}
   - component: {fileID: 788716734}
   - component: {fileID: 788716735}
@@ -3345,6 +3405,22 @@ AudioSource:
     m_PreInfinity: 2
     m_PostInfinity: 2
     m_RotationOrder: 4
+--- !u!114 &788716736
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 788716730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab285e717ee977c47a7ed98ad1ba458b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skillData: {fileID: 11400000, guid: 2af2c03212172f94eb2571578668a68e, type: 2}
+  skillButton: {fileID: 788716734}
+  coolTime: 40
+  coolTimeText: {fileID: 422399377}
 --- !u!1 &813818350
 GameObject:
   m_ObjectHideFlags: 0
@@ -3733,12 +3809,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 888366979}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 909758295}
+  m_Father: {fileID: 128764032}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &902345659
@@ -3807,57 +3883,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 9
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &909758293
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 909758295}
-  - component: {fileID: 909758294}
-  m_Layer: 0
-  m_Name: TextPoolManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &909758294
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 909758293}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ce04b837bad85940866ca84de69b8a2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  defaultCapity: 10
-  damageTextPrefab: {fileID: 5271160387624875537, guid: c5208ca815a8ecf48ab749fd87db5fe9, type: 3}
-  damageTextParent: {fileID: 888366980}
-  itemTextParent: {fileID: 1441585221}
---- !u!4 &909758295
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 909758293}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 888366980}
-  - {fileID: 1441585221}
-  m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &966894959
 GameObject:
@@ -3892,7 +3918,7 @@ Transform:
   m_Children:
   - {fileID: 1408589374}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &966894961
 MonoBehaviour:
@@ -4184,6 +4210,50 @@ RectTransform:
   m_AnchoredPosition: {x: -805, y: 230}
   m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &1123809774
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1123809775}
+  - component: {fileID: 1123809776}
+  m_Layer: 0
+  m_Name: BuffManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1123809775
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1123809774}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1123809776
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1123809774}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1c3129a291be1c549bc6929e7970964a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1147911688
 GameObject:
   m_ObjectHideFlags: 0
@@ -4327,7 +4397,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1825844285}
   m_HandleRect: {fileID: 1825844284}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -4895,12 +4965,12 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1441585220}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 909758295}
+  m_Father: {fileID: 128764032}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1481622490
@@ -5087,7 +5157,7 @@ Transform:
   m_Children:
   - {fileID: 160869687}
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1603356850
 MonoBehaviour:
@@ -6837,7 +6907,7 @@ RectTransform:
   - {fileID: 1496806293}
   - {fileID: 1147911692}
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -6857,24 +6927,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   skill:
-  - skillBtn: {fileID: 313868003}
-    coolTime: 45
-    coolTimeReset: 45
-    buffTime: 15
-    skillPower: 3
-    coolTimeText: {fileID: 1835073671}
-  - skillBtn: {fileID: 788716734}
-    coolTime: 40
-    coolTimeReset: 40
-    buffTime: 0
-    skillPower: 3
-    coolTimeText: {fileID: 422399377}
-  - skillBtn: {fileID: 651142774}
-    coolTime: 55
-    coolTimeReset: 55
-    buffTime: 15
-    skillPower: 15
-    coolTimeText: {fileID: 1325967001}
+  - {fileID: 313868004}
+  - {fileID: 788716736}
+  - {fileID: 651142775}
   thunderSound: {fileID: 788716735}
 --- !u!114 &2144952172
 MonoBehaviour:
@@ -11340,7 +11395,7 @@ Transform:
   - {fileID: 1781999146348200016}
   - {fileID: 2033598078}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &2673993270644381607
 SpriteRenderer:
@@ -12351,7 +12406,7 @@ Transform:
   - {fileID: 2092255879761612860}
   - {fileID: 2092255880515813386}
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &9087172896254651041
 GameObject:

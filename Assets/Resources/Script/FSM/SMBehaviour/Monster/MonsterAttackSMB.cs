@@ -11,6 +11,6 @@ public class MonsterAttackSMB : StateMachineBehaviour
         if (monster == null)
             monster = animator.GetComponent<Object>();
 
-        monster.RegisterDeathCallback();
+        monster.RegisterEnemyDeathCallback();
     }
 }

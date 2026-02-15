@@ -42,9 +42,16 @@ public class MonsterFlyingEye : Object
         /* normalizedTimeInProcess만 있으면 0.7f 이상부터는 계속 데미지를 계산해 한 번의 공격에 플레이어가 죽게 되고
         normalizedTime > atkLoop만 있으면 공격 모션보다 데미지가 더 빨리 나와서 의도와 맞지 않게 된다.*/
         if (AttackStateProcess() > 0.7f && AttackStateTime() > attackLoop)
-        {
             PlayAttackSound(monsterData.monsterStats.attackClip);
-        }
+    }
+
+    protected override void Death()
+    {
+        base.Death();
+        GameManager.Instance.gameGold.curGold[0] += giveGold;
+        PlayDeadSound(monsterData.monsterStats.deadClip);
+        healthSystem.NotifyDeath();
+        ItemManager.Instance.SpawnItem(transform.position);
     }
 
     public override float CurrentAtk(float addAtk)
@@ -59,10 +66,7 @@ public class MonsterFlyingEye : Object
         runtimeStats.hp -= dmg;
 
         if (runtimeStats.hp <= 0)
-        {
-            Death(() => PlayDeadSound(monsterData.monsterStats.deadClip));
-            HealthSystem.NotifyDeath();
-        }
+            Death();
     }
 
     public override float CurrentHp()

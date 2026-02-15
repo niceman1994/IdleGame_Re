@@ -92,7 +92,7 @@ public class ObjectPoolManager : Singleton<ObjectPoolManager>
     {
         if (pooledObject.gameObject.activeSelf == true)
         {
-            pooledObject.ResetObjectStatus();
+            pooledObject.ResetObjectStats();
             pooledObject.GetComponent<BoxCollider2D>().enabled = true;
             pooledObject.gameObject.SetActive(false);
 

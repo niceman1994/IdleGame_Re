@@ -15,7 +15,7 @@ public class AttackState : BaseState
 
     public override void OnStateExit()
     {
-        playerAnimator.SetBool("attack", false);
+        
     }
 
     public override void OnStateUpdate()

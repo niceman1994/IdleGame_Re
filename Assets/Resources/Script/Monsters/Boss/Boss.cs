@@ -118,7 +118,7 @@ public class Boss : Object
 
     private void SummonSpell()
     {
-        castSound.clip = SoundManager.Instance.attackSounds[6].audioClip;
+        castSound.clip = SoundManager.Instance.castSounds[0].audioClip;
         castSound.Play();
 
         var bossSpell = bossSpellQueue.Dequeue();
@@ -143,6 +143,15 @@ public class Boss : Object
             objectAnimator.SetTrigger("recast");
     }
 
+    protected override void Death()
+    {
+        base.Death();
+        GameManager.Instance.gameGold.curGold[0] += giveGold;
+        isSpellCast = false;
+        PlayDeadSound(bossData.monsterStats.deadClip);
+        healthSystem.NotifyDeath();
+    }
+
     public override float CurrentAtk(float addAtk)
     {
         runtimeStats.attack += addAtk;
@@ -155,11 +164,7 @@ public class Boss : Object
         runtimeStats.hp -= dmg;
 
         if (runtimeStats.hp <= 0)
-        {
-            isSpellCast = false;
-            Death(() => PlayDeadSound(bossData.monsterStats.deadClip));
-            HealthSystem.NotifyDeath();
-        }
+            Death();
     }
 
     public override float CurrentHp()

@@ -12,7 +12,7 @@ public class HorizontalList : MonoBehaviour
         AddSlot();
     }
 
-    // 슬롯이 추가될 경우 slotCount의 수만큼 반복문을 돌려 아이템 슬롯을 추가한다.
+    // 슬롯이 추가될 경우 slotCount의 수만큼 반복문을 돌려 아이템 슬롯을 추가
     private void AddSlot()
     {
         for (int i = 0; i < slotCount; ++i)

@@ -6,8 +6,10 @@ using UnityEngine;
 public class HealthSystem : MonoBehaviour
 {
     public float CurrentHP { get; private set; }
+    public float CurrentMaxHP { get; private set; }
 
-    public event Action<float> onHealthChanged;
+    public event Action<float> onHealthDamaged;
+    public event Action<float, float> onHealthChanged;
     public event Action onDeath;
 
     public void TakeDamage(float hp, float damage)
@@ -17,7 +19,15 @@ public class HealthSystem : MonoBehaviour
         if (CurrentHP > 0)
             CurrentHP -= damage;
 
-        onHealthChanged?.Invoke(CurrentHP);
+        onHealthDamaged?.Invoke(CurrentHP);
+    }
+
+    public void ChangeHealth(float hp, float maxHp, Action hpChangeAction)
+    {
+        CurrentHP = hp;
+        CurrentMaxHP = maxHp;
+        onHealthChanged?.Invoke(CurrentHP, CurrentMaxHP);
+        hpChangeAction?.Invoke();
     }
 
     public void NotifyDeath()

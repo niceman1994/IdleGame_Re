@@ -41,47 +41,46 @@ public abstract class Object : MonoBehaviour, IObject
     protected int giveGold;
     protected BoxCollider2D ownCollider;
     protected Animator objectAnimator;
-
-    public HealthSystem HealthSystem { get; private set; }
+    protected HealthSystem healthSystem;
 
     protected virtual void Awake()
     {
         ownCollider = GetComponent<BoxCollider2D>();
         objectAnimator = GetComponent<Animator>();
-        HealthSystem = GetComponent<HealthSystem>();
+        healthSystem = GetComponent<HealthSystem>();
     }
 
-    protected virtual void OnEnable()
+    protected void OnEnable()
     {
         objectAnimator.Rebind();
         objectAnimator.Update(0.0f);
         objectAnimator.SetFloat("attackSpeed", runtimeStats.attackSpeed);
     }
 
+    protected void SetDefaultStats(float baseHp, float baseAttack, float baseAttackSpeed)
+    {
+        runtimeStats.hp = runtimeStats.maxHp = baseHp;
+        runtimeStats.attack = baseAttack;
+        runtimeStats.attackSpeed = baseAttackSpeed;
+    }
+
     protected void PlayAttackSound(AudioClip attackClip)
     {
-        if (detectCollider.targetAttack != null)
+        if (attackSound != null)
         {
-            attackLoop++;
-            detectCollider.targetAttack.GetAttackDamage(runtimeStats.attack); // 공격력만큼 탐지된 적의 체력을 깎는 함수를 호출
+            TargetAttack();
             attackSound.clip = attackClip;
             attackSound.Play();
         }
     }
 
-    protected void PlayDeadSound(AudioClip deadClip)
+    protected void TargetAttack()
     {
-        if (deadSound != null)
+        if (detectCollider.AttackTarget != null)
         {
-            deadSound.clip = deadClip;
-            deadSound.Play();
+            attackLoop++;
+            detectCollider.AttackTarget.GetAttackDamage(runtimeStats.attack); // 공격력만큼 탐지된 적의 체력을 깎는 함수를 호출
         }
-
-        //if (deadAudio != null)
-        //{
-        //    deadAudio.clip = SoundManager.Instance.deadSounds[soundIndex].audioClip;
-        //    deadAudio.Play();
-        //}
     }
 
     protected float AttackStateTime()
@@ -96,23 +95,36 @@ public abstract class Object : MonoBehaviour, IObject
         return AttackStateTime() - Mathf.Floor(AttackStateTime());
     }
 
-    protected void Death(Action deadAction)
+    protected void PlayDeadSound(AudioClip deadClip)
     {
-        runtimeStats.hp = 0;
-        attackLoop = 0;
-        ownCollider.enabled = false;
-        detectCollider.EmptyDetectCollider2D();
+        if (deadSound != null)
+        {
+            deadSound.clip = deadClip;
+            deadSound.Play();
+        }
+    }
+
+    protected virtual void Death()
+    {
         objectAnimator.SetBool("attack", false);
         objectAnimator.SetBool("death", true);
 
-        if (CompareTag("Monster") || CompareTag("Boss"))
-        {
-            GameManager.Instance.gameGold.curGold[0] += giveGold;
-            deadAction.Invoke();
-        }
+        // 추상 클래스인 Object를 상속받아서 공격할 때 ResetAttackState 함수를 서로 등록하고 죽은 쪽은 이쪽에서 해제함
+        detectCollider.DetectedEnemy.healthSystem.onDeath -= ResetAttackState;
 
-        if (gameObject.CompareTag("Monster"))
-            ItemManager.Instance.SpawnItem(transform.position);
+        runtimeStats.hp = 0;
+        attackLoop = 0;
+        ownCollider.enabled = false;
+        detectCollider.enabled = false;
+        detectCollider.EmptyDetectCollider2D();
+    }
+
+    public bool IsObjectAnimComplete(string animName)
+    {
+        bool isDeathComplete = objectAnimator.GetCurrentAnimatorStateInfo(0).IsName(animName) &&
+            objectAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f && !isDeathAnimComplete;
+
+        return isDeathComplete;
     }
 
     public IEnumerator OnMonsterDeathComplete()
@@ -122,62 +134,33 @@ public abstract class Object : MonoBehaviour, IObject
 
         ObjectPoolManager.Instance.ReturnPooledObject(this);
         isDeathAnimComplete = false;
+        detectCollider.enabled = true;
         runtimeStats.hp = runtimeStats.maxHp;
     }
 
-    public void RegisterDeathCallback()
+    public void RegisterEnemyDeathCallback()
     {
-        detectCollider.DetectedEnemy.HealthSystem.onDeath += ResetAttackState;
-        Debug.Log("ResetAttackState 구독 완료");
+        detectCollider.DetectedEnemy.healthSystem.onDeath += ResetAttackState;
     }
 
-    private void ResetAttackState()
+    protected virtual void ResetAttackState()
     {
-        Debug.Log("ResetAttackState 호출");
         attackLoop = 0;
-        detectCollider.EmptyDetectCollider2D();
         objectAnimator.SetBool("attack", false);
-
-        //if (detectCollider.targetObject.CurrentHp() <= 0)
-        //{
-        //    attackLoop = 0;
-        //    detectCollider.EmptyDetectCollider2D();
-        //    objectAnimator.SetBool("attack", false);
-        //}
+        detectCollider.DetectedEnemy.healthSystem.onDeath -= ResetAttackState;
+        detectCollider.EmptyDetectCollider2D();
     }
 
-    public void RemoveDeathCallback()
-    {
-        detectCollider.DetectedEnemy.HealthSystem.onDeath -= ResetAttackState;
-        Debug.Log("ResetAttackState 해지 완료");
-    }
-
-    public void ResetObjectStatus()
+    public void ResetObjectStats()
     {
         runtimeStats.hp = runtimeStats.maxHp;
         attackLoop = 0;
         detectCollider.EmptyDetectCollider2D();
-    }
-
-    protected void SetDefaultStats(float baseHp, float baseAttack, float baseAttackSpeed)
-    {
-        runtimeStats.hp = runtimeStats.maxHp = baseHp;
-        runtimeStats.attack = baseAttack;
-        runtimeStats.attackSpeed = baseAttackSpeed;
     }
 
     public bool ComparePooledObjectType(Object compareObject)
     {
-        return objectType == compareObject.objectType;
-    }
-
-
-    public bool IsObjectAnimComplete(string animName)
-    {
-        bool isDeathComplete = objectAnimator.GetCurrentAnimatorStateInfo(0).IsName(animName) &&
-            objectAnimator.GetCurrentAnimatorStateInfo(0).normalizedTime >= 1.0f && !isDeathAnimComplete;
-
-        return isDeathComplete;
+        return objectType.Equals(compareObject.objectType);
     }
 
     public abstract void CheckState();

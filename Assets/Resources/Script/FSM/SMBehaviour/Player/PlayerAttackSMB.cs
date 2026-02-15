@@ -11,6 +11,6 @@ public class PlayerAttackSMB : StateMachineBehaviour
         if (player == null)
             player = animator.GetComponent<Player>();
 
-        player.RegisterDeathCallback();
+        player.RegisterEnemyDeathCallback();
     }
 }
