@@ -1,12 +1,13 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class ListUp : MonoBehaviour
+public class UpgradeStatList : MonoBehaviour
 {
-    [SerializeField] List<UpgradeStatus> upgradeStatusButton;
+    [SerializeField] List<UpgradeStat> upgradeStatButtons;
     [Space(15)]
     [SerializeField] Button statusButton;
     [SerializeField] RectTransform upgradeUI;
@@ -18,62 +19,60 @@ public class ListUp : MonoBehaviour
     [SerializeField] Transform invenUIInUp;
     [SerializeField] Transform invenUIOutDown;
 
-    private bool moveStatusUI;
-    private bool moveInventory;
+    private bool moveStatUI = false;
+    private bool moveInventory = false;
 
     private void Start()
     {
         SetStatusUpButtonEvent();
         OnClickButtonsEvent();
-        moveStatusUI = false;
-        moveInventory = false;
     }
 
-    private void Update()
+    private void FixedUpdate()
     {
-        MoveStatusUI();
+        MoveStatUI();
         MoveInventory();
     }
 
-    private void MoveStatusUI()
+    private void MoveStatUI()
     {
-        if (moveStatusUI == true)
-            upgradeUI.localPosition = Vector3.Lerp(upgradeUI.localPosition, upgradeUIOutRight.localPosition, 0.055f);
+        if (moveStatUI == true)
+            upgradeUI.localPosition = Vector3.Lerp(upgradeUI.localPosition, upgradeUIOutRight.localPosition, 0.7f);
         else
-            upgradeUI.localPosition = Vector3.Lerp(upgradeUI.localPosition, upgradeUIInLeft.localPosition, 0.055f);
+            upgradeUI.localPosition = Vector3.Lerp(upgradeUI.localPosition, upgradeUIInLeft.localPosition, 0.7f);
     }
 
     private void MoveInventory()
     {
         if (moveInventory == true)
-            invenUI.localPosition = Vector3.Lerp(invenUI.localPosition, invenUIInUp.localPosition, 0.05f);
+            invenUI.localPosition = Vector3.Lerp(invenUI.localPosition, invenUIInUp.localPosition, 0.7f);
         else
-            invenUI.localPosition = Vector3.Lerp(invenUI.localPosition, invenUIOutDown.localPosition, 0.05f);
+            invenUI.localPosition = Vector3.Lerp(invenUI.localPosition, invenUIOutDown.localPosition, 0.7f);
     }
 
     private void SetStatusUpButtonEvent()
     {
-        for (int i = 0; i < upgradeStatusButton.Count; i++)
+        for (int i = 0; i < upgradeStatButtons.Count; i++)
         {
-            switch(upgradeStatusButton[i].name)
+            switch(upgradeStatButtons[i].name)
             {
                 case "ATKUP":
-                    upgradeStatusButton[i].SetUpgradeButtonEvent(upgradeStatusButton[i].AddAtk);
+                    upgradeStatButtons[i].SetUpgradeButtonEvent(upgradeStatButtons[i].AddAtk);
                     break;
                 case "HPUP":
-                    upgradeStatusButton[i].SetUpgradeButtonEvent(upgradeStatusButton[i].AddHp);
+                    upgradeStatButtons[i].SetUpgradeButtonEvent(upgradeStatButtons[i].AddHp);
                     break;
                 case "ASUP":
-                    upgradeStatusButton[i].SetUpgradeButtonEvent(upgradeStatusButton[i].AddAtkSpeed);
+                    upgradeStatButtons[i].SetUpgradeButtonEvent(upgradeStatButtons[i].AddAtkSpeed);
                     break;
                 case "MSUP":
-                    upgradeStatusButton[i].SetUpgradeButtonEvent(upgradeStatusButton[i].AddMoveSpeed);
+                    upgradeStatButtons[i].SetUpgradeButtonEvent(upgradeStatButtons[i].AddMoveSpeed);
                     break;
                 case "SPUP":
-                    upgradeStatusButton[i].SetUpgradeButtonEvent(upgradeStatusButton[i].AddSkillPower);
+                    upgradeStatButtons[i].SetUpgradeButtonEvent(upgradeStatButtons[i].AddSkillPower);
                     break;
                 case "GOLDUP":
-                    upgradeStatusButton[i].SetUpgradeButtonEvent(upgradeStatusButton[i].AddEarnGold);
+                    upgradeStatButtons[i].SetUpgradeButtonEvent(upgradeStatButtons[i].AddEarnGold);
                     break;
                 default:
                     break;
@@ -92,9 +91,9 @@ public class ListUp : MonoBehaviour
 
     private void OnClickStatusButton()
     {
-        if (moveStatusUI == false)
-            moveStatusUI = true;
-        else moveStatusUI = false;
+        if (moveStatUI == false)
+            moveStatUI = true;
+        else moveStatUI = false;
 
         moveInventory = false;
         SoundManager.Instance.buttonSound.Play();
@@ -106,7 +105,7 @@ public class ListUp : MonoBehaviour
             moveInventory = true;
         else moveInventory = false;
 
-        moveStatusUI = false;
+        moveStatUI = false;
         SoundManager.Instance.buttonSound.Play();
     }
 }

@@ -18,15 +18,11 @@ public class GameManager : Singleton<GameManager>
     public Thunder thunder;
     public Transform thunderPos;
     [SerializeField] Transform thunderParent;
+    [SerializeField] AudioSource thunderSound;
 
     private List<Thunder> thunderList = new List<Thunder>();
 
     public Inventory Inventory => inventory;
-
-    //private void Start()
-    //{
-    //    PrepareThunder();
-    //}
 
     public void PrepareThunder()
     {
@@ -47,6 +43,7 @@ public class GameManager : Singleton<GameManager>
             thunderList[i].gameObject.SetActive(true);
             thunderList[i].transform.position = new Vector3(thunderPos.position.x + (1.75f * i), thunderPos.position.y - 0.4f, 0.0f);
         }
+        thunderSound.Play();
     }
 
     public void AddThunderPower(float addDamage)

@@ -1,10 +1,10 @@
-public interface IBuffEffect
+public interface IBuff
 {
     public void Apply(IObject targetObject);
     public void Expire(IObject targetObject);
 }
 
-public class AttackBuff : IBuffEffect
+public class AttackBuff : IBuff
 {
     private float buffAmount;
     public AttackBuff(float buffAmount)
@@ -23,7 +23,7 @@ public class AttackBuff : IBuffEffect
     }
 }
 
-public class HealBuff : IBuffEffect
+public class HealBuff : IBuff
 {
     private float buffAmount;
     public HealBuff(float buffAmount)
@@ -42,7 +42,7 @@ public class HealBuff : IBuffEffect
     }
 }
 
-public class GoldBuff : IBuffEffect
+public class GoldBuff : IBuff
 {
     private int buffAmount;
     public GoldBuff(int buffAmount)

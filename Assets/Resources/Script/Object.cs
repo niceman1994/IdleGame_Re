@@ -164,9 +164,10 @@ public abstract class Object : MonoBehaviour, IObject
     }
 
     public abstract void CheckState();
+    public abstract void AddBuff(Buff buff);
     public abstract float CurrentHp();
     public abstract void CurrentHpChange(float currentHp);
-    public abstract float HpUp(float addHp);
-    public abstract float CurrentAtk(float addAtk);
+    public abstract void HpUp(float addHp);
+    public abstract void CurrentAtk(float addAtk);
     public abstract void GetAttackDamage(float dmg);
 }

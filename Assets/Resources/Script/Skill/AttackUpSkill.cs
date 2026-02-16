@@ -7,11 +7,11 @@ public class AttackUpSkill : Skill
     public override void AddBuff(SkillSO skillData)
     {
         buff = new InstantBuff(new AttackBuff(skillData.skillPower), skillData.buffTime);
-        //buffList.Add(buff);
     }
 
     public override void Use(IObject target)
     {
         buff.Apply(target);
+        target.AddBuff(buff);
     }
 }

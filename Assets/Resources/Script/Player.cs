@@ -1,7 +1,7 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using System;
 
 public enum PlayerState
 {
@@ -16,7 +16,8 @@ public class Player : Object
     [SerializeField] Transform startPoint;
     [SerializeField] Transform endPoint;
     [SerializeField] PlayerState currentState;
-
+    [SerializeField] BuffController buffController;
+     
     private float runtimeMoveSpeed;
     private StateMachine playerStateMachine;
     private PlayerState previousState;
@@ -119,6 +120,11 @@ public class Player : Object
         }
     }
 
+    public override void AddBuff(Buff buff)
+    {
+        buffController.AddBuff(buff);
+    }
+
     private void ShowCurrentHp()
     {
         GameManager.Instance.hpBar.fillAmount = runtimeStats.hp / runtimeStats.maxHp;
@@ -130,6 +136,17 @@ public class Player : Object
     {
         runtimeStats.hp = currentHp;
         ShowCurrentHp();
+    }
+
+    public override void GetAttackDamage(float dmg)
+    {
+        healthSystem.TakeDamage(runtimeStats.hp, dmg);
+
+        if (runtimeStats.hp <= 0)
+        {
+            buffController.ClearAllBuffs();
+            Death();
+        }
     }
 
     protected override void ResetAttackState()
@@ -200,14 +217,6 @@ public class Player : Object
         return runtimeStats.attackSpeed;
     }
 
-    public override void GetAttackDamage(float dmg)
-    {
-        healthSystem.TakeDamage(runtimeStats.hp, dmg);
-
-        if (runtimeStats.hp <= 0)
-            Death();
-    }
-
     public override float CurrentHp()
     {
         return runtimeStats.hp;
@@ -227,18 +236,15 @@ public class Player : Object
         TextPoolManager.Instance.ShowHealText(value, textPos, new Color(0.0f, 255.0f, 0.0f, 255.0f));
     }
 
-    public override float HpUp(float addHp)
+    public override void HpUp(float addHp)
     {
         runtimeStats.hp += addHp;
         runtimeStats.maxHp += addHp;
         healthSystem.ChangeHealth(runtimeStats.hp, runtimeStats.maxHp, ShowCurrentHp);
-
-        return runtimeStats.hp;
     }
 
-    public override float CurrentAtk(float addAtk)
+    public override void CurrentAtk(float addAtk)
     {
         runtimeStats.attack += addAtk;
-        return runtimeStats.attack;
     }
 }

@@ -4,10 +4,10 @@ using UnityEngine;
 public abstract class Buff
 {
     public bool IsActive { get; private set; }
-    public float duration;
 
+    protected float duration;
     protected float elapsed;
-    protected IBuffEffect buffEffect;
+    protected IBuff buffEffect;
     protected IObject targetObject;
 
     public virtual void Apply(IObject targetObject)
@@ -22,7 +22,7 @@ public abstract class Buff
         elapsed += deltaTime;
         
         // 버프 지속 시간이 지났거나 버프 대상의 체력이 0 이하일 때 버프를 종료함
-        if (elapsed >= duration || targetObject.CurrentHp() <= 0)
+        if (elapsed >= duration)
         {
             ExpireBuff();
         }
@@ -32,5 +32,6 @@ public abstract class Buff
     {
         IsActive = false;
         buffEffect.Expire(targetObject);
+        elapsed = 0.0f;
     }
 }

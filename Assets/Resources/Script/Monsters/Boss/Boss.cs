@@ -152,10 +152,10 @@ public class Boss : Object
         healthSystem.NotifyDeath();
     }
 
-    public override float CurrentAtk(float addAtk)
+    public override void CurrentAtk(float addAtk)
     {
         runtimeStats.attack += addAtk;
-        return runtimeStats.attack;
+        //return runtimeStats.attack;
     }
 
     public override void GetAttackDamage(float dmg)
@@ -173,12 +173,13 @@ public class Boss : Object
     }
 
     // 스테이지가 오를 수록 체력을 올리기 위해 사용하는 함수
-    public override float HpUp(float addHp)
+    public override void HpUp(float addHp)
     {
         runtimeStats.hp += addHp;
         runtimeStats.maxHp += addHp;
-        return runtimeStats.hp;
+        //return runtimeStats.hp;
     }
 
+    public override void AddBuff(Buff buff) { }
     public override void CurrentHpChange(float value) { }
 }
