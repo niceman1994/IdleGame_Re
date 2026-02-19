@@ -16,6 +16,11 @@ public class SkillButton : MonoBehaviour
 
     public event Action<SkillSO> onSkillPressed;
 
+    private void Awake()
+    {
+        SkillButtonInit();
+    }
+
     public void SkillButtonInit()
     {
         normalColor = skillUIButton.colors.normalColor;

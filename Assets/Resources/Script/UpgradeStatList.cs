@@ -52,6 +52,9 @@ public class UpgradeStatList : MonoBehaviour
 
     private void SetStatusUpButtonEvent()
     {
+        if (upgradeStatButtons.Count == 0)
+            Debug.LogWarning($"{upgradeStatButtons} 리스트에 요소가 들어있지 않습니다!");
+
         for (int i = 0; i < upgradeStatButtons.Count; i++)
         {
             switch(upgradeStatButtons[i].name)
@@ -96,7 +99,7 @@ public class UpgradeStatList : MonoBehaviour
         else moveStatUI = false;
 
         moveInventory = false;
-        SoundManager.Instance.buttonSound.Play();
+        SoundManager.Instance.PlayPlayerUIClickSound();
     }
 
     private void OnClickInvenButtonEvent()
@@ -106,6 +109,6 @@ public class UpgradeStatList : MonoBehaviour
         else moveInventory = false;
 
         moveStatUI = false;
-        SoundManager.Instance.buttonSound.Play();
+        SoundManager.Instance.PlayPlayerUIClickSound();
     }
 }

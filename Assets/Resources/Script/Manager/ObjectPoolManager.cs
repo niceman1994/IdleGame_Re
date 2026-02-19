@@ -2,16 +2,9 @@ using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class ObjectPoolManager : Singleton<ObjectPoolManager>
 {
-    [Header("스테이지 관련 변수")]
-    public int stageNum;
-    public Text stage;
-    [SerializeField] int bossStage;
-
-    [Space(15.0f)]
     public int monsterCount;
     public Transform monsterParent;
 
@@ -19,27 +12,20 @@ public class ObjectPoolManager : Singleton<ObjectPoolManager>
     public List<GameObject> monsterPrefab;
     public GameObject boss;
 
-    private int prevStage;
-    private int enterMaxStage;      // 플레이어가 진입한 가장 높은 스테이지
     private Queue<Object> bossQueue = new Queue<Object>();
     private Dictionary<int, Queue<Object>> monsterPools = new Dictionary<int, Queue<Object>>();
     // 플레이어가 진행 도중에 죽었을 때 남은 몬스터를 회수하기 위해 사용하는 리스트 변수
     private List<Object> dequeueMonsterList = new List<Object>();
 
-    public int EnterMaxStage => enterMaxStage;
-
     protected override void Awake()
     {
         base.Awake();
         EnqueueMonsters();
-        SummonMonster();
-        GetCurrentStage();
-        enterMaxStage = 0;
     }
 
-    private void SummonMonster()
+    public void SummonMonster(float currentStage, float bossStage)
     {
-        if (stageNum % bossStage == 0)
+        if (currentStage % bossStage == 0)
             SetBoss();
         else
             SetMonsterPosition(7.0f);
@@ -75,7 +61,7 @@ public class ObjectPoolManager : Singleton<ObjectPoolManager>
     {
         for (int i = 0; i < monsterCount; i++)
         {
-            Object dequeueMonster = monsterPools[Random.Range(0, monsterPools.Count)].Dequeue();
+            Object dequeueMonster = monsterPools[UnityEngine.Random.Range(0, monsterPools.Count)].Dequeue();
             dequeueMonsterList.Add(dequeueMonster);
             dequeueMonster.gameObject.SetActive(true);
             dequeueMonster.transform.position = new Vector3(summonInterval + (3.5f * i), -1.15f, 0.0f);
@@ -111,32 +97,6 @@ public class ObjectPoolManager : Singleton<ObjectPoolManager>
                 }
             }
         }
-    }
-
-    private void GetCurrentStage()
-    {
-        prevStage = stageNum;
-        stage.text = $"STAGE {stageNum}";
-    }
-
-    public void StageUp()
-    {
-        stageNum += 1;
-        prevStage = stageNum;
-        enterMaxStage = stageNum - 1;
-        SummonMonster();
-        GetCurrentStage();
-    }
-
-    public void StageDown()
-    {
-        if (stageNum > 1)
-            stageNum = prevStage;
-        else
-            stageNum = 1;
-
-        SummonMonster();
-        GetCurrentStage();
     }
 
     public void ReturnPooledMonsters()

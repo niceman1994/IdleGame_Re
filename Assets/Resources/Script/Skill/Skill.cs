@@ -6,7 +6,11 @@ using UnityEngine;
 public abstract class Skill
 {
     protected Buff buff;
+    public event Action onSkillSoundPlay;
 
     public abstract void AddBuff(SkillSO skillData);
-    public abstract void Use(IObject target);
+    public virtual void Use(IObject target)
+    {
+        onSkillSoundPlay?.Invoke();
+    }
 }

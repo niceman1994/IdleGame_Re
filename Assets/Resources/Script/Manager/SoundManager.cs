@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [System.Serializable]
-public struct SoundName
+public struct CastSoundInfo
 {
     public string soundName;
     public AudioClip audioClip;
@@ -11,7 +11,17 @@ public struct SoundName
 
 public class SoundManager : Singleton<SoundManager>
 {
-    public AudioSource buttonSound;
-    public AudioSource upgradeSound;
-    public SoundName[] castSounds;
+    public AudioSource playerUIClickSound;
+    public AudioSource upgradeStatClickSound;
+    public CastSoundInfo[] castSounds;
+
+    public void PlayPlayerUIClickSound()
+    {
+        playerUIClickSound.Play();
+    }
+
+    public void PlayUpgradeStatClickSound()
+    {
+        upgradeStatClickSound.Play();
+    }
 }

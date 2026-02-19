@@ -10,13 +10,19 @@ public class MonsterMushroom : Object
     protected override void Awake()
     {
         base.Awake();
-        SetDefaultStats(monsterData.monsterStats.baseHp, monsterData.monsterStats.baseAttack, monsterData.monsterStats.baseAttackSpeed);
-        giveGold = monsterData.giveGold;
+        InitMushroom();
     }
 
     private void Update()
     {
         CheckState();
+    }
+
+    private void InitMushroom()
+    {
+        SetDefaultStats(monsterData.objectStats.baseHp, monsterData.objectStats.baseAttack, monsterData.objectStats.baseAttackSpeed);
+        giveGold = monsterData.giveGold;
+        healthSystem.onDamagedTaken += TextPoolManager.Instance.ShowDamageText;
     }
 
     public override void CheckState()
@@ -42,14 +48,14 @@ public class MonsterMushroom : Object
         /* normalizedTimeInProcess만 있으면 0.85f 이상부터는 계속 데미지를 계산해 한 번의 공격에 플레이어가 죽게 되고
         normalizedTime > atkLoop만 있으면 공격 모션보다 데미지가 더 빨리 나와서 의도와 맞지 않게 된다.*/
         if (AttackStateProcess() > 0.85f && AttackStateTime() > attackLoop)
-            PlayAttackSound(monsterData.monsterStats.attackClip);
+            PlayAttackSound(monsterData.objectStats.attackClip);
     }
 
     protected override void Death()
     {
         base.Death();
-        GameManager.Instance.gameGold.curGold[0] += giveGold;
-        PlayDeadSound(monsterData.monsterStats.deadClip);
+        GameManager.Instance.goldManager.curGold[0] += giveGold;
+        PlayDeadSound(monsterData.objectStats.deadClip);
         healthSystem.NotifyDeath();
         ItemManager.Instance.SpawnItem(transform.position);
     }
@@ -57,12 +63,11 @@ public class MonsterMushroom : Object
     public override void CurrentAtk(float addAtk)
     {
         runtimeStats.attack += addAtk;
-        //return runtimeStats.attack;
     }
 
     public override void GetAttackDamage(float dmg)
     {
-        TextPoolManager.Instance.ShowDamageText(dmg, textPos);
+        healthSystem.ShowDamageText(dmg, textPos);
         runtimeStats.hp -= dmg;
 
         if (runtimeStats.hp <= 0)
@@ -79,7 +84,6 @@ public class MonsterMushroom : Object
     {
         runtimeStats.hp += addHp;
         runtimeStats.maxHp += addHp;
-        //return runtimeStats.hp;
     }
 
     public override void AddBuff(Buff buff) { }

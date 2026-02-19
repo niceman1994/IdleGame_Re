@@ -13,6 +13,7 @@ public class DetectCollider : MonoBehaviour
 
     public Object DetectedEnemy { get; private set; }
     public IAttack AttackTarget { get; private set; }
+    public event Action<Object> onEnemyDetected;
 
     private void OnDrawGizmos() 
     {
@@ -37,6 +38,7 @@ public class DetectCollider : MonoBehaviour
             isDetected = true;
             DetectedEnemy = currentTarget.GetComponent<Object>();
             AttackTarget = currentTarget.GetComponent<IAttack>();
+            onEnemyDetected?.Invoke(DetectedEnemy);
         }
     }
 

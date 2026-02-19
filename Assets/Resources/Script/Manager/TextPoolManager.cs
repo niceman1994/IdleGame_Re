@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class TextPoolManager : Singleton<TextPoolManager>
 {
-    [SerializeField] int defaultCapity = 5;
+    [SerializeField] int defaultCapity;
     [SerializeField] GameObject damageTextPrefab;
     [SerializeField] Transform damageTextParent;
     [SerializeField] Transform itemTextParent;
@@ -18,7 +18,7 @@ public class TextPoolManager : Singleton<TextPoolManager>
         for (int i = 0; i < defaultCapity; i++)
             damageTextQueue.Enqueue(CreatePoolItem("Damage Text", damageTextParent));
 
-        for (int i = 0; i < 5; i++)
+        for (int i = 0; i < defaultCapity; i++)
             itemTextQueue.Enqueue(CreatePoolItem("Item Text", itemTextParent));
     }
 

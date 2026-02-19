@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 /// <summary>
@@ -18,16 +17,17 @@ public class UpgradeStat : MonoBehaviour
     [SerializeField] int clickCount;
     [SerializeField] int maxCount;
 
-    private Player playerStatus;
+    private Player playerStats;
 
     public event Action goldIndexAction;
+    public event Action<int[], int> onGoldTheorem;
 
     private void Start()
     {
-        goldText.text = spendGold.ToString();
-        playerStatus = GameManager.Instance.player;
-        GameManager.Instance.gameGold.GoldTheorem(spendGold, goldIndex);
-        GameManager.Instance.gameGold.GetMoneyToString(spendGold, goldIndex, goldText);
+        goldText.text = $"{spendGold}";
+        onGoldTheorem += GameManager.Instance.goldManager.GoldTheorem;
+        playerStats = GameManager.Instance.player;
+        goldText.text = GameManager.Instance.goldManager.GetMoneyToString(spendGold, goldIndex);
 
         goldIndexAction += () =>
         {
@@ -44,8 +44,8 @@ public class UpgradeStat : MonoBehaviour
 
     private void DisplayGoldText()
     {
-        GameManager.Instance.gameGold.GoldTheorem(spendGold, goldIndex);
-        GameManager.Instance.gameGold.GetMoneyToString(spendGold, goldIndex, goldText);
+        onGoldTheorem?.Invoke(spendGold, goldIndex);
+        goldText.text =  GameManager.Instance.goldManager.GetMoneyToString(spendGold, goldIndex);
 
         if (clickCount == maxCount)
         {
@@ -59,34 +59,34 @@ public class UpgradeStat : MonoBehaviour
         if (clickCount <= maxCount)
         {
             // 소유한 골드 인덱스와 소모할 골드 인덱스가 같을 때
-            if (GameManager.Instance.gameGold.index == goldIndex)
+            if (GameManager.Instance.goldManager.index == goldIndex)
             {
                 // 소유한 골드가 소모할 골드 이상이면 골드를 사용함
-                if (GameManager.Instance.gameGold.curGold[goldIndex] >= spendGold[goldIndex])
+                if (GameManager.Instance.goldManager.curGold[goldIndex] >= spendGold[goldIndex])
                 {
-                    GameManager.Instance.gameGold.curGold[goldIndex] -= spendGold[goldIndex];
+                    GameManager.Instance.goldManager.curGold[goldIndex] -= spendGold[goldIndex];
                     IncreaseGold();
                 }
                 else    // 소유 골드가 소모 골드보다 적으면 계산이 안되도록 함
                     spendGold[goldIndex] += 0;
             }
             // 소유한 골드 인덱스가 소모할 골드 인덱스보다 클 때
-            else if (GameManager.Instance.gameGold.index > goldIndex)
+            else if (GameManager.Instance.goldManager.index > goldIndex)
             {
                 // 소유 골드 인덱스가 더 크더라도, 같은 골드 인덱스를 비교했을 때 소모 골드보다 소유 골드가 더 많으면 골드를 사용함
-                if (GameManager.Instance.gameGold.curGold[goldIndex] >= spendGold[goldIndex])
-                    GameManager.Instance.gameGold.curGold[goldIndex] -= spendGold[goldIndex];
+                if (GameManager.Instance.goldManager.curGold[goldIndex] >= spendGold[goldIndex])
+                    GameManager.Instance.goldManager.curGold[goldIndex] -= spendGold[goldIndex];
                 else
                 {
                     // 같은 인덱스를 비교했을 때 소모 골드가 더 크면 소유 골드에 1000을 더하고 소모 골드를 뺀 다음에 소유 골드에서 1을 뺌
                     // 예) 1050 => 1.05A 인데 소모 골드가 150이라면 1050-150=900으로 계산함
-                    GameManager.Instance.gameGold.curGold[goldIndex] = GameManager.Instance.gameGold.curGold[goldIndex] + 1000 - spendGold[goldIndex];
-                    GameManager.Instance.gameGold.curGold[goldIndex + 1] -= 1;
+                    GameManager.Instance.goldManager.curGold[goldIndex] = GameManager.Instance.goldManager.curGold[goldIndex] + 1000 - spendGold[goldIndex];
+                    GameManager.Instance.goldManager.curGold[goldIndex + 1] -= 1;
                 }
                 IncreaseGold();
             }
             // 소유 골드 인덱스가 소모 골드 인덱스보다 작으면 계산이 안되도록 함
-            else if (GameManager.Instance.gameGold.index < goldIndex)
+            else if (GameManager.Instance.goldManager.index < goldIndex)
                 spendGold[goldIndex] += 0;
         }
     }
@@ -111,24 +111,24 @@ public class UpgradeStat : MonoBehaviour
 
     public void AddAtk()
     {
-        if (GameManager.Instance.gameGold.index == goldIndex)
+        if (GameManager.Instance.goldManager.index == goldIndex)
         {
-            if (GameManager.Instance.gameGold.curGold[goldIndex] >= spendGold[goldIndex])
-                ClickUpgradeStatsButton(() => playerStatus.CurrentAtk(0.26f));
+            if (GameManager.Instance.goldManager.curGold[goldIndex] >= spendGold[goldIndex])
+                ClickUpgradeStatsButton(() => playerStats.CurrentAtk(0.26f));
         }
-        else if (GameManager.Instance.gameGold.index > goldIndex)
-            ClickUpgradeStatsButton(() => playerStatus.CurrentAtk(0.26f));
+        else if (GameManager.Instance.goldManager.index > goldIndex)
+            ClickUpgradeStatsButton(() => playerStats.CurrentAtk(0.26f));
     }
 
     public void AddHp()
     {
-        if (GameManager.Instance.gameGold.index == goldIndex)
+        if (GameManager.Instance.goldManager.index == goldIndex)
         {
-            if (GameManager.Instance.gameGold.curGold[goldIndex] >= spendGold[goldIndex])
-                ClickUpgradeStatsButton(() => playerStatus.HpUp(UnityEngine.Random.Range(20.0f, 24.0f)));
+            if (GameManager.Instance.goldManager.curGold[goldIndex] >= spendGold[goldIndex])
+                ClickUpgradeStatsButton(() => playerStats.HpUp(UnityEngine.Random.Range(20.0f, 24.0f)));
         }
-        else if (GameManager.Instance.gameGold.index > goldIndex)
-            ClickUpgradeStatsButton(() => playerStatus.HpUp(UnityEngine.Random.Range(20.0f, 24.0f)));
+        else if (GameManager.Instance.goldManager.index > goldIndex)
+            ClickUpgradeStatsButton(() => playerStats.HpUp(UnityEngine.Random.Range(20.0f, 24.0f)));
     }
 
     /// <summary>
@@ -136,51 +136,51 @@ public class UpgradeStat : MonoBehaviour
     /// </summary>
     public void AddAtkSpeed()
     {
-        if (GameManager.Instance.gameGold.index == goldIndex)
+        if (GameManager.Instance.goldManager.index == goldIndex)
         {
-            if (GameManager.Instance.gameGold.curGold[goldIndex] >= spendGold[goldIndex])
-                ClickUpgradeStatsButton(() => playerStatus.GetAttackSpeed(0.025f));
+            if (GameManager.Instance.goldManager.curGold[goldIndex] >= spendGold[goldIndex])
+                ClickUpgradeStatsButton(() => playerStats.GetAttackSpeed(0.025f));
         }
-        else if (GameManager.Instance.gameGold.index > goldIndex)
-            ClickUpgradeStatsButton(() => playerStatus.GetAttackSpeed(0.025f));
+        else if (GameManager.Instance.goldManager.index > goldIndex)
+            ClickUpgradeStatsButton(() => playerStats.GetAttackSpeed(0.025f));
     }
 
     public void AddMoveSpeed()
     {
-        if (GameManager.Instance.gameGold.index == goldIndex)
+        if (GameManager.Instance.goldManager.index == goldIndex)
         {
-            if (GameManager.Instance.gameGold.curGold[goldIndex] >= spendGold[goldIndex])
-                ClickUpgradeStatsButton(() => playerStatus.GetMoveSpeed(0.05f));
+            if (GameManager.Instance.goldManager.curGold[goldIndex] >= spendGold[goldIndex])
+                ClickUpgradeStatsButton(() => playerStats.GetMoveSpeed(0.05f));
         }
-        else if (GameManager.Instance.gameGold.index > goldIndex)
-            ClickUpgradeStatsButton(() => playerStatus.GetMoveSpeed(0.05f));
+        else if (GameManager.Instance.goldManager.index > goldIndex)
+            ClickUpgradeStatsButton(() => playerStats.GetMoveSpeed(0.05f));
     }
 
     public void AddSkillPower()
     {
-        if (GameManager.Instance.gameGold.index == goldIndex)
+        if (GameManager.Instance.goldManager.index == goldIndex)
         {
-            if (GameManager.Instance.gameGold.curGold[goldIndex] >= spendGold[goldIndex])
+            if (GameManager.Instance.goldManager.curGold[goldIndex] >= spendGold[goldIndex])
                 ClickUpgradeStatsButton(() => GameManager.Instance.AddThunderPower(0.15f));
         }
-        else if (GameManager.Instance.gameGold.index > goldIndex)
+        else if (GameManager.Instance.goldManager.index > goldIndex)
             ClickUpgradeStatsButton(() => GameManager.Instance.AddThunderPower(0.15f));
     }
 
     public void AddEarnGold()
     {
-        if (GameManager.Instance.gameGold.index == goldIndex)
+        if (GameManager.Instance.goldManager.index == goldIndex)
         {
-            if (GameManager.Instance.gameGold.curGold[goldIndex] >= spendGold[goldIndex])
-                ClickUpgradeStatsButton(() => GameManager.Instance.gameGold.getGold += 5 * clickCount);
+            if (GameManager.Instance.goldManager.curGold[goldIndex] >= spendGold[goldIndex])
+                ClickUpgradeStatsButton(() => GameManager.Instance.goldManager.getGold += 5 * clickCount);
         }
-        else if (GameManager.Instance.gameGold.index > goldIndex)
-            ClickUpgradeStatsButton(() => GameManager.Instance.gameGold.getGold += 5 * clickCount);
+        else if (GameManager.Instance.goldManager.index > goldIndex)
+            ClickUpgradeStatsButton(() => GameManager.Instance.goldManager.getGold += 5 * clickCount);
     }
 
     public void Click()
     {
-        SoundManager.Instance.upgradeSound.Play();
+        SoundManager.Instance.PlayUpgradeStatClickSound();
         clickCount += 1;
     }
 

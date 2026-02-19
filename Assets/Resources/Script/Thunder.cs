@@ -4,15 +4,17 @@ using UnityEngine;
 
 public class Thunder : MonoBehaviour
 {
-    [SerializeField] float destroyTime;
-    [SerializeField] float damage;
-    [SerializeField] BoxCollider2D boxCollider;
+    [SerializeField] ThunderSkillSO thunderData;
+    [SerializeField] float runtimeDamage;
 
+    private BoxCollider2D boxCollider;
     private Animator thunderAnimator;
 
     private void Awake()
     {
+        boxCollider = GetComponent<BoxCollider2D>();
         thunderAnimator = GetComponent<Animator>();
+        runtimeDamage = thunderData.skillPower;
     }
 
     private void Update()
@@ -29,12 +31,11 @@ public class Thunder : MonoBehaviour
     private void OnTriggerExit2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Monster") || collision.gameObject.CompareTag("Boss"))
-            collision.gameObject.GetComponent<IObject>().GetAttackDamage(damage);
+            collision.gameObject.GetComponent<IObject>().GetAttackDamage(runtimeDamage);
     }
 
-    public float AddPower(float addDamage)
+    public void AddPower(float addDamage)
     {
-        damage += addDamage;
-        return damage;
+        runtimeDamage += addDamage;
     }
 }

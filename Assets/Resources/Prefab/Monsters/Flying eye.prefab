@@ -289,7 +289,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isDetected: 0
   meleePos: {fileID: 3021745357929231341}
-  boxSize: {x: 0.25, y: 1.9}
+  boxSize: {x: 0.27, y: 1.9}
   currentTarget: {fileID: 0}
   layerMask:
     serializedVersion: 2
@@ -505,7 +505,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 5538542681729232761}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.193, y: -0.008, z: 0}
+  m_LocalPosition: {x: -0.194, y: -0.008, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []

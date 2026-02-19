@@ -3,8 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [CreateAssetMenu(fileName = "CharaterStat", menuName = "CreateSO/CreateCharacterStat")]
-public class PlayerStatSO : ScriptableObject
+public class PlayerStatSO : ObjectStatSO
 {
-    public ObjectStats playerStats;
     public float baseMoveSpeed;
 }

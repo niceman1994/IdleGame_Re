@@ -39,8 +39,9 @@ public class Boss : Object
 
     private void InitBoss()
     {
-        SetDefaultStats(bossData.monsterStats.baseHp, bossData.monsterStats.baseAttack, bossData.monsterStats.baseAttackSpeed);
+        SetDefaultStats(bossData.objectStats.baseHp, bossData.objectStats.baseAttack, bossData.objectStats.baseAttackSpeed);
 
+        healthSystem.onDamagedTaken += TextPoolManager.Instance.ShowDamageText;
         spellAttackValue = 0.75f;
         lastSpellAttackCount = 0;
         currentSpellAttackCount = 0;
@@ -92,7 +93,7 @@ public class Boss : Object
         {
             if (AttackStateProcess() > 0.625f && AttackStateTime() > attackLoop)
             {
-                PlayAttackSound(bossData.monsterStats.attackClip);
+                PlayAttackSound(bossData.objectStats.attackClip);
                 objectAnimator.SetFloat("spellAttack", Random.Range(0.25f, 1.0f));
             }
         }
@@ -146,22 +147,21 @@ public class Boss : Object
     protected override void Death()
     {
         base.Death();
-        GameManager.Instance.gameGold.curGold[0] += giveGold;
+        GameManager.Instance.goldManager.curGold[0] += giveGold;
         isSpellCast = false;
-        PlayDeadSound(bossData.monsterStats.deadClip);
+        PlayDeadSound(bossData.objectStats.deadClip);
         healthSystem.NotifyDeath();
     }
 
     public override void CurrentAtk(float addAtk)
     {
         runtimeStats.attack += addAtk;
-        //return runtimeStats.attack;
     }
 
     public override void GetAttackDamage(float dmg)
     {
-        TextPoolManager.Instance.ShowDamageText(dmg, textPos);
         runtimeStats.hp -= dmg;
+        healthSystem.ShowDamageText(dmg, textPos);
 
         if (runtimeStats.hp <= 0)
             Death();
@@ -177,7 +177,6 @@ public class Boss : Object
     {
         runtimeStats.hp += addHp;
         runtimeStats.maxHp += addHp;
-        //return runtimeStats.hp;
     }
 
     public override void AddBuff(Buff buff) { }

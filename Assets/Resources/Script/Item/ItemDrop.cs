@@ -29,7 +29,6 @@ public class ItemDrop : MonoBehaviour
     {
         currentItemPercent = Random.Range(1, 101);
 
-        // ElementAt() : 지정된 시퀀스의 인덱스 요소를 반환
         if (currentItemPercent <= 100 && currentItemPercent > 0)
              MakeItem(spawnPosition, ItemManager.Instance.dropItemList[0]);                // ElementAt(0) : 잡템인 병
         else if (currentItemPercent <= 65 && currentItemPercent > 40)

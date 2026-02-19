@@ -21,7 +21,7 @@ public class ItemExchanger : MonoBehaviour
     [SerializeField] List<ExchangeButton> itemExchangeButtons = new List<ExchangeButton>();
 
     /// <summary>
-    /// 매개변수 없이 itemExchangeButton 에 이벤트를 등록하기 위해서 캐싱하는 인벤토리 슬롯 변수<para/>
+    /// 매개변수 없이 itemExchangeButton 에 함수를 등록하기 위해서 캐싱하는 인벤토리 슬롯 변수<para/>
     /// <see cref="Inventory.Start"/> 에서 OnClickExchangeButton 함수를 호출함
     /// </summary>
     private InventorySlot cachedSlot;

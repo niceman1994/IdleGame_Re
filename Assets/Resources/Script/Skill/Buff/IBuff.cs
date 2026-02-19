@@ -52,7 +52,7 @@ public class GoldBuff : IBuff
 
     public void Apply(IObject targetObject)
     {
-        GameManager.Instance.gameGold.curGold[0] += buffAmount;
+        GameManager.Instance.goldManager.curGold[0] += buffAmount;
     }
 
     public void Expire(IObject targetObject)

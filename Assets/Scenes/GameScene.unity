@@ -564,7 +564,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ce04b837bad85940866ca84de69b8a2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  defaultCapity: 10
+  defaultCapity: 8
   damageTextPrefab: {fileID: 5271160387624875537, guid: c5208ca815a8ecf48ab749fd87db5fe9, type: 3}
   damageTextParent: {fileID: 888366980}
   itemTextParent: {fileID: 1441585221}
@@ -1149,7 +1149,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   button: {fileID: 166948233}
   goldText: {fileID: 762554793}
-  spendGold: 840300000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+  spendGold: bc0200000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
   goldIndex: 0
   clickCount: 0
   maxCount: 25
@@ -1500,7 +1500,7 @@ GameObject:
   m_Component:
   - component: {fileID: 362051098}
   m_Layer: 5
-  m_Name: Skill
+  m_Name: PlayerSkill
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2507,7 +2507,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -242, y: 162.49997}
+  m_AnchoredPosition: {x: -242, y: 162.49998}
   m_SizeDelta: {x: 475, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &544136247
@@ -2633,8 +2633,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ec7ca15c8a2970d4297c8ef6797d3b9b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  buttonSound: {fileID: 2044396628}
-  upgradeSound: {fileID: 2090676734}
+  playerUIClickSound: {fileID: 2044396628}
+  upgradeStatClickSound: {fileID: 2090676734}
   castSounds:
   - soundName: BossSpellCast
     audioClip: {fileID: 8300000, guid: 8af1819e837a50449a8a4bcd98f3832e, type: 3}
@@ -3196,6 +3196,7 @@ GameObject:
   - component: {fileID: 788716731}
   - component: {fileID: 788716733}
   - component: {fileID: 788716736}
+  - component: {fileID: 788716737}
   - component: {fileID: 788716732}
   - component: {fileID: 788716734}
   - component: {fileID: 788716735}
@@ -3319,7 +3320,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: bea21b3a12a796d45b756d708449bc25, type: 3}
+  m_audioClip: {fileID: 0}
   m_PlayOnAwake: 0
   m_Volume: 0.9
   m_Pitch: 1
@@ -3421,6 +3422,20 @@ MonoBehaviour:
   skillUIButton: {fileID: 788716734}
   coolTime: 40
   coolTimeText: {fileID: 422399377}
+--- !u!114 &788716737
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 788716730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a5fc863058bcf2045a6cf6839422773f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  skillController: {fileID: 6107476453365903141}
+  thunderAudio: {fileID: 788716735}
 --- !u!1 &813818350
 GameObject:
   m_ObjectHideFlags: 0
@@ -3508,7 +3523,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 2
-  m_Text: STATUS
+  m_Text: STATS
 --- !u!222 &813818354
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -3933,10 +3948,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   player: {fileID: 6107476453365903137}
-  currentHp: {fileID: 41651972}
-  maxHp: {fileID: 147027499}
-  hpBar: {fileID: 2658467882850245449}
-  gameGold: {fileID: 966894962}
+  goldManager: {fileID: 966894962}
   inventory: {fileID: 1147911693}
   thunder: {fileID: 8698096739187070251, guid: b745e94d4cdac454e857ea23ae7609bc, type: 3}
   thunderPos: {fileID: 4504591272934449928}
@@ -4359,7 +4371,7 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 1825844285}
   m_HandleRect: {fileID: 1825844284}
   m_Direction: 2
-  m_Value: 0
+  m_Value: 1
   m_Size: 1
   m_NumberOfSteps: 0
   m_OnValueChanged:
@@ -4546,6 +4558,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1322198350}
   - component: {fileID: 1322198351}
+  - component: {fileID: 1322198352}
   m_Layer: 5
   m_Name: UserInterface
   m_TagString: Untagged
@@ -4601,6 +4614,22 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 1
   m_TargetDisplay: 0
+--- !u!114 &1322198352
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1322198349}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6d7c3ef87ca1eaf45afce8fe06d4d579, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  player: {fileID: 6107476453365903137}
+  currentHp: {fileID: 41651972}
+  maxHp: {fileID: 147027499}
+  hpBar: {fileID: 2658467882850245449}
 --- !u!1 &1325966998
 GameObject:
   m_ObjectHideFlags: 0
@@ -5098,6 +5127,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1603356849}
   - component: {fileID: 1603356850}
+  - component: {fileID: 1603356851}
   m_Layer: 0
   m_Name: ObjectPoolManager
   m_TagString: Untagged
@@ -5133,9 +5163,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23a7f5c033d5cdc4894667acebaf3183, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stageNum: 1
-  stage: {fileID: 1734870318}
-  bossStage: 2
+  stageManager: {fileID: 1603356851}
   monsterCount: 8
   monsterParent: {fileID: 160869687}
   monsterPrefab:
@@ -5144,6 +5172,22 @@ MonoBehaviour:
   - {fileID: 3585786814668116647, guid: a361efa4ea1590543a44fe4c4a68eed9, type: 3}
   - {fileID: 1498897037951010738, guid: 3881a38d8a0b2fe42866d144074a2ba4, type: 3}
   boss: {fileID: 3354738036288994156, guid: e23a6b06690e0164f8043d988733b983, type: 3}
+--- !u!114 &1603356851
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1603356848}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f529d9f33060e7d4bb9c8914159ab7e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  currentStage: 1
+  stage: {fileID: 1734870318}
+  bossStage: 2
+  player: {fileID: 6107476453365903137}
 --- !u!1 &1636132348
 GameObject:
   m_ObjectHideFlags: 0
@@ -6713,7 +6757,7 @@ GameObject:
   - component: {fileID: 2090676733}
   - component: {fileID: 2090676734}
   m_Layer: 0
-  m_Name: StatusClickSound
+  m_Name: StatsClickSound
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -6887,7 +6931,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f429251aa1f28ec44b69890497844ceb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  upgradeStatusButton:
+  upgradeStatButtons:
   - {fileID: 166948236}
   - {fileID: 825900049}
   - {fileID: 1899574687}

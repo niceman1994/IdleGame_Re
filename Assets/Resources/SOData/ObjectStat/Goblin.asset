@@ -15,7 +15,7 @@ MonoBehaviour:
   giveGold: 22
   monsterStats:
     baseHp: 56
-    baseAttack: 12
+    baseAttack: 8
     baseAttackSpeed: 1.35
     attackClip: {fileID: 8300000, guid: 6640ab08e10022e418e633e8fc30e540, type: 3}
     deadClip: {fileID: 8300000, guid: b51570d60c6f3d9468f6bda71b11ba9f, type: 3}

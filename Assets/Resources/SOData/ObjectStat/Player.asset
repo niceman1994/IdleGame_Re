@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   playerStats:
     baseHp: 400
-    baseAttack: 17
-    baseAttackSpeed: 1.17
+    baseAttack: 16
+    baseAttackSpeed: 1.14
     attackClip: {fileID: 8300000, guid: 97f65600c30b27b409e2adf57e3defb7, type: 3}
     deadClip: {fileID: 0}
-  baseMoveSpeed: 2.3
+  baseMoveSpeed: 2.15

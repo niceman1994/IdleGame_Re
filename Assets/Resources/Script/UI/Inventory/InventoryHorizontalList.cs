@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class HorizontalList : MonoBehaviour
+public class InventoryHorizontalList : MonoBehaviour
 {
     [SerializeField] GameObject slotPrefab;
     [SerializeField] int slotCount;

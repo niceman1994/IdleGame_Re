@@ -11,6 +11,7 @@ public class AttackUpSkill : Skill
 
     public override void Use(IObject target)
     {
+        base.Use(target);
         buff.Apply(target);
         target.AddBuff(buff);
     }
