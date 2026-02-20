@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c25fa7f1e1789d24eb9ea8308af5485d, type: 3}
   m_Name: Skelelton
   m_EditorClassIdentifier: 
-  giveGold: 32
-  monsterStats:
+  objectStats:
     baseHp: 106
     baseAttack: 13
     baseAttackSpeed: 1.07
     attackClip: {fileID: 8300000, guid: f348285c4418ee04cad7bff8abfe7f83, type: 3}
     deadClip: {fileID: 8300000, guid: cdb255ee621c63547aee75e975ebd3aa, type: 3}
+  giveGold: 32

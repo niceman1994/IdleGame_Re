@@ -5,9 +5,7 @@ using UnityEngine.UI;
 
 public class GameManager : Singleton<GameManager>
 {
-    [Header("유저 정보")]
-    public Player player;
-    public GoldManager goldManager;
+    public GameGold gameGold;
     [SerializeField] Inventory inventory;
 
     [Header("스킬")]
@@ -51,5 +49,10 @@ public class GameManager : Singleton<GameManager>
     {
         for (int i = 0; i < thunderList.Count; i++)
             thunderList[i].AddPower(addDamage);
+    }
+
+    public void AddEarnGold(int buttonClickCount)
+    {
+        gameGold.getGold += 5 * buttonClickCount;
     }
 }

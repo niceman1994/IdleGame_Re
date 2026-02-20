@@ -1153,6 +1153,7 @@ MonoBehaviour:
   goldIndex: 0
   clickCount: 0
   maxCount: 25
+  player: {fileID: 6107476453365903137}
 --- !u!1 &260153806
 GameObject:
   m_ObjectHideFlags: 0
@@ -2471,6 +2472,7 @@ MonoBehaviour:
   goldIndex: 0
   clickCount: 0
   maxCount: 35
+  player: {fileID: 6107476453365903137}
 --- !u!1 &544136245
 GameObject:
   m_ObjectHideFlags: 0
@@ -2507,7 +2509,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -242, y: 162.49998}
+  m_AnchoredPosition: {x: -242, y: 162.49997}
   m_SizeDelta: {x: 475, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &544136247
@@ -2944,7 +2946,7 @@ GameObject:
   - component: {fileID: 696833333}
   - component: {fileID: 696833332}
   m_Layer: 5
-  m_Name: StatusButton
+  m_Name: StatsButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3690,6 +3692,7 @@ MonoBehaviour:
   goldIndex: 0
   clickCount: 0
   maxCount: 25
+  player: {fileID: 6107476453365903137}
 --- !u!1 &853232184
 GameObject:
   m_ObjectHideFlags: 0
@@ -3947,8 +3950,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 78814859228e94c409166f1a90785d80, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  player: {fileID: 6107476453365903137}
-  goldManager: {fileID: 966894962}
+  gameGold: {fileID: 966894962}
   inventory: {fileID: 1147911693}
   thunder: {fileID: 8698096739187070251, guid: b745e94d4cdac454e857ea23ae7609bc, type: 3}
   thunderPos: {fileID: 4504591272934449928}
@@ -4282,6 +4284,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d2ef492d724ccab4284613807e21add7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  player: {fileID: 6107476453365903137}
   itemExchangeRectParent: {fileID: 1147911692}
   content: {fileID: 544136246}
   horizontalListPrefab: {fileID: 5587175330324180137, guid: d43b5aa8a5113ca4bbe1bd0c06c1b261, type: 3}
@@ -5163,7 +5166,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 23a7f5c033d5cdc4894667acebaf3183, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stageManager: {fileID: 1603356851}
   monsterCount: 8
   monsterParent: {fileID: 160869687}
   monsterPrefab:
@@ -5346,6 +5348,7 @@ MonoBehaviour:
   goldIndex: 0
   clickCount: 0
   maxCount: 25
+  player: {fileID: 6107476453365903137}
 --- !u!1 &1645170309
 GameObject:
   m_ObjectHideFlags: 0
@@ -5580,6 +5583,7 @@ MonoBehaviour:
   goldIndex: 0
   clickCount: 0
   maxCount: 25
+  player: {fileID: 6107476453365903137}
 --- !u!1 &1675842052
 GameObject:
   m_ObjectHideFlags: 0
@@ -6361,6 +6365,7 @@ MonoBehaviour:
   goldIndex: 0
   clickCount: 0
   maxCount: 25
+  player: {fileID: 6107476453365903137}
 --- !u!1 &2033598076
 GameObject:
   m_ObjectHideFlags: 0
@@ -7120,7 +7125,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isOpen: 0
-  minItemCount: 1
+  changeItemCount: 1
   itemExchangeBox: {fileID: 2919861746770081674}
   itemExchangeButtons:
   - itemExchageButtonImage: {fileID: 2919861747276495063}
@@ -12293,7 +12298,6 @@ MonoBehaviour:
   moveSpeed: 0
   startPoint: {fileID: 1675842053}
   endPoint: {fileID: 96692590}
-  currentState: 0
   buffController: {fileID: 6107476453365903142}
 --- !u!114 &6107476453365903138
 MonoBehaviour:

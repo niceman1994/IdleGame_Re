@@ -22,7 +22,6 @@ public class MonsterMushroom : Object
     {
         SetDefaultStats(monsterData.objectStats.baseHp, monsterData.objectStats.baseAttack, monsterData.objectStats.baseAttackSpeed);
         giveGold = monsterData.giveGold;
-        healthSystem.onDamagedTaken += TextPoolManager.Instance.ShowDamageText;
     }
 
     public override void CheckState()
@@ -54,7 +53,7 @@ public class MonsterMushroom : Object
     protected override void Death()
     {
         base.Death();
-        GameManager.Instance.goldManager.curGold[0] += giveGold;
+        GameManager.Instance.gameGold.curGold[0] += giveGold;
         PlayDeadSound(monsterData.objectStats.deadClip);
         healthSystem.NotifyDeath();
         ItemManager.Instance.SpawnItem(transform.position);
@@ -67,7 +66,7 @@ public class MonsterMushroom : Object
 
     public override void GetAttackDamage(float dmg)
     {
-        healthSystem.ShowDamageText(dmg, textPos);
+        TextPoolManager.Instance.ShowDamageText(dmg, textPos);
         runtimeStats.hp -= dmg;
 
         if (runtimeStats.hp <= 0)

@@ -7,6 +7,6 @@ public class ThunderSkillSO : SkillSO
 {
     public override Skill CreateSkill()
     {
-        return new ThunderSkill();
+        return new SummonThunder();
     }
 }

@@ -54,8 +54,6 @@ public class Player : Object
         runtimeMoveSpeed = moveSpeed = playerData.baseMoveSpeed;
 
         healthSystem.onHealthDamaged += GetCurrentHp;
-        healthSystem.onDamagedTaken += TextPoolManager.Instance.ShowDamageText;
-        healthSystem.onHealTaken += TextPoolManager.Instance.ShowHealText;
         detectCollider.onEnemyDetected += PlayerStateTypeChange;
 
         playerStateMachine = new StateMachine(this);
@@ -145,7 +143,7 @@ public class Player : Object
 
         runtimeStats.hp += value;
         ShowCurrentHp();
-        healthSystem.ShowHealText(value, textPos, new Color(0.0f, 255.0f, 0.0f, 255.0f));
+        TextPoolManager.Instance.ShowHealText(value, textPos, new Color(0.0f, 255.0f, 0.0f, 255.0f));
     }
 
     private void GetCurrentHp(float currentHp)
@@ -162,7 +160,7 @@ public class Player : Object
     public override void GetAttackDamage(float dmg)
     {
         healthSystem.TakeDamage(runtimeStats.hp, dmg);
-        healthSystem.ShowDamageText(dmg, textPos);
+        TextPoolManager.Instance.ShowDamageText(dmg, textPos);
 
         if (runtimeStats.hp <= 0)
         {

@@ -1,13 +1,13 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 
-public class UpgradeStatList : MonoBehaviour
+
+
+public class UpgradeStatButtonList : MonoBehaviour
 {
-    [SerializeField] List<UpgradeStat> upgradeStatButtons;
+    [SerializeField] List<UpgradeStatButton> upgradeStatButtons;
     [Space(15)]
     [SerializeField] Button statusButton;
     [SerializeField] RectTransform upgradeUI;
@@ -52,30 +52,27 @@ public class UpgradeStatList : MonoBehaviour
 
     private void SetStatusUpButtonEvent()
     {
-        if (upgradeStatButtons.Count == 0)
-            Debug.LogWarning($"{upgradeStatButtons} 리스트에 요소가 들어있지 않습니다!");
-
         for (int i = 0; i < upgradeStatButtons.Count; i++)
         {
             switch(upgradeStatButtons[i].name)
             {
                 case "ATKUP":
-                    upgradeStatButtons[i].SetUpgradeButtonEvent(upgradeStatButtons[i].AddAtk);
+                    upgradeStatButtons[i].InvokeUpgradeEvent(upgradeStatButtons[i].AddAtk);
                     break;
                 case "HPUP":
-                    upgradeStatButtons[i].SetUpgradeButtonEvent(upgradeStatButtons[i].AddHp);
+                    upgradeStatButtons[i].InvokeUpgradeEvent(upgradeStatButtons[i].AddHp);
                     break;
                 case "ASUP":
-                    upgradeStatButtons[i].SetUpgradeButtonEvent(upgradeStatButtons[i].AddAtkSpeed);
+                    upgradeStatButtons[i].InvokeUpgradeEvent(upgradeStatButtons[i].AddAtkSpeed);
                     break;
                 case "MSUP":
-                    upgradeStatButtons[i].SetUpgradeButtonEvent(upgradeStatButtons[i].AddMoveSpeed);
+                    upgradeStatButtons[i].InvokeUpgradeEvent(upgradeStatButtons[i].AddMoveSpeed);
                     break;
                 case "SPUP":
-                    upgradeStatButtons[i].SetUpgradeButtonEvent(upgradeStatButtons[i].AddSkillPower);
+                    upgradeStatButtons[i].InvokeUpgradeEvent(upgradeStatButtons[i].AddSkillPower);
                     break;
                 case "GOLDUP":
-                    upgradeStatButtons[i].SetUpgradeButtonEvent(upgradeStatButtons[i].AddEarnGold);
+                    upgradeStatButtons[i].InvokeUpgradeEvent(upgradeStatButtons[i].AddEarnGold);
                     break;
                 default:
                     break;

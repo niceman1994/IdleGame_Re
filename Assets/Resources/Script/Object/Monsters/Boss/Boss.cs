@@ -41,7 +41,6 @@ public class Boss : Object
     {
         SetDefaultStats(bossData.objectStats.baseHp, bossData.objectStats.baseAttack, bossData.objectStats.baseAttackSpeed);
 
-        healthSystem.onDamagedTaken += TextPoolManager.Instance.ShowDamageText;
         spellAttackValue = 0.75f;
         lastSpellAttackCount = 0;
         currentSpellAttackCount = 0;
@@ -147,7 +146,7 @@ public class Boss : Object
     protected override void Death()
     {
         base.Death();
-        GameManager.Instance.goldManager.curGold[0] += giveGold;
+        GameManager.Instance.gameGold.curGold[0] += giveGold;
         isSpellCast = false;
         PlayDeadSound(bossData.objectStats.deadClip);
         healthSystem.NotifyDeath();
@@ -161,7 +160,7 @@ public class Boss : Object
     public override void GetAttackDamage(float dmg)
     {
         runtimeStats.hp -= dmg;
-        healthSystem.ShowDamageText(dmg, textPos);
+        TextPoolManager.Instance.ShowDamageText(dmg, textPos);
 
         if (runtimeStats.hp <= 0)
             Death();

@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c25fa7f1e1789d24eb9ea8308af5485d, type: 3}
   m_Name: Boss
   m_EditorClassIdentifier: 
-  giveGold: 500
-  monsterStats:
+  objectStats:
     baseHp: 412
     baseAttack: 18
     baseAttackSpeed: 1.26
     attackClip: {fileID: 8300000, guid: fa69ffe03f579594fbfcb2a57401c6ab, type: 3}
     deadClip: {fileID: 8300000, guid: c685aea64768ba1499f1ee60e81e6dc7, type: 3}
+  giveGold: 500

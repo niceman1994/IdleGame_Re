@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,8 +12,8 @@ public struct CastSoundInfo
 
 public class SoundManager : Singleton<SoundManager>
 {
-    public AudioSource playerUIClickSound;
-    public AudioSource upgradeStatClickSound;
+    [SerializeField] AudioSource playerUIClickSound;
+    [SerializeField] AudioSource upgradeStatClickSound;
     public CastSoundInfo[] castSounds;
 
     public void PlayPlayerUIClickSound()

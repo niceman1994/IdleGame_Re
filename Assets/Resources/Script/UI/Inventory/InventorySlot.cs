@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -25,6 +26,8 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     public bool HaveItem => haveItem;
     public int ItemCount => itemCount;
     public Image Icon => slotIcon;
+
+    public event Action<InventorySlot, Item> onUseItem;
 
     private void Start()
     {
@@ -85,33 +88,9 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         return addItem.ItemData.itemImage == Icon.sprite && ItemCount < item.ItemData.itemMaxCount/* item.MaxCount*/;
     }
 
-    public void UseItem()
+    private void UseItem()
     {
-        if (item != null && GameManager.Instance.player.CurrentHp() > 0)                   // 체력이 0을 넘어야만 아이템을 사용할 수 있게함
-        {
-            if (item.ItemData.itemAbilityType == ItemStatSO.AbilityType.None)              // 아이템 능력이 아무것도 없다면 사용할 수 없게함
-                itemCount -= 0;
-            else
-            {
-                if (item.ItemData.itemAbilityType == ItemStatSO.AbilityType.GoldUp)        // 아이템 능력이 골드 증가일 때
-                {
-                    GameManager.Instance.goldManager.curGold[0] += item.ItemData.itemAbility;
-                    TextPoolManager.Instance.ShowItemText("Gold", item.ItemData.itemAbility, 
-                        GameManager.Instance.player.transform.position, new Color(255, 200, 0, 255), 16);
-                }
-                else if (item.ItemData.itemAbilityType == ItemStatSO.AbilityType.Heal)     // 아이템 능력이 체력 회복일 때
-                {
-                    GameManager.Instance.player.CurrentHpChange(item.ItemData.itemAbility);
-                }
-                else if (item.ItemData.itemAbilityType == ItemStatSO.AbilityType.PowerUp)  // 아이템 능력이 공격력 증가일 때
-                {
-                    GameManager.Instance.player.CurrentAtk(item.ItemData.itemAbility);
-                    TextPoolManager.Instance.ShowItemText("ATK", item.ItemData.itemAbility,
-                        GameManager.Instance.player.transform.position, new Color(0, 0, 0, 255), 20);
-                }
-                AddSameItem(-1);
-            }
-        }
+        onUseItem?.Invoke(this, item);
     }
 
     public void OnBeginDrag(PointerEventData eventData)

@@ -10,10 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 0a519390587afe144b341940fbea991d, type: 3}
-  m_Name: AttackUpSkill
+  m_Name: PowerUpSkill
   m_EditorClassIdentifier: 
-  skillName: AttackUp
+  skillName: PowerUp
   coolTimeReset: 45
   buffTime: 15
   skillPower: 3
   skillImage: {fileID: 21300000, guid: e33073c12a1212141bb271ff12a51209, type: 3}
+  skillSoundClip: {fileID: 0}

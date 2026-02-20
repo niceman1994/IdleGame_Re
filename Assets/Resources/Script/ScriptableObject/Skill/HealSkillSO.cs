@@ -7,6 +7,6 @@ public class HealSkillSO : SkillSO
 {
     public override Skill CreateSkill()
     {
-        return new HealSkill();
+        return new Heal();
     }
 }

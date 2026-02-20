@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class GoldManager : MonoBehaviour
+public class GameGold : MonoBehaviour
 {
     [Header("GOLD")]
     public int[] curGold;
@@ -135,5 +135,39 @@ public class GoldManager : MonoBehaviour
         p = unit >= (char)65 ? (float)(Math.Truncate(a * 100) / 100) + unit.ToString() : $"{gold[0]}";
 
         return p;
+    }
+
+    public void SpendGold(int[] spendGold, int spendGoldIndex, Action increaseGoldAction)
+    {
+        if (index == spendGoldIndex)                                 // 소유한 골드 인덱스와 소모할 골드 인덱스가 같을 때
+        {
+            if (curGold[index] >= spendGold[spendGoldIndex])        // 소유한 골드가 소모할 골드 이상이면 골드를 사용함
+            {
+                curGold[index] -= spendGold[spendGoldIndex];
+                increaseGoldAction?.Invoke();
+            }
+            else                                                    // 소유 골드가 소모 골드보다 적으면 계산이 안되게 함
+                spendGold[spendGoldIndex] += 0;
+        }
+        else if (index > spendGoldIndex)                            // 소유한 골드 인덱스가 소모할 골드 인덱스보다 클 때
+        {
+            if (curGold[spendGoldIndex] >= spendGold[spendGoldIndex])        // 소유 골드 인덱스가 크더라도, 소유 골드가 소모 골드보다 많은 소유 골드를 사용함
+                curGold[spendGoldIndex] -= spendGold[spendGoldIndex];
+            else
+            {
+                // 같은 인덱스를 비교했을 때 소모 골드가 더 크면 소유 골드에 1000을 더하고 소모 골드를 뺀 다음에 소유 골드에서 1을 뺌
+                // 예) 1050 => 1.05A 인데 소모 골드가 150이라면 1050-150=900으로 계산함
+                curGold[spendGoldIndex] = curGold[spendGoldIndex] + 1000 - spendGold[spendGoldIndex];
+                curGold[spendGoldIndex + 1] -= 1;
+            }
+            increaseGoldAction?.Invoke();
+        }
+        else if (index < spendGoldIndex)                            // 소유 골드 인덱스가 소모 골드 인덱스보다 작으면 계산이 안되게 함
+            spendGold[spendGoldIndex] += 0;
+    }
+
+    public void AddGold(int getGold)
+    {
+        curGold[0] += getGold;
     }
 }

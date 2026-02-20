@@ -12,10 +12,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c25fa7f1e1789d24eb9ea8308af5485d, type: 3}
   m_Name: Mushroom
   m_EditorClassIdentifier: 
-  giveGold: 24
-  monsterStats:
+  objectStats:
     baseHp: 72
     baseAttack: 11
     baseAttackSpeed: 1.12
     attackClip: {fileID: 8300000, guid: 47f4d6a53b9a8a84b857e23b7ebbd5f2, type: 3}
     deadClip: {fileID: 8300000, guid: 34b0a015d698f0b479c31fa5990bba70, type: 3}
+  giveGold: 24
