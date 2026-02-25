@@ -5,11 +5,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
+public class InventorySlot : MonoBehaviour, IPointerClickHandler, IBeginDragHandler, IDragHandler, IEndDragHandler, IDropHandler
 {
-    /// <summary>
-    /// 슬롯에 있는 아이템에 대한 변수
-    /// </summary>
     [SerializeField] Item item;
     [SerializeField] int itemCount;
     [SerializeField] Image slotIcon;
@@ -24,9 +21,8 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
     private bool haveItem;
 
     public bool HaveItem => haveItem;
-    public int ItemCount => itemCount;
-    public Image Icon => slotIcon;
 
+    public event Action<InventorySlot, Vector2, int> onActiveItemExchanger;
     public event Action<InventorySlot, Item> onUseItem;
 
     private void Start()
@@ -36,18 +32,19 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         StartCoroutine(SearchScrollRect());
     }
 
-    private IEnumerator SearchScrollRect()
+    public IEnumerator SearchScrollRect()
     {
         yield return null;
         scrollParent = transform.parent.parent.parent.parent.GetComponent<ScrollRect>();
     }
 
-    public void AddNewItem(Item newItem, int count = 1)
+    public void AddItem(Item newItem, int count = 1)
     {
         haveItem = true;
         item = newItem;
         itemCount = count;
         slotIcon.sprite = item.ItemData.itemImage;
+        slotIcon.raycastTarget = item.ItemData.itemAbilityType == ItemStatSO.AbilityType.None ? false : true;
         itemCountText.text = $"{itemCount}";
         SetColor(1);
     }
@@ -58,6 +55,7 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
         item = null;
         itemCount = 0;
         slotIcon.sprite = null;
+        slotIcon.raycastTarget = true;
         itemCountText.text = string.Empty;
         SetColor(0);
     }
@@ -78,19 +76,40 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
             ClearSlot();
     }
 
-    /// <summary>
-    /// 슬롯에 있는 아이템과 획득한 아이템의 이미지를 비교하고 수량이 최대치 (<see cref="ItemStatSO.itemMaxCount"></see>) 보다 적으면 true를 반환하는 함수
-    /// </summary>
-    /// <param name="addItem"></param>
-    /// <returns></returns>
     public bool IsSameItem(Item addItem)
     {
-        return addItem.ItemData.itemImage == Icon.sprite && ItemCount < item.ItemData.itemMaxCount/* item.MaxCount*/;
+        return addItem.ItemData.itemImage == slotIcon.sprite && itemCount < item.ItemData.itemMaxCount;
+    }
+
+    public void SubtractItemCount(int requiredItemCount)
+    {
+        itemCount -= requiredItemCount;
+        itemCountText.text = $"{itemCount}";
+
+        if (itemCount <= 0)
+            ClearSlot();
+    }
+
+    /// <summary>
+    /// 아이템 슬롯이 추가되면서 <see cref="Inventory.AddEventToSlot"/> 함수에 이벤트로 추가할 때 이미 생성된 슬롯의 중복 등록을 방지하기 위한 함수
+    /// </summary>
+    public void ClearItemEvent()
+    {
+        onUseItem = null;
+        onActiveItemExchanger = null;
     }
 
     private void UseItem()
     {
         onUseItem?.Invoke(this, item);
+    }
+
+    public void OnPointerClick(PointerEventData eventData)
+    {
+        if (eventData.button == PointerEventData.InputButton.Right)
+        {
+            onActiveItemExchanger.Invoke(this, eventData.pressPosition, itemCount);
+        }
     }
 
     public void OnBeginDrag(PointerEventData eventData)
@@ -151,44 +170,35 @@ public class InventorySlot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEn
 
     private void SwapSlot()
     {
-        Item tempItem = item;           // 아이템이 이미 있는 슬롯으로 옮길때 기존에 있는 아이템을 임시로 저장
-        int tempItemCount = itemCount;  // 마찬가지로 기존에 있는 아이템의 갯수를 임시로 저장
+        Item tempItem = item;           // 슬롯에 있는 아이템을 다른 슬롯으로 옮길 때 클릭한 아이템을 임시로 저장
+        int tempItemCount = itemCount;  // 옮기기위해 클릭한 아이템의 갯수를 또한 임시로 저장
 
-        AddNewItem(DragSlot.instance.dragSlot.item, DragSlot.instance.dragSlot.itemCount);
+        AddItem(DragSlot.instance.dragSlot.item, DragSlot.instance.dragSlot.itemCount);
 
-        if (tempItem != null)   // 바꾸려는 슬롯에 아이템이 존재할 경우
+        if (tempItem != null)   // 옮길 슬롯에 아이템이 있을 경우
         {
-            if (tempItem.name != DragSlot.instance.dragSlot.item.name)      // 기존 슬롯의 아이템 이름이 드래그한 슬롯의 아이템 이름과 같지 않다면
-                DragSlot.instance.dragSlot.AddNewItem(tempItem, tempItemCount);
-            else                                                            // 기존 슬롯의 아이템 이름이 드래그한 슬롯의 아이템 이름과 같다면
+            if (tempItem.name != DragSlot.instance.dragSlot.item.name)              // 해당 슬롯의 아이템 이름이 드래그한 아이템 이름과 다르다면
+                DragSlot.instance.dragSlot.AddItem(tempItem, tempItemCount);
+            else                                                                    // 해당 슬롯의 아이템 이름이 드래그한 아이템 이름과 같다면
             {
                 int totalItemCount = tempItemCount + DragSlot.instance.dragSlot.itemCount;
 
                 if (totalItemCount <= item.ItemData.itemMaxCount)    // 합산된 아이템 갯수가 최대 갯수 이하일 경우
                 {
-                    AddNewItem(DragSlot.instance.dragSlot.item, tempItemCount + DragSlot.instance.dragSlot.itemCount);
+                    AddItem(DragSlot.instance.dragSlot.item, tempItemCount + DragSlot.instance.dragSlot.itemCount);
                     DragSlot.instance.dragSlot.ClearSlot();
                 }
-                else                                    // 합산된 아이템 갯수가 최대 갯수를 넘을 경우
+                else                                                 // 합산된 아이템 갯수가 최대 갯수를 넘을 경우
                 {
-                    // 현재 슬롯을 최대 갯수로 채우고 나머지는 이전 슬롯에 추가
-                    AddNewItem(DragSlot.instance.dragSlot.item, item.ItemData.itemMaxCount);
-                    DragSlot.instance.dragSlot.AddNewItem(DragSlot.instance.dragSlot.item, totalItemCount - item.ItemData.itemMaxCount);
+                    // 현재 슬롯의 아이템 수를 최대치로 채우고 나머지는 다른 슬롯에 추가
+                    AddItem(DragSlot.instance.dragSlot.item, item.ItemData.itemMaxCount);
+                    DragSlot.instance.dragSlot.AddItem(DragSlot.instance.dragSlot.item, totalItemCount - item.ItemData.itemMaxCount);
                 }
             }
         }
-        else                    // 바꾸려는 슬롯에 아이템이 없을 경우
+        else                    // 옮길 슬롯에 아이템이 없을 경우
             DragSlot.instance.dragSlot.ClearSlot();
 
         DragSlot.instance.isDrag = false;   // 드래그가 끝났으니 bool 값을 false로 되돌림
-    }
-
-    public void SubtractItemCount(int requiredItemCount)
-    {
-        itemCount -= requiredItemCount;
-        itemCountText.text = $"{itemCount}";
-
-        if (itemCount <= 0)
-            ClearSlot();
     }
 }

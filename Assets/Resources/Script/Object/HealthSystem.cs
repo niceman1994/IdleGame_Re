@@ -11,7 +11,7 @@ public class HealthSystem : MonoBehaviour
     // 오브젝트의 체력과 연관된 이벤트
     public event Action<float> onHealthDamaged;
     public event Action<float, float> onHealthChanged;
-    public event Action onDeath;
+    public Action onDeath;
 
     public void TakeDamage(float hp, float damage)
     {

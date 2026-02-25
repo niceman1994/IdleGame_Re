@@ -109,9 +109,9 @@ public abstract class Object : MonoBehaviour, IObject
         objectAnimator.SetBool("attack", false);
         objectAnimator.SetBool("death", true);
 
-        // 추상 클래스인 Object를 상속받아서 공격할 때 ResetAttackState 함수를 서로 등록하고 죽은 쪽은 이쪽에서 해제함
+        // 공격할 때 서로 ResetAttackState 함수를 등록하고 죽은 쪽은 상대의 onDeath 에 등록한 함수를 제거함
         detectCollider.DetectedEnemy.healthSystem.onDeath -= ResetAttackState;
-
+        
         runtimeStats.hp = 0;
         attackLoop = 0;
         ownCollider.enabled = false;
@@ -143,7 +143,7 @@ public abstract class Object : MonoBehaviour, IObject
         detectCollider.DetectedEnemy.healthSystem.onDeath += ResetAttackState;
     }
 
-    protected virtual void ResetAttackState()
+    public virtual void ResetAttackState()
     {
         attackLoop = 0;
         objectAnimator.SetBool("attack", false);
@@ -163,6 +163,7 @@ public abstract class Object : MonoBehaviour, IObject
         return objectType.Equals(compareObject.objectType);
     }
 
+    protected abstract void ObjectStateChange(Object detectedEnemy);
     public abstract void CheckState();
     public abstract void AddBuff(Buff buff);
     public abstract float CurrentHp();

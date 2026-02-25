@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class StageManager : MonoBehaviour
+public class StageInfo : MonoBehaviour
 {
     [Header("스테이지 관련 변수")]
     public int currentStage;

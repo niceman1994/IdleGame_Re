@@ -41,6 +41,7 @@ public class Boss : Object
     {
         SetDefaultStats(bossData.objectStats.baseHp, bossData.objectStats.baseAttack, bossData.objectStats.baseAttackSpeed);
 
+        detectCollider.onEnemyDetected += ObjectStateChange;
         spellAttackValue = 0.75f;
         lastSpellAttackCount = 0;
         currentSpellAttackCount = 0;
@@ -53,9 +54,7 @@ public class Boss : Object
     {
         if (runtimeStats.hp > 0)
         {
-            if (objectAnimator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
-                EnemyDetect();
-            else
+            if (objectAnimator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
             {
                 if (objectAnimator.GetFloat("spellAttack") > spellAttackValue && !isSpellCast)
                     objectAnimator.SetBool("cast", isSpellCast = true);
@@ -80,10 +79,13 @@ public class Boss : Object
         }
     }
 
-    private void EnemyDetect()
+    protected override void ObjectStateChange(Object detectedEnemy)
     {
-        if (detectCollider.IsDetectEnemy("Player"))
+        if (detectedEnemy != null)
+        {
+            RegisterEnemyDeathCallback();
             objectAnimator.SetBool("attack", true);
+        }
     }
 
     private void AttackState()

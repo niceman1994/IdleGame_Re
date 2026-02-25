@@ -22,23 +22,22 @@ public class MonsterGoblin : Object
     {
         SetDefaultStats(monsterData.objectStats.baseHp, monsterData.objectStats.baseAttack, monsterData.objectStats.baseAttackSpeed);
         giveGold = monsterData.giveGold;
+        detectCollider.onEnemyDetected += ObjectStateChange;
     }
 
     public override void CheckState()
     {
-        if (runtimeStats.hp > 0)
-        {
-            if (objectAnimator.GetCurrentAnimatorStateInfo(0).IsName("Idle"))
-                EnemyDetect();
-            else if (objectAnimator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
-                AttackState();
-        }
+        if (runtimeStats.hp > 0 && objectAnimator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+            AttackState();
     }
 
-    private void EnemyDetect()
+    protected override void ObjectStateChange(Object detectedEnemy)
     {
-        if (detectCollider.IsDetectEnemy("Player"))
+        if (detectedEnemy != null)
+        {
+            RegisterEnemyDeathCallback();
             objectAnimator.SetBool("attack", true);
+        }
     }
 
     private void AttackState()

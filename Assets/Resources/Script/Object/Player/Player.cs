@@ -41,10 +41,8 @@ public class Player : Object
         if (collision.gameObject.CompareTag("Item"))
         {
             collision.gameObject.SetActive(false);
-            // 플레이어와 충돌한 객체 정보를 받아옴
+            // 플레이어와 충돌한 아이템 정보를 받아오고 인벤토리 슬롯을 갱신
             GameManager.Instance.Inventory.GetItem(collision.gameObject.GetComponent<Item>());
-            // 아이템 정보를 받아왔으니 인벤토리 슬롯을 갱신
-            GameManager.Instance.Inventory.UpdateItemSlot();
         }
     }
 
@@ -54,27 +52,11 @@ public class Player : Object
         runtimeMoveSpeed = moveSpeed = playerData.baseMoveSpeed;
 
         healthSystem.onHealthDamaged += GetCurrentHp;
-        detectCollider.onEnemyDetected += PlayerStateTypeChange;
+        detectCollider.onEnemyDetected += ObjectStateChange;
 
         playerStateMachine = new StateMachine(this);
-        playerStateMachine.ChangeState(playerStateMachine.RunState, PlayerStateType.Run);
+        ChangeState(PlayerStateType.Run);
         ShowCurrentHp();
-    }
-
-    private void PlayerMove()
-    {
-        if (detectCollider.DetectedEnemy == null)
-        {
-            if (transform.localPosition != endPoint.localPosition)
-            {
-                if (playerStateMachine.CurrentStateType != PlayerStateType.Death)
-                    transform.localPosition = Vector2.MoveTowards(transform.localPosition, endPoint.localPosition, moveSpeed * Time.deltaTime);
-                else
-                    transform.localPosition = Vector2.MoveTowards(transform.localPosition, endPoint.localPosition, 0.0f);
-            }
-            else
-                playerStateMachine.ChangeState(playerStateMachine.IdleState, PlayerStateType.Idle);
-        }
     }
 
     public void ChangeState(PlayerStateType playerState)
@@ -96,10 +78,29 @@ public class Player : Object
         }
     }
 
-    private void PlayerStateTypeChange(Object detectedEnemy)
+    private void PlayerMove()
+    {
+        if (detectCollider.DetectedEnemy == null)
+        {
+            if (transform.localPosition != endPoint.localPosition)
+            {
+                if (playerStateMachine.CurrentStateType != PlayerStateType.Death)
+                    transform.localPosition = Vector2.MoveTowards(transform.localPosition, endPoint.localPosition, moveSpeed * Time.deltaTime);
+                else
+                    transform.localPosition = Vector2.MoveTowards(transform.localPosition, endPoint.localPosition, 0.0f);
+            }
+            else
+                ChangeState(PlayerStateType.Idle);
+        }
+    }
+
+    protected override void ObjectStateChange(Object detectedEnemy)
     {
         if (detectedEnemy != null)
+        {
+            RegisterEnemyDeathCallback();
             ChangeState(PlayerStateType.Attack);
+        }
         else
             ChangeState(PlayerStateType.Run);
     }
@@ -169,7 +170,7 @@ public class Player : Object
         }
     }
 
-    protected override void ResetAttackState()
+    public override void ResetAttackState()
     {
         base.ResetAttackState();
         ChangeState(PlayerStateType.Run);

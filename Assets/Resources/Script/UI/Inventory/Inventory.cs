@@ -9,7 +9,7 @@ public class Inventory : MonoBehaviour
     [SerializeField] Player player;
     [SerializeField] RectTransform itemExchangeRectParent;
     [SerializeField] RectTransform content;
-    [SerializeField] GameObject horizontalListPrefab;
+    [SerializeField] InventoryHorizontalList horizontalListPrefab;
     [SerializeField] RectTransform addListButtonParent;
     [SerializeField] Button addListButton;
     [SerializeField] ItemExchanger itemExchanger;
@@ -18,55 +18,63 @@ public class Inventory : MonoBehaviour
     /// 획득한 아이템에 대한 변수
     /// </summary>
     private Item item;
-    private InventorySlot[] slots;
+    private List<InventorySlot> slots = new List<InventorySlot>();
+    private InventorySlot currentSlot;
     private int addListCount = 0;
 
     private void Start()
     {
-        MakeInvetorySlots();
+        for (int i = 0; i < 2; i++)
+            MakeInvetorySlots();
+
+        itemExchanger.OnClickExchangeButton(this);
         addListButton.onClick.AddListener(AddHorizontalList);
-        // 여기서 OnClickExchangeButton 에 함수를 등록해 아이템을 교환하면서 슬롯을 갱신함
-        itemExchanger.OnItemExchange(this, UpdateItemSlot);
     }
 
-    private void Update()
+    private void MakeInvetorySlots()
     {
-        if (Input.GetMouseButtonDown(1))
-        {
-            if (itemExchanger.IsOpen == false)
-                PointerOverInventorySlot();
-            else 
-                itemExchanger.DeactivateItemExchangeBox();
-        }
-        else if (Input.GetMouseButtonDown(0))
-        {
-            if (itemExchanger.IsOpen == true && itemExchanger.PointerOverItemExchangeButton() == false)
-                itemExchanger.DeactivateItemExchangeBox();
-        }
+        InventoryHorizontalList horzontalList = Instantiate(horizontalListPrefab, content);
+        horzontalList.name = "HorizontalList";
+        horzontalList.AddSlot(slots, AddSlotEvent);
+
+        addListButtonParent.SetAsLastSibling();
     }
 
-    private void PointerOverInventorySlot()
+    public void AddHorizontalList()
     {
-        PointerEventData data = new PointerEventData(EventSystem.current);
-        data.position = Input.mousePosition;    // 이 코드가 없으면 마우스 클릭과 이벤트가 연결되지 않아서 이벤트 시스템을 이용할 수 없음
+        addListCount++;
+        MakeInvetorySlots();
 
-        var results = new List<RaycastResult>();
-        EventSystem.current.RaycastAll(data, results);
-
-        for (int i = 0; i < results.Count; i++)
-        {
-            if (results[i].gameObject.name.Equals("Slot"))
-            {
-                InventorySlot slot = results[i].gameObject.GetComponent<InventorySlot>();
-                ShowItemExchangeUI(slot, data.position);
-                return;
-            }
-        }
+        if (addListCount >= 3)
+            addListButtonParent.gameObject.SetActive(false);
     }
 
-    public void UpdateItemSlot()
+    private void AddSlotEvent(InventorySlot slot)
     {
-        for (int i = 0; i < slots.Length; i++)
+        // 모든 슬롯에 이벤트를 등록함
+        slot.onActiveItemExchanger += ShowItemExchangeUI;
+        slot.onUseItem += OnUseItem;
+    }
+
+    public void ShowItemExchangeUI(InventorySlot slot, Vector2 setBoxPosition, int slotItemCount)
+    {
+        currentSlot = slot;
+
+        Vector2 boxPosition;
+        // https://bonnate.tistory.com/219 링크를 참고해서 슬롯 위에 있는 마우스 위치에 맞게 아이템교환 UI가 뜨도록 함
+        RectTransformUtility.ScreenPointToLocalPointInRectangle(itemExchangeRectParent, setBoxPosition, null, out boxPosition);
+        itemExchanger.ActiveItemExchangeUI(boxPosition, slotItemCount);
+    }
+
+    public void GetItem(Item dropItem)
+    {
+        item = dropItem;
+        UpdateItemSlot();
+    }
+
+    private void UpdateItemSlot()
+    {
+        for (int i = 0; i < slots.Count; i++)
         {
             // 1. 인벤토리 슬롯에 아이템이 존재하지 않을 때
             // 2. 획득한 아이템의 이미지와 슬롯의 아이템 이미지가 같으면서, 해당 아이템의 갯수가 최대 갯수 이하일 때
@@ -74,7 +82,7 @@ public class Inventory : MonoBehaviour
             {
                 // 없는 아이템 추가 또는 소유한 아이템 수 증가
                 if (!slots[i].HaveItem)
-                    slots[i].AddNewItem(item);
+                    slots[i].AddItem(item);
                 else
                     slots[i].AddSameItem(1);
 
@@ -83,85 +91,24 @@ public class Inventory : MonoBehaviour
         }
     }
 
-    private void MakeInvetorySlots()
+    public void TryExchangeItem(string exchangeItemName, int requiredItemCount)
     {
-        for (int i = 0; i < 2; i++)
+        if (currentSlot == null) return;
+
+        currentSlot.SubtractItemCount(requiredItemCount);
+        GetItem(ItemManager.Instance.CreateItem(exchangeItemName));
+        itemExchanger.DeactiveItemExchangeUI();
+    }
+
+    public void OnUseItem(InventorySlot slot, Item useItem)
+    {
+        if (useItem != null)
         {
-            GameObject horzontalList = Instantiate(horizontalListPrefab, content);
-            horzontalList.name = "HorizontalList";
-            addListButtonParent.SetAsLastSibling();
-        }
-        StartCoroutine(FindInvetorySlots());
-    }
-
-    public void AddHorizontalList()
-    {
-        addListCount++;
-
-        // Grid Layout Group으로 정리된 content의 자식객체로 horizontalListPrefab을 생성
-        GameObject Obj = Instantiate(horizontalListPrefab, content);
-        Obj.name = "HorizontalList";
-
-        // 인벤토리 추가버튼이 맨 아래로 가도록 SetAsLastSibling을 사용
-        addListButtonParent.SetAsLastSibling();
-        StartCoroutine(FindInvetorySlots());
-
-        if (addListCount >= 3)
-            addListButtonParent.gameObject.SetActive(false);
-    }
-
-    private IEnumerator FindInvetorySlots()
-    {
-        yield return null;
-        slots = content.GetComponentsInChildren<InventorySlot>();
-
-        for (int i = 0; i < slots.Length; i++)
-            AddEventToSlot(slots[i]);
-    }
-
-    public void GetItem(Item dropItem)
-    {
-        item = dropItem;
-    }
-
-    private void ShowItemExchangeUI(InventorySlot slot, Vector2 dataPosition)
-    {
-        if (slot.Icon.sprite.name.Equals("Bottle"))
-        {
-            itemExchanger.SetItemExchangeBoxPosition(itemExchangeRectParent, dataPosition);
-            itemExchanger.ShowExchangeableItem(slot);
-        }
-    }
-
-    private void AddEventToSlot(InventorySlot slot)
-    {
-        slot.onUseItem += OnUseItem;
-    }
-
-    public void OnUseItem(InventorySlot slot, Item item)
-    {
-        if (item != null)
-        {
-            if (item.ItemData.itemAbilityType == ItemStatSO.AbilityType.None)                   // 아이템 능력이 아무것도 없다면 사용할 수 없게함
+            if (useItem.IsItemNoAbility())                   // 아이템 능력이 없다면 사용할 수 없게함
                 slot.AddSameItem(0);
             else
             {
-                if (item.ItemData.itemAbilityType == ItemStatSO.AbilityType.GoldUp)             // 아이템 능력이 골드 증가일 때
-                {
-                    GameManager.Instance.gameGold.AddGold(item.ItemData.itemAbility);
-                    TextPoolManager.Instance.ShowItemText("Gold", item.ItemData.itemAbility,
-                        player.transform.position, new Color(255, 200, 0, 255), 16);
-                }                                                                               
-                else if (item.ItemData.itemAbilityType == ItemStatSO.AbilityType.Heal)          // 아이템 능력이 체력 회복일 때
-                {
-                    player.CurrentHpChange(item.ItemData.itemAbility);
-                }                                                                               
-                else if (item.ItemData.itemAbilityType == ItemStatSO.AbilityType.PowerUp)       // 아이템 능력이 공격력 증가일 때
-                {
-                    player.CurrentAtk(item.ItemData.itemAbility);
-                    TextPoolManager.Instance.ShowItemText("ATK", item.ItemData.itemAbility,
-                        player.transform.position, new Color(0, 0, 0, 255), 20);
-                }
+                useItem.OnUseItem(player);
                 slot.AddSameItem(-1);
             }
         }

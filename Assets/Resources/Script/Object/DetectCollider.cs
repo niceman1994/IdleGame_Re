@@ -48,9 +48,4 @@ public class DetectCollider : MonoBehaviour
         DetectedEnemy = null;
         isDetected = false;
     }
-
-    public bool IsDetectEnemy(string enemyTag)
-    {
-        return DetectedEnemy != null && DetectedEnemy.CompareTag(enemyTag);
-    }
 }

@@ -4287,7 +4287,7 @@ MonoBehaviour:
   player: {fileID: 6107476453365903137}
   itemExchangeRectParent: {fileID: 1147911692}
   content: {fileID: 544136246}
-  horizontalListPrefab: {fileID: 5587175330324180137, guid: d43b5aa8a5113ca4bbe1bd0c06c1b261, type: 3}
+  horizontalListPrefab: {fileID: -9071219351642686869, guid: d43b5aa8a5113ca4bbe1bd0c06c1b261, type: 3}
   addListButtonParent: {fileID: 1318372838}
   addListButton: {fileID: 4526047546820307080}
   itemExchanger: {fileID: 1474265588001076301}
@@ -7125,15 +7125,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isOpen: 0
-  changeItemCount: 1
   itemExchangeBox: {fileID: 2919861746770081674}
   itemExchangeButtons:
-  - itemExchageButtonImage: {fileID: 2919861747276495063}
-    itemExchangeButton: {fileID: 2919861747276495060}
-  - itemExchageButtonImage: {fileID: 2919861746705022631}
-    itemExchangeButton: {fileID: 2919861746705022628}
-  - itemExchageButtonImage: {fileID: 2919861745807478143}
-    itemExchangeButton: {fileID: 2919861745807478140}
+  - {fileID: 2919861747276495064}
+  - {fileID: 2919861746705022632}
+  - {fileID: 2919861745807478144}
 --- !u!4 &1781999146348200016
 Transform:
   m_ObjectHideFlags: 0
@@ -11538,13 +11534,14 @@ GameObject:
   - component: {fileID: 2919861745807478142}
   - component: {fileID: 2919861745807478143}
   - component: {fileID: 2919861745807478140}
+  - component: {fileID: 2919861745807478144}
   m_Layer: 5
   m_Name: SwordExchangeButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2919861745807478140
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11570,7 +11567,7 @@ MonoBehaviour:
     m_HighlightedColor: {r: 0.88235295, g: 0.88235295, b: 0.88235295, a: 1}
     m_PressedColor: {r: 0.6666667, g: 0.6666667, b: 0.6666667, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 1, g: 1, b: 1, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -11631,7 +11628,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.5019608}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -11648,6 +11645,22 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2919861745807478144
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2919861745807478138}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2c7c3c2b2631e84ca680f8a695cf6ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemData: {fileID: 11400000, guid: 9347c8b69246e2943a73ab2abebdecde, type: 2}
+  itemButtonImage: {fileID: 2919861745807478143}
+  itemButton: {fileID: 2919861745807478140}
+  requireItemCount: 3
 --- !u!224 &2919861746439758672
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11742,13 +11755,14 @@ GameObject:
   - component: {fileID: 2919861746705022630}
   - component: {fileID: 2919861746705022631}
   - component: {fileID: 2919861746705022628}
+  - component: {fileID: 2919861746705022632}
   m_Layer: 5
   m_Name: HpPotionExchangeButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2919861746705022628
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11774,7 +11788,7 @@ MonoBehaviour:
     m_HighlightedColor: {r: 0.88235295, g: 0.88235295, b: 0.88235295, a: 1}
     m_PressedColor: {r: 0.6666667, g: 0.6666667, b: 0.6666667, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 1, g: 1, b: 1, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -11835,7 +11849,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.5019608}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -11852,6 +11866,22 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2919861746705022632
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2919861746705022626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2c7c3c2b2631e84ca680f8a695cf6ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemData: {fileID: 11400000, guid: e8c791f4af3f9f24c9934080fc0c67d2, type: 2}
+  itemButtonImage: {fileID: 2919861746705022631}
+  itemButton: {fileID: 2919861746705022628}
+  requireItemCount: 2
 --- !u!224 &2919861746770081674
 RectTransform:
   m_ObjectHideFlags: 0
@@ -11886,12 +11916,12 @@ GameObject:
   - component: {fileID: 2919861746770081674}
   - component: {fileID: 1474265588001076301}
   m_Layer: 5
-  m_Name: ItemExchangeBox
+  m_Name: ItemExchanger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &2919861747021370162
 GameObject:
   m_ObjectHideFlags: 0
@@ -11986,13 +12016,14 @@ GameObject:
   - component: {fileID: 2919861747276495062}
   - component: {fileID: 2919861747276495063}
   - component: {fileID: 2919861747276495060}
+  - component: {fileID: 2919861747276495064}
   m_Layer: 5
   m_Name: GoldExchangeButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2919861747276495060
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -12018,7 +12049,7 @@ MonoBehaviour:
     m_HighlightedColor: {r: 0.88235295, g: 0.88235295, b: 0.88235295, a: 1}
     m_PressedColor: {r: 0.6666667, g: 0.6666667, b: 0.6666667, a: 1}
     m_SelectedColor: {r: 0.9607843, g: 0.9607843, b: 0.9607843, a: 1}
-    m_DisabledColor: {r: 0.78431374, g: 0.78431374, b: 0.78431374, a: 0.5019608}
+    m_DisabledColor: {r: 1, g: 1, b: 1, a: 0.5019608}
     m_ColorMultiplier: 1
     m_FadeDuration: 0.1
   m_SpriteState:
@@ -12079,7 +12110,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.5019608}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -12096,6 +12127,22 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &2919861747276495064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2919861747276495058}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f2c7c3c2b2631e84ca680f8a695cf6ac, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemData: {fileID: 11400000, guid: f96257b02365f8d499a26f80e57a0e86, type: 2}
+  itemButtonImage: {fileID: 2919861747276495063}
+  itemButton: {fileID: 2919861747276495060}
+  requireItemCount: 1
 --- !u!1 &3285385117492116504
 GameObject:
   m_ObjectHideFlags: 0

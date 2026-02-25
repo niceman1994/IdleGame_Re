@@ -46,7 +46,7 @@ CanvasRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 952938641330735241}
-  m_CullTransparentMesh: 1
+  m_CullTransparentMesh: 0
 --- !u!114 &952938641330735243
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -298,9 +298,7 @@ MonoBehaviour:
   slotIcon: {fileID: 952938641330735243}
   slotItemClick: {fileID: 952938641330735245}
   itemCountText: {fileID: 952938642214903731}
-  itemExchanger: {fileID: 0}
   scrollParent: {fileID: 0}
-  haveItem: 0
 --- !u!114 &2348239952781106337
 MonoBehaviour:
   m_ObjectHideFlags: 0

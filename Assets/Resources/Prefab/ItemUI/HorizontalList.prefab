@@ -76,5 +76,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7153dd49d22d0a04fb5ba890884a5192, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  slotPrefab: {fileID: 5499833259320834650, guid: 8e3dec4c265ac34469b22aff199695c7, type: 3}
+  slotPrefab: {fileID: 1125575815588197112, guid: 8e3dec4c265ac34469b22aff199695c7, type: 3}
   slotCount: 4
