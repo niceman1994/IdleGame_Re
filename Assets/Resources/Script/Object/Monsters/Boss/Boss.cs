@@ -6,13 +6,14 @@ public class Boss : Object
 {
     [Header("Object를 상속받은 Boss 스크립트")]
     [SerializeField] MonsterStatSO bossData;
-    [SerializeField] bool isSpellCast;
     [SerializeField] BossSpell spell;
     [SerializeField] AudioSource castSound;
 
     private int lastSpellAttackCount;
     private int currentSpellAttackCount;
     private float spellAttackValue;
+    private BossStateMachine bossStateMachine;
+
     private Queue<BossSpell> bossSpellQueue = new Queue<BossSpell>();
     // 플레이어가 죽어서 스테이지가 초기화됐을 때 BossSpell이 회수되지 않을 수 있는걸 방지하기 위한 변수
     private List<BossSpell> activeBossSpells = new List<BossSpell>();
@@ -23,7 +24,6 @@ public class Boss : Object
             bossSpellQueue.Enqueue(activeBossSpells[i]);
 
         activeBossSpells.Clear();
-        isSpellCast = false;
     }
 
     protected override void Awake()
@@ -35,35 +35,23 @@ public class Boss : Object
     private void Update()
     {
         CheckState();
+        ChangeState(bossStateMachine.CurrentStateType);
     }
 
     private void InitBoss()
     {
         SetDefaultStats(bossData.objectStats.baseHp, bossData.objectStats.baseAttack, bossData.objectStats.baseAttackSpeed);
+        PrepareSpell();
+
+        bossStateMachine = new BossStateMachine(this);
+        ChangeState(BossStateType.Idle);
+        bossStateMachine.onCheckRecastState += OnCheckRecastState;
 
         detectCollider.onEnemyDetected += ObjectStateChange;
         spellAttackValue = 0.75f;
         lastSpellAttackCount = 0;
         currentSpellAttackCount = 0;
-        isSpellCast = false;
         giveGold = bossData.giveGold;
-        PrepareSpell();
-    }
-
-    public override void CheckState()
-    {
-        if (runtimeStats.hp > 0)
-        {
-            if (objectAnimator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
-            {
-                if (objectAnimator.GetFloat("spellAttack") > spellAttackValue && !isSpellCast)
-                    objectAnimator.SetBool("cast", isSpellCast = true);
-                else if (isSpellCast)
-                    CastState();
-                else
-                    AttackState();
-            }
-        }
     }
 
     private void PrepareSpell()
@@ -79,24 +67,55 @@ public class Boss : Object
         }
     }
 
+    public override void CheckState()
+    {
+        if (runtimeStats.hp > 0)
+        {
+            if (objectAnimator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+            {
+                if (objectAnimator.GetFloat("spellAttack") > spellAttackValue)
+                    ChangeState(BossStateType.Cast);
+                else
+                    AttackState();
+            }
+        }
+    }
+
+    private void ChangeState(BossStateType bossState)
+    {
+        switch (bossState)
+        {
+            case BossStateType.Idle:
+                bossStateMachine.ChangeState(bossStateMachine.IdleState, bossState);
+                break;
+            case BossStateType.Attack:
+                bossStateMachine.ChangeState(bossStateMachine.AttackState, bossState);
+                break;
+            case BossStateType.Cast:
+                bossStateMachine.ChangeState(bossStateMachine.CastState, bossState);
+                CastState();
+                break;
+            case BossStateType.Death:
+                bossStateMachine.ChangeState(bossStateMachine.DeathState, bossState);
+                break;
+        }
+    }
+
     protected override void ObjectStateChange(Object detectedEnemy)
     {
         if (detectedEnemy != null)
         {
             RegisterEnemyDeathCallback();
-            objectAnimator.SetBool("attack", true);
+            ChangeState(BossStateType.Attack);
         }
     }
 
     private void AttackState()
     {
-        if (objectAnimator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
+        if (AttackStateProcess() > 0.625f && AttackStateTime() > attackLoop)
         {
-            if (AttackStateProcess() > 0.625f && AttackStateTime() > attackLoop)
-            {
-                PlayAttackSound(bossData.objectStats.attackClip);
-                objectAnimator.SetFloat("spellAttack", Random.Range(0.25f, 1.0f));
-            }
+            PlayAttackSound(bossData.objectStats.attackClip);
+            objectAnimator.SetFloat("spellAttack", Random.Range(0.3f, 1.0f));
         }
     }
 
@@ -128,7 +147,7 @@ public class Boss : Object
         bossSpell.gameObject.SetActive(true);
         bossSpell.transform.position = new Vector3(transform.position.x - 0.11f, spell.transform.position.y, spell.transform.position.z);
 
-        // atkLoop를 0으로 초기화하지 않으면 보스가 공격해도 AttackState의 normalizedTime만큼 소리가 나지 않음
+        // atkLoop를 0으로 초기화하지 않으면 보스가 공격해도 공격 루프 애니메이션이 진행된 시간만큼(normalizedTime) 공격 효과음이 나오지 않음
         attackLoop = 0;
 
         bossSpell.spellEnqueueAction += () =>
@@ -136,27 +155,23 @@ public class Boss : Object
             bossSpellQueue.Enqueue(bossSpell);
             activeBossSpells.Remove(bossSpell);
         };
+        bossStateMachine.OnCheckRecastState();
+    }
 
-        objectAnimator.SetBool("cast", isSpellCast = false);
-        objectAnimator.SetFloat("spellAttack", Random.Range(0.25f, 1.0f));
+    private void OnCheckRecastState()
+    {
+        objectAnimator.SetFloat("spellAttack", Random.Range(0.3f, 1.0f));
 
-        // spellAttack 값이 연속으로 spellAttackRandomValue 보다 크게 나오면 Cast 애니메이션을 다시 실행시킴
+        // spellAttack 값이 연속으로 spellAttackValue 보다 크게 나오면 특수 공격을 다시 실행시킴
         if (objectAnimator.GetFloat("spellAttack") > spellAttackValue)
             objectAnimator.SetTrigger("recast");
+        else
+            ChangeState(BossStateType.Attack);
     }
 
-    protected override void Death()
+    public override float CurrentHp()
     {
-        base.Death();
-        GameManager.Instance.gameGold.curGold[0] += giveGold;
-        isSpellCast = false;
-        PlayDeadSound(bossData.objectStats.deadClip);
-        healthSystem.NotifyDeath();
-    }
-
-    public override void CurrentAtk(float addAtk)
-    {
-        runtimeStats.attack += addAtk;
+        return runtimeStats.hp;
     }
 
     public override void GetAttackDamage(float dmg)
@@ -168,12 +183,26 @@ public class Boss : Object
             Death();
     }
 
-    public override float CurrentHp()
+    public override void ResetAttackState()
     {
-        return runtimeStats.hp;
+        base.ResetAttackState();
+        ChangeState(BossStateType.Idle);
     }
 
-    // 스테이지가 오를 수록 체력을 올리기 위해 사용하는 함수
+    protected override void Death()
+    {
+        base.Death();
+        ChangeState(BossStateType.Death);
+        GameManager.Instance.gameGold.curGold[0] += giveGold;
+        PlayDeadSound(bossData.objectStats.deadClip);
+        healthSystem.NotifyDeath();
+    }
+
+    public override void CurrentAtk(float addAtk)
+    {
+        runtimeStats.attack += addAtk;
+    }
+
     public override void HpUp(float addHp)
     {
         runtimeStats.hp += addHp;

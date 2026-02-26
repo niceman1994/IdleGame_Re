@@ -4,15 +4,15 @@ using UnityEngine;
 
 public abstract class BaseState : IState
 {
-    protected Animator playerAnimator;
-    protected Player playerController;
+    protected Animator objectAnimator;
+    protected Object objectController;
 
-    public BaseState(Player controller)
+    public BaseState(Object objectController)
     {
-        playerController = controller;
+        this.objectController = objectController;
 
-        if (playerAnimator == null)
-            playerAnimator = playerController.GetComponent<Animator>();
+        if (objectAnimator == null)
+            objectAnimator = objectController.GetComponent<Animator>();
     }
 
     public abstract void OnStateEnter();

@@ -13,7 +13,7 @@ public class Player : Object
     [SerializeField] BuffController buffController;
      
     private float runtimeMoveSpeed;
-    private StateMachine playerStateMachine;
+    private PlayerStateMachine playerStateMachine;
 
     public event Action<float, float> onHpbarChanged;
     public event Action onStageUp;
@@ -54,12 +54,12 @@ public class Player : Object
         healthSystem.onHealthDamaged += GetCurrentHp;
         detectCollider.onEnemyDetected += ObjectStateChange;
 
-        playerStateMachine = new StateMachine(this);
+        playerStateMachine = new PlayerStateMachine(this);
         ChangeState(PlayerStateType.Run);
         ShowCurrentHp();
     }
 
-    public void ChangeState(PlayerStateType playerState)
+    private void ChangeState(PlayerStateType playerState)
     {
         switch (playerState)
         {
@@ -101,8 +101,6 @@ public class Player : Object
             RegisterEnemyDeathCallback();
             ChangeState(PlayerStateType.Attack);
         }
-        else
-            ChangeState(PlayerStateType.Run);
     }
 
     public override void CheckState()
@@ -207,7 +205,7 @@ public class Player : Object
     {
         attackLoop = 0;
         transform.localPosition = startPoint.localPosition;
-        playerStateMachine.ChangeState(playerStateMachine.RunState, PlayerStateType.Run);
+        ChangeState(PlayerStateType.Run);
 
         ShowCurrentHp();
         moveSpeed = runtimeMoveSpeed;

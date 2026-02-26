@@ -14,10 +14,9 @@ public class Inventory : MonoBehaviour
     [SerializeField] Button addListButton;
     [SerializeField] ItemExchanger itemExchanger;
 
-    /// <summary>
-    /// 획득한 아이템에 대한 변수
-    /// </summary>
+    // 획득한 아이템에 대한 변수
     private Item item;
+
     private List<InventorySlot> slots = new List<InventorySlot>();
     private InventorySlot currentSlot;
     private int addListCount = 0;
@@ -52,11 +51,11 @@ public class Inventory : MonoBehaviour
     private void AddSlotEvent(InventorySlot slot)
     {
         // 모든 슬롯에 이벤트를 등록함
-        slot.onActiveItemExchanger += ShowItemExchangeUI;
+        slot.onActiveItemExchanger += SetItemExchangeUIPosition;
         slot.onUseItem += OnUseItem;
     }
 
-    public void ShowItemExchangeUI(InventorySlot slot, Vector2 setBoxPosition, int slotItemCount)
+    public void SetItemExchangeUIPosition(InventorySlot slot, Vector2 setBoxPosition, int slotItemCount)
     {
         currentSlot = slot;
 
@@ -91,6 +90,7 @@ public class Inventory : MonoBehaviour
         }
     }
 
+    // 아이템 교환 버튼에 등록하기 위해 사용하는 함수
     public void TryExchangeItem(string exchangeItemName, int requiredItemCount)
     {
         if (currentSlot == null) return;

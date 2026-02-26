@@ -7,25 +7,22 @@ public enum PlayerStateType
     Idle, Run, Attack, Death
 }
 
-/// <summary>
-/// <see cref="Player"/>의 상태를 바꿔줄 스크립트
-/// </summary>
-public class StateMachine
+public class PlayerStateMachine
 {
     private BaseState currentState;
 
-    public IdleState IdleState { get; private set; }
-    public RunState RunState { get; private set; }
-    public AttackState AttackState { get; private set; }
-    public DeathState DeathState { get; private set; }
+    public PlayerIdleState IdleState { get; private set; }
+    public PlayerRunState RunState { get; private set; }
+    public PlayerAttackState AttackState { get; private set; }
+    public PlayerDeathState DeathState { get; private set; }
     public PlayerStateType CurrentStateType { get; private set; }
 
-    public StateMachine(Player player)
+    public PlayerStateMachine(Object objectController)
     {
-        IdleState = new IdleState(player);
-        RunState = new RunState(player);
-        AttackState = new AttackState(player);
-        DeathState = new DeathState(player);
+        IdleState = new PlayerIdleState(objectController);
+        RunState = new PlayerRunState(objectController);
+        AttackState = new PlayerAttackState(objectController);
+        DeathState = new PlayerDeathState(objectController);
     }
 
     public void ChangeState(BaseState nextState, PlayerStateType playerState)

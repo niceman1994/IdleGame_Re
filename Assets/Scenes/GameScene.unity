@@ -2509,7 +2509,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -242, y: 162.49997}
+  m_AnchoredPosition: {x: -242, y: 162.50003}
   m_SizeDelta: {x: 475, y: 0}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &544136247
@@ -5188,7 +5188,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   currentStage: 1
   stage: {fileID: 1734870318}
-  bossStage: 2
+  bossStage: 3
   player: {fileID: 6107476453365903137}
 --- !u!1 &1636132348
 GameObject:

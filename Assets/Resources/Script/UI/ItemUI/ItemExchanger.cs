@@ -9,15 +9,14 @@ public class ItemExchanger : MonoBehaviour
     [SerializeField] RectTransform itemExchangeBox;
     [SerializeField] List<ItemExchangeButton> itemExchangeButtons = new List<ItemExchangeButton>();
 
-    public bool IsOpen => isOpen;
-
     private void Update()
     {
         if (isOpen == true && PointerOverItemExchangeButton() == false)
         {
-            if (Input.GetMouseButtonDown(0) || Input.GetMouseButtonDown(1) || Input.GetMouseButtonDown(2))
-                DeactiveItemExchangeUI();
-            else if (Input.mouseScrollDelta.y != 0)
+            if (Input.GetMouseButtonDown(0) ||
+                Input.GetMouseButtonDown(1) ||
+                Input.GetMouseButtonDown(2) ||
+                Input.mouseScrollDelta.y != 0)
                 DeactiveItemExchangeUI();
         }
 
@@ -46,7 +45,7 @@ public class ItemExchanger : MonoBehaviour
 
         var results = new List<RaycastResult>();
         EventSystem.current.RaycastAll(data, results);
-
+        
         for (int i = 0; i < results.Count; i++)
         {
             var button = results[i].gameObject.GetComponent<ItemExchangeButton>();

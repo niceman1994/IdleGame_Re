@@ -2,15 +2,14 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class RunState : BaseState
+public class BossAttackState : BaseState
 {
-    public RunState(Player playerController) : base(playerController) { }
+    public BossAttackState(Object objectController) : base(objectController) { }
 
     public override void OnStateEnter()
     {
-        playerAnimator.SetBool("attack", false);
-        playerAnimator.SetBool("death", false);
-        playerAnimator.SetBool("idle", false);
+        objectAnimator.SetBool("idle", false);
+        objectAnimator.SetBool("attack", true);
     }
 
     public override void OnStateExit()

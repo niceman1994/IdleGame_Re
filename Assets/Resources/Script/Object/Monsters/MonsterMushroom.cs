@@ -77,7 +77,6 @@ public class MonsterMushroom : Object
         return runtimeStats.hp;
     }
 
-    // 스테이지가 오를 수록 체력을 올리기 위해 사용하는 함수
     public override void HpUp(float addHp)
     {
         runtimeStats.hp += addHp;
