@@ -5,10 +5,8 @@ using UnityEngine.UI;
 
 
 
-public class UpgradeStatButtonList : MonoBehaviour
+public class PlayerUIMove : MonoBehaviour
 {
-    [SerializeField] List<UpgradeStatButton> upgradeStatButtons;
-    [Space(15)]
     [SerializeField] Button statusButton;
     [SerializeField] RectTransform upgradeUI;
     [SerializeField] Transform upgradeUIInLeft;
@@ -24,7 +22,6 @@ public class UpgradeStatButtonList : MonoBehaviour
 
     private void Start()
     {
-        SetStatusUpButtonEvent();
         OnClickButtonsEvent();
     }
 
@@ -50,46 +47,16 @@ public class UpgradeStatButtonList : MonoBehaviour
             invenUI.localPosition = Vector3.Lerp(invenUI.localPosition, invenUIOutDown.localPosition, 0.7f);
     }
 
-    private void SetStatusUpButtonEvent()
-    {
-        for (int i = 0; i < upgradeStatButtons.Count; i++)
-        {
-            switch(upgradeStatButtons[i].name)
-            {
-                case "ATKUP":
-                    upgradeStatButtons[i].InvokeUpgradeEvent(upgradeStatButtons[i].AddAtk);
-                    break;
-                case "HPUP":
-                    upgradeStatButtons[i].InvokeUpgradeEvent(upgradeStatButtons[i].AddHp);
-                    break;
-                case "ASUP":
-                    upgradeStatButtons[i].InvokeUpgradeEvent(upgradeStatButtons[i].AddAtkSpeed);
-                    break;
-                case "MSUP":
-                    upgradeStatButtons[i].InvokeUpgradeEvent(upgradeStatButtons[i].AddMoveSpeed);
-                    break;
-                case "SPUP":
-                    upgradeStatButtons[i].InvokeUpgradeEvent(upgradeStatButtons[i].AddSkillPower);
-                    break;
-                case "GOLDUP":
-                    upgradeStatButtons[i].InvokeUpgradeEvent(upgradeStatButtons[i].AddEarnGold);
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
     private void OnClickButtonsEvent()
     {
         statusButton.onClick.RemoveAllListeners();
         invenButton.onClick.RemoveAllListeners();
 
-        statusButton.onClick.AddListener(OnClickStatusButton);
+        statusButton.onClick.AddListener(OnClickStatsButton);
         invenButton.onClick.AddListener(OnClickInvenButtonEvent);
     }
 
-    private void OnClickStatusButton()
+    private void OnClickStatsButton()
     {
         if (moveStatUI == false)
             moveStatUI = true;

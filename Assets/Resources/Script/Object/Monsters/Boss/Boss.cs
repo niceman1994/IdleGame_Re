@@ -193,7 +193,7 @@ public class Boss : Object
     {
         base.Death();
         ChangeState(BossStateType.Death);
-        GameManager.Instance.gameGold.curGold[0] += giveGold;
+        GameManager.Instance.gameGold.AddGold(giveGold);
         PlayDeadSound(bossData.objectStats.deadClip);
         healthSystem.NotifyDeath();
     }

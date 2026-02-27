@@ -52,7 +52,7 @@ public class MonsterGoblin : Object
     protected override void Death()
     {
         base.Death();
-        GameManager.Instance.gameGold.curGold[0] += giveGold;
+        GameManager.Instance.gameGold.AddGold(giveGold);
         PlayDeadSound(monsterData.objectStats.deadClip);
         healthSystem.NotifyDeath();
         ItemManager.Instance.SpawnItem(transform.position);

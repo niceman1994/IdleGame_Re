@@ -50,9 +50,4 @@ public class GameManager : Singleton<GameManager>
         for (int i = 0; i < thunderList.Count; i++)
             thunderList[i].AddPower(addDamage);
     }
-
-    public void AddEarnGold(int buttonClickCount)
-    {
-        gameGold.getGold += 5 * buttonClickCount;
-    }
 }
