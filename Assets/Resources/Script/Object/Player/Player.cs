@@ -51,7 +51,7 @@ public class Player : Object
         SetDefaultStats(playerData.objectStats.baseHp, playerData.objectStats.baseAttack, playerData.objectStats.baseAttackSpeed);
         runtimeMoveSpeed = moveSpeed = playerData.baseMoveSpeed;
 
-        healthSystem.onHealthDamaged += GetCurrentHp;
+        healthSystem.onHealthChanged += GetCurrentHp;
         detectCollider.onEnemyDetected += ObjectStateChange;
 
         playerStateMachine = new PlayerStateMachine(this);
@@ -129,7 +129,7 @@ public class Player : Object
     {
         runtimeStats.hp += addHp;
         runtimeStats.maxHp += addHp;
-        healthSystem.ChangeHealth(runtimeStats.hp, runtimeStats.maxHp, ShowCurrentHp);
+        healthSystem.HpUp(runtimeStats.hp, runtimeStats.maxHp, ShowCurrentHp);
     }
 
     public override void CurrentHpChange(float value)
@@ -151,6 +151,7 @@ public class Player : Object
         ShowCurrentHp();
     }
 
+    // PlayerHpUI 스크립트에 등록한 플레이어의 현재 체력바를 갱신시키는 함수를 호출
     private void ShowCurrentHp()
     {
         onHpbarChanged?.Invoke(runtimeStats.hp, runtimeStats.maxHp);
@@ -160,7 +161,7 @@ public class Player : Object
     {
         healthSystem.TakeDamage(runtimeStats.hp, dmg);
         TextPoolManager.Instance.ShowDamageText(dmg, textPos);
-
+        
         if (runtimeStats.hp <= 0)
         {
             buffController.ClearAllBuffs();

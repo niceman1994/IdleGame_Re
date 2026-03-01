@@ -39,6 +39,7 @@ public class BossSpell : MonoBehaviour
         if (spellEnqueueAction != null)
         {
             spellEnqueueAction.Invoke();
+            spellEnqueueAction = null;
             gameObject.SetActive(false);
             isReturned = false;
         }

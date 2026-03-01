@@ -5,6 +5,8 @@ using UnityEngine;
 
 public class BossCastState : BaseState
 {
+    public event Action onCheckRecastState;
+
     public BossCastState(Object objectController) : base(objectController) { }
 
     public override void OnStateEnter()
@@ -22,5 +24,10 @@ public class BossCastState : BaseState
     public override void OnStateUpdate()
     {
         
+    }
+
+    public void CheckRecast()
+    {
+        onCheckRecastState?.Invoke();
     }
 }
