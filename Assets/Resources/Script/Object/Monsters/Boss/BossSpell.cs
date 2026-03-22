@@ -34,7 +34,7 @@ public class BossSpell : MonoBehaviour
         }
     }
 
-    public void DeactivateSpell()
+    private void DeactivateSpell()
     {
         if (spellEnqueueAction != null)
         {

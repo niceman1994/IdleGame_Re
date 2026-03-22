@@ -7,7 +7,7 @@ public class Sword : Item
     public override void OnUseItem(Player player)
     {
         player.CurrentAtk(itemData.itemAbility);
-        TextPoolManager.Instance.ShowItemText("ATK", itemData.itemAbility,
+        TextPoolManager.Instance.ShowItemAbilityText("ATK", itemData.itemAbility,
                         player.transform.position, new Color(0, 0, 0, 255), 20);
     }
 }

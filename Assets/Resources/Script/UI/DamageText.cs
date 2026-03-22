@@ -49,7 +49,7 @@ public class DamageText : MonoBehaviour
         damageText.text = $"+{Math.Truncate(num)} {itemName}";
         damageText.color = color;
         damageText.fontSize = fontsize;
-        StartCoroutine(TextPos(() => TextPoolManager.Instance.ReturnItemTextObject(this)));
+        StartCoroutine(TextPos(() => TextPoolManager.Instance.ReturnItemAbilityTextObject(this)));
     }
 
     // 피해를 받거나 아이템을 사용하거나 체력을 회복했을 때 텍스트가 위로 올라가게 하는 함수

@@ -40,7 +40,7 @@ public class TextPoolManager : Singleton<TextPoolManager>
         damageTextQueue.Enqueue(obj);
     }
 
-    public void ReturnItemTextObject(DamageText obj)
+    public void ReturnItemAbilityTextObject(DamageText obj)
     {
         obj.gameObject.SetActive(false);
         obj.transform.SetParent(itemTextParent);
@@ -54,14 +54,14 @@ public class TextPoolManager : Singleton<TextPoolManager>
             var damageObj = damageTextQueue.Dequeue();
             damageObj.transform.SetParent(null);
             damageObj.gameObject.SetActive(true);
-            damageObj.TakeDamage(num, target, new Color(255.0f, 0.0f, 0.0f, 255.0f));
+            damageObj.TakeDamage(num, target, Color.red);
         }
         else
         {
             var newDamageObj = CreatePoolItem("Damage Text", damageTextParent);
             newDamageObj.transform.SetParent(null);
             newDamageObj.gameObject.SetActive(true);
-            newDamageObj.TakeDamage(num, target, new Color(255.0f, 0.0f, 0.0f, 255.0f));
+            newDamageObj.TakeDamage(num, target, Color.red);
             damageTextQueue.Enqueue(newDamageObj);
         }
     }
@@ -85,7 +85,7 @@ public class TextPoolManager : Singleton<TextPoolManager>
         }
     }
 
-    public void ShowItemText(string itemName, float num, Vector3 target, Color color, int fontsize = 20)
+    public void ShowItemAbilityText(string itemName, float num, Vector3 target, Color color, int fontsize = 20)
     {
         if (itemTextQueue.Count > 0)
         {

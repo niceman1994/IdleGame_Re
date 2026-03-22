@@ -12,7 +12,7 @@ public class Boss : Object
     private int lastSpellAttackCount;
     private int currentSpellAttackCount;
     private float spellAttackValue;
-    private BossStateMachine bossStateMachine;
+    private BossStateMachine bossStateMachine;          // Boss의 상태 머신 변수
 
     private Queue<BossSpell> bossSpellQueue = new Queue<BossSpell>();
     // 플레이어가 죽어서 스테이지가 초기화됐을 때 BossSpell이 회수되지 않을 수 있는걸 방지하기 위한 변수
@@ -35,7 +35,6 @@ public class Boss : Object
     private void Update()
     {
         CheckState();
-        ChangeState(bossStateMachine.CurrentStateType);
     }
 
     private void InitBoss()
@@ -69,6 +68,8 @@ public class Boss : Object
 
     public override void CheckState()
     {
+        ChangeState(bossStateMachine.CurrentStateType);
+
         if (runtimeStats.hp > 0)
         {
             if (objectAnimator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))

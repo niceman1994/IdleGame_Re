@@ -13,7 +13,7 @@ public class Player : Object
     [SerializeField] BuffController buffController;
      
     private float runtimeMoveSpeed;
-    private PlayerStateMachine playerStateMachine;
+    private PlayerStateMachine playerStateMachine;      // Player의 상태 머신 변수
 
     public event Action<float, float> onHpbarChanged;
     public event Action onStageUp;
@@ -33,7 +33,6 @@ public class Player : Object
     private void Update()
     {
         CheckState();
-        ChangeState(playerStateMachine.CurrentStateType);
     }
 
     private void OnTriggerEnter2D(Collider2D collision)
@@ -51,7 +50,7 @@ public class Player : Object
         SetDefaultStats(playerData.objectStats.baseHp, playerData.objectStats.baseAttack, playerData.objectStats.baseAttackSpeed);
         runtimeMoveSpeed = moveSpeed = playerData.baseMoveSpeed;
 
-        healthSystem.onHealthChanged += GetCurrentHp;
+        healthSystem.onHealthChanged += SetCurrentHp;
         detectCollider.onEnemyDetected += ObjectStateChange;
 
         playerStateMachine = new PlayerStateMachine(this);
@@ -105,6 +104,8 @@ public class Player : Object
 
     public override void CheckState()
     {
+        ChangeState(playerStateMachine.CurrentStateType);
+
         if (runtimeStats.hp > 0 && objectAnimator.GetCurrentAnimatorStateInfo(0).IsName("Attack"))
         {
             // 공격 횟수는 처음엔 0이며 한 번 공격할 때마다 atkLoop에 1을 더해줌
@@ -142,10 +143,10 @@ public class Player : Object
 
         runtimeStats.hp += value;
         ShowCurrentHp();
-        TextPoolManager.Instance.ShowHealText(value, textPos, new Color(0.0f, 255.0f, 0.0f, 255.0f));
+        TextPoolManager.Instance.ShowHealText(value, textPos, Color.green);
     }
 
-    private void GetCurrentHp(float currentHp)
+    private void SetCurrentHp(float currentHp)
     {
         runtimeStats.hp = currentHp;
         ShowCurrentHp();
@@ -221,7 +222,7 @@ public class Player : Object
         onStageUp?.Invoke();
     }
 
-    public float GetMoveSpeed(float speed)
+    public float SetMoveSpeed(float speed)
     {
         moveSpeed += speed;
         runtimeMoveSpeed = moveSpeed;
@@ -229,7 +230,7 @@ public class Player : Object
     }
 
     // 스탯을 올리는 UI에서 강화할 경우 호출되는 함수
-    public float GetAttackSpeed(float atkSpeed)
+    public float SetAttackSpeed(float atkSpeed)
     {
         runtimeStats.attackSpeed += atkSpeed;
         objectAnimator.SetFloat("attackSpeed", runtimeStats.attackSpeed);

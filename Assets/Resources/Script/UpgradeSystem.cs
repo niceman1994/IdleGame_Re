@@ -38,7 +38,7 @@ public class UpgradeSystem
     {
         if (gameGold.Gold >= spendGold)
         {
-            player.GetAttackSpeed(0.015f);
+            player.SetAttackSpeed(0.015f);
             onUpgrade?.Invoke();
         }   
     }
@@ -47,7 +47,7 @@ public class UpgradeSystem
     {
         if (gameGold.Gold >= spendGold)
         {
-            player.GetMoveSpeed(0.04f);
+            player.SetMoveSpeed(0.04f);
             onUpgrade?.Invoke();
         }
     }
